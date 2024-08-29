@@ -6,6 +6,7 @@ import {
 import {
   HttpClient,
   provideHttpClient,
+  withInterceptors,
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { routes } from './app.routes';
@@ -31,6 +32,12 @@ import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import {
+  jwtInterceptor,
+  loadingScreenInterceptor,
+} from './pages/interceptors/auth.interceptor';
+import { SimpleNotificationsModule } from 'angular2-notifications';
+import { NgxLoadingModule } from 'ngx-loading';
 
 export function HttpLoaderFactory(http: HttpClient): any {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -47,7 +54,11 @@ export const appConfig: ApplicationConfig = {
       }),
       withComponentInputBinding()
     ),
-    provideHttpClient(withInterceptorsFromDi()),
+    //provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withInterceptors([jwtInterceptor, loadingScreenInterceptor])
+    ),
     provideClientHydration(),
     provideAnimationsAsync(),
 
@@ -68,7 +79,9 @@ export const appConfig: ApplicationConfig = {
           useFactory: HttpLoaderFactory,
           deps: [HttpClient],
         },
-      })
+      }),
+      SimpleNotificationsModule.forRoot(),
+      NgxLoadingModule.forRoot({})
     ),
   ],
 };

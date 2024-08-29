@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
+import { PersonaComponent } from './pages/persona/persona.component';
+import { authGuard } from './pages/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -11,6 +13,19 @@ export const routes: Routes = [
         path: '',
         redirectTo: '/dashboards/dashboard1',
         pathMatch: 'full',
+      },
+
+      {
+        path: 'pages/persona',
+        canActivate: [authGuard],
+        component: PersonaComponent,
+        data: {
+          title: 'Personas',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Personas' },
+          ],
+        },
       },
       {
         path: 'starter',
@@ -91,6 +106,30 @@ export const routes: Routes = [
           ),
       },
     ],
+  },
+  {
+    path: 'login',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('../app/pages/login/login.component').then(
+        (m) => m.LoginComponent
+      ),
+  },
+  {
+    path: 'register',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('../app/pages/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
+  },
+  {
+    path: 'forgot-password',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('../app/pages/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent
+      ),
   },
   {
     path: '**',

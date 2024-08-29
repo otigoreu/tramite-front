@@ -1,8 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavService } from '../../../../../services/nav.service';
 import { TablerIconsModule } from 'angular-tabler-icons';
@@ -25,7 +21,7 @@ export class AppHorizontalNavItemComponent implements OnInit {
     }
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
   onItemSelected(item: any) {
     if (!item.children || !item.children.length) {
       this.router.navigate([item.route]);

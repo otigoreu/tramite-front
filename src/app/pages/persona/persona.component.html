@@ -5,7 +5,7 @@
         <mat-form-field appearance="outline" class="w-100 hide-hint">
           <input
             matInput
-            placeholder="Search User"
+            placeholder="Search User "
             (keyup)="applyFilter($any($event.target).value)"
           />
           <mat-icon matSuffix>
@@ -14,7 +14,7 @@
         </mat-form-field>
       </div>
       <div class="col-lg-4 d-flex align-items-center justify-content-end">
-        <button mat-flat-button (click)="openDialog('Add', {})" color="primary">
+        <button mat-flat-button (click)="new()" color="primary">
           Add User
         </button>
       </div>
@@ -24,90 +24,61 @@
 <mat-card class="cardWithShadow">
   <mat-card-content class="p-24">
     <div class="table-responsive">
-      <table mat-table [dataSource]="dataSource" class="w-100">
-        <ng-container matColumnDef="#">
+      <table mat-table [dataSource]="dataSource" matSor class="w-100">
+        <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">#</th>
-          <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.id }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="name">
+        <ng-container matColumnDef="nombres">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">Name</th>
-          <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let row">
             <div class="d-flex align-items-center">
-              <img
-                class="rounded-circle"
-                [src]="element.imagePath"
-                width="40"
-              />
+              <img class="rounded-circle" [src]="" width="40" />
               <div class="m-l-16">
                 <p class="f-w-600 mat-subtitle-1 f-s-16 m-t-0">
-                  {{ element.Name }}
+                  {{ row.nombres }}
                 </p>
-                <small class="mat-body-1 f-s-14">{{ element.Position }}</small>
+                <small class="mat-body-1 f-s-14">{{ row.nroDoc }}</small>
               </div>
             </div>
           </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            Estado
+          </th>
+          <td mat-cell *matCellDef="let row">{{ row.status }}</td>
         </ng-container>
 
         <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Email
           </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">
-            {{ element.Email }}
+          <td mat-cell *matCellDef="let row" class="f-s-14">
+            {{ row.email }}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="mobile">
+        <ng-container matColumnDef="fechaNac">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Mobile
+            Fecha
           </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">
-            {{ element.Mobile }}
+          <td mat-cell *matCellDef="let row" class="f-s-14">
+            {{ row.fechaNac | date : "fullDate" }}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="date of joining">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Date of Joining
-          </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">
-            {{ element.DateOfJoining | date : "fullDate" }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="salary">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Salary
-          </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">
-            {{ element.Salary }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="projects">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Projects
-          </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">
-            {{ element.Projects }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="action">
+        <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Action
           </th>
-          <td mat-cell *matCellDef="let element" class="action-link">
-            <a
-              (click)="openDialog('Update', element)"
-              class="m-r-10 cursor-pointer"
+          <td mat-cell *matCellDef="let row" class="action-link">
+            <a (click)="edit(row.id)" class="m-r-10 cursor-pointer"
               ><i-tabler name="edit" class="icon-18"></i-tabler
             ></a>
-            <a
-              (click)="openDialog('Delete', element)"
-              class="m-r-10 cursor-pointer"
-            >
+            <a (click)="delete(row.id)" class="m-r-10 cursor-pointer">
               <i-tabler name="trash" class="icon-18"></i-tabler>
             </a>
           </td>

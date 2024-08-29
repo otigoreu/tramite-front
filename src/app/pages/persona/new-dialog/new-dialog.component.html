@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>Editar usuario</h2>
+<mat-dialog-content>
+  <form [formGroup]="editForm" style="display: flex; flex-direction: column">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombres</mat-label>
+      <input matInput formControlName="nombres" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>apellidos</mat-label>
+      <input matInput formControlName="apellidos" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>DD/MM/YYYY</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="fechaNac" />
+
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>direccion</mat-label>
+      <input matInput formControlName="direccion" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>referencia</mat-label>
+      <input matInput formControlName="referencia" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>celular</mat-label>
+      <input matInput formControlName="celular" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>edad</mat-label>
+      <input matInput formControlName="edad" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>email</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>tipoDoc</mat-label>
+      <input matInput formControlName="tipoDoc" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>nroDoc</mat-label>
+      <input matInput formControlName="nroDoc" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cerrar</button>
+  <button mat-button (click)="savePerson()">Guardar</button>
+</mat-dialog-actions>

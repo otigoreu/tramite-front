@@ -2,6 +2,14 @@ import { NavItem } from './nav-item/nav-item';
 
 export const navItems: NavItem[] = [
   {
+    navCap: 'Mantenimientos',
+  },
+  {
+    displayName: 'Personas',
+    iconName: 'aperture',
+    route: '/pages/persona',
+  },
+  {
     navCap: 'Home',
   },
   {
@@ -85,7 +93,8 @@ export const navItems: NavItem[] = [
       {
         displayName: 'Detail',
         iconName: 'point',
-        route: 'apps/blog/detail/Early Black Friday Amazon deals: cheap TVs, headphones, laptops',
+        route:
+          'apps/blog/detail/Early Black Friday Amazon deals: cheap TVs, headphones, laptops',
       },
     ],
   },

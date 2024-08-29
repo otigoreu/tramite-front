@@ -276,7 +276,8 @@
 
       <div class="p-y-12 p-x-32">
         <a
-          [routerLink]="['/authentication/login']"
+          [routerLink]="['/login']"
+          (click)="authService.logout()"
           mat-stroked-button
           color="primary"
           class="w-100"
