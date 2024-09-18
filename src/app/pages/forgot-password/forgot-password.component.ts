@@ -19,7 +19,6 @@ import { CoreService } from 'src/app/services/core.service';
   standalone: true,
   imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule],
   templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.scss',
 })
 export class ForgotPasswordComponent {
   options = this.settings.getOptions();

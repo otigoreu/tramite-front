@@ -18,4 +18,12 @@ export class AppComponent {
   };
 
   authService = inject(AuthService);
+
+  // constructor() {
+  //   console.log(this.authService.userEmail());
+
+  //   // localStorage.setItem('userEmail', this.authService.userEmail());
+  //   //     localStorage.setItem('UserRole', this.authService.userRole());
+  //   //     localStorage.setItem('UserName', this.authService.userName());
+  // }
 }

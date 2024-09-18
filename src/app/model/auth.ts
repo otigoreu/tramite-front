@@ -3,6 +3,7 @@ export interface LoginApiResponse {
   data: {
     token: string;
     expirationDate: string;
+    roles: string[];
   };
   success: boolean;
   errorMessage: string;
@@ -18,6 +19,7 @@ export interface RegisterApiResponse {
     userId: string;
     token: string;
     expirationDate: string;
+    roles: string[];
   };
   success: boolean;
   errorMessage: string;

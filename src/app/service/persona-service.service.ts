@@ -35,6 +35,13 @@ export class PersonaServiceService {
       .get<GetPersonsApiResponse>(this.baseUrl + '/api/personas/nombre')
       .pipe(map((response) => response.data));
   }
+  getDataByEmail(email: string) {
+    return this.http
+      .get<GetPersonsApiResponse>(
+        this.baseUrl + '/api/personas/email?email=' + email
+      )
+      .pipe(map((response) => response.data));
+  }
 
   deletePerson(id: number) {
     return this.http.delete<DeletePersonResponse>(

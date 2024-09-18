@@ -8,8 +8,14 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
+import {
+  navItems,
+  navItemsAdmin,
+  navItemsUser,
+} from 'src/app/layouts/full/vertical/sidebar/sidebar-data';
 import { MaterialModule } from 'src/app/material.module';
 import { AuthService } from 'src/app/service/auth.service';
+import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { CoreService } from 'src/app/services/core.service';
 
 @Component({
@@ -17,7 +23,6 @@ import { CoreService } from 'src/app/services/core.service';
   standalone: true,
   imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   options = this.settings.getOptions();
@@ -35,6 +40,7 @@ export class LoginComponent {
   authService = inject(AuthService);
   router = inject(Router);
   notifications = inject(NotificationsService);
+  personaService = inject(PersonaServiceService);
   // get f() {
   //   return this.loginForm.controls;
   // }
@@ -50,12 +56,34 @@ export class LoginComponent {
       console.log('response', response);
       if (response && response.success) {
         console.log('login successfull');
+        console.log(response.data.roles);
         localStorage.setItem('token', response.data.token);
-        this.router.navigate(['/pages/persona']);
+
+        this.authService.userEmail.set(email);
+        this.authService.userRole.set(response.data.roles[0]);
+
+        this.authService.loggedIn.set(true);
         this.notifications.success(
           'Login Exitoso',
           'Bienvenido a Tramite Goreu'
         );
+        this.personaService.getDataByEmail(email).subscribe((data: any) => {
+          this.authService.userName.set(data.nombres + ' ' + data.apellidos);
+        });
+        localStorage.setItem('userEmail', this.authService.userEmail());
+        localStorage.setItem('UserRole', this.authService.userRole());
+        localStorage.setItem('UserName', this.authService.userName());
+
+        if (this.authService.userRole() === 'Administrator') {
+          navItemsAdmin.forEach((item) => {
+            navItems.push(item);
+          });
+        } else if (this.authService.userRole() === 'Customer') {
+          navItemsUser.forEach((item) => {
+            navItems.push(item);
+          });
+        }
+        this.router.navigate(['/pages/persona']);
       } else {
         this.notifications.error('Login Fallido', 'Revisa tus credenciales');
         console.log('login falied');

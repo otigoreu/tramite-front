@@ -10,6 +10,8 @@ import {
   RegisterApiResponse,
   RegisterRequestBody,
 } from '../model/auth';
+import { NotificationsService } from 'angular2-notifications';
+import { navItems } from '../layouts/full/vertical/sidebar/sidebar-data';
 
 @Injectable({
   providedIn: 'root',
@@ -17,10 +19,13 @@ import {
 export class AuthService {
   private http = inject(HttpClient);
   private baseUrl = environment.baseUrl;
-
+  private notificationsService = inject(NotificationsService);
   loading = signal(false);
   loggedIn = signal(false);
   isAdministrator = signal(false);
+  userRole = signal('');
+  userName = signal('');
+  userEmail = signal('');
 
   login(email: string, password: string): Observable<LoginApiResponse> {
     const apiUrl = this.baseUrl + '/api/users/login';
@@ -29,9 +34,10 @@ export class AuthService {
       catchError((httpErrorResponse: HttpErrorResponse) => {
         const errorResponse: LoginApiResponse = {
           success: false,
-          data: { expirationDate: '', token: '' },
+          data: { expirationDate: '', token: '', roles: [] },
           errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
         };
+
         return of(errorResponse);
       })
     );
@@ -43,7 +49,7 @@ export class AuthService {
       catchError((httpErrorResponse: HttpErrorResponse) => {
         const errorResponse: RegisterApiResponse = {
           success: false,
-          data: { expirationDate: '', token: '', userId: '' },
+          data: { expirationDate: '', token: '', userId: '', roles: [] },
           errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
         };
         return of(errorResponse);
@@ -68,7 +74,10 @@ export class AuthService {
     localStorage.clear();
     this.loggedIn.set(false);
     this.isAdministrator.set(false);
-    //this.notificationsService.success('Logout exitoso', 'Hasta luego');
+    this.notificationsService.success('Logout exitoso', 'Hasta luego');
+    while (navItems.length > 0) {
+      navItems.pop();
+    }
   }
 
   constructor() {}

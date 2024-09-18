@@ -47,7 +47,6 @@ import { CustomDateAdapter } from 'src/app/material/custom-adapter';
   ],
 
   templateUrl: './persona.component.html',
-  styleUrl: './persona.component.scss',
 })
 export class PersonaComponent implements OnInit, AfterViewInit {
   title = 'TramiteGoreu-FrontEnd';

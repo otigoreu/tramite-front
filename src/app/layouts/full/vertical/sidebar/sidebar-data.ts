@@ -1,6 +1,7 @@
 import { NavItem } from './nav-item/nav-item';
 
-export const navItems: NavItem[] = [
+export let navItems: NavItem[] = [];
+export const navItemsAdmin: NavItem[] = [
   {
     navCap: 'Mantenimientos',
   },
@@ -568,5 +569,130 @@ export const navItems: NavItem[] = [
     iconName: 'star',
     route: 'https://www.google.com/',
     external: true,
+  },
+];
+export const navItemsUser: NavItem[] = [
+  {
+    navCap: 'Tables',
+  },
+  {
+    displayName: 'Tables',
+    iconName: 'layout',
+    route: 'tables',
+    children: [
+      {
+        displayName: 'Basic Table',
+        iconName: 'point',
+        route: 'tables/basic-table',
+      },
+      {
+        displayName: 'Dynamic Table',
+        iconName: 'point',
+        route: 'tables/dynamic-table',
+      },
+      {
+        displayName: 'Expand Table',
+        iconName: 'point',
+        route: 'tables/expand-table',
+      },
+      {
+        displayName: 'Filterable Table',
+        iconName: 'point',
+        route: 'tables/filterable-table',
+      },
+      {
+        displayName: 'Footer Row Table',
+        iconName: 'point',
+        route: 'tables/footer-row-table',
+      },
+      {
+        displayName: 'HTTP Table',
+        iconName: 'point',
+        route: 'tables/http-table',
+      },
+      {
+        displayName: 'Mix Table',
+        iconName: 'point',
+        route: 'tables/mix-table',
+      },
+      {
+        displayName: 'Multi Header Footer',
+        iconName: 'point',
+        route: 'tables/multi-header-footer-table',
+      },
+      {
+        displayName: 'Pagination Table',
+        iconName: 'point',
+        route: 'tables/pagination-table',
+      },
+      {
+        displayName: 'Row Context Table',
+        iconName: 'point',
+        route: 'tables/row-context-table',
+      },
+      {
+        displayName: 'Selection Table',
+        iconName: 'point',
+        route: 'tables/selection-table',
+      },
+      {
+        displayName: 'Sortable Table',
+        iconName: 'point',
+        route: 'tables/sortable-table',
+      },
+      {
+        displayName: 'Sticky Column',
+        iconName: 'point',
+        route: 'tables/sticky-column-table',
+      },
+      {
+        displayName: 'Sticky Header Footer',
+        iconName: 'point',
+        route: 'tables/sticky-header-footer-table',
+      },
+    ],
+  },
+  {
+    displayName: 'Data table',
+    iconName: 'border-outer',
+    route: '/datatable/kichen-sink',
+  },
+  {
+    navCap: 'Chart',
+  },
+  {
+    displayName: 'Line',
+    iconName: 'chart-line',
+    route: '/charts/line',
+  },
+  {
+    displayName: 'Gredient',
+    iconName: 'chart-arcs',
+    route: '/charts/gredient',
+  },
+  {
+    displayName: 'Area',
+    iconName: 'chart-area',
+    route: '/charts/area',
+  },
+  {
+    displayName: 'Candlestick',
+    iconName: 'chart-candle',
+    route: '/charts/candlestick',
+  },
+  {
+    displayName: 'Column',
+    iconName: 'chart-dots',
+    route: '/charts/column',
+  },
+  {
+    displayName: 'Doughnut & Pie',
+    iconName: 'chart-donut-3',
+    route: '/charts/doughnut-pie',
+  },
+  {
+    displayName: 'Radialbar & Radar',
+    iconName: 'chart-radar',
+    route: '/charts/radial-radar',
   },
 ];

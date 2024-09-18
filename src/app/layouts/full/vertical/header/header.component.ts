@@ -67,6 +67,7 @@ export class HeaderComponent {
   @Output() toggleMobileFilterNav = new EventEmitter<void>();
   @Output() toggleCollapsed = new EventEmitter<void>();
   authService = inject(AuthService);
+
   showFiller = false;
 
   public selectedLanguage: any = {
