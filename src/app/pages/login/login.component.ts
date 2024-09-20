@@ -56,24 +56,33 @@ export class LoginComponent {
       console.log('response', response);
       if (response && response.success) {
         console.log('login successfull');
-        console.log(response.data.roles);
+
         localStorage.setItem('token', response.data.token);
 
+        //cargar los siganals
         this.authService.userEmail.set(email);
         this.authService.userRole.set(response.data.roles[0]);
+
+        //agregar al localStorage userEmail y el userRole
+        localStorage.setItem('userEmail', this.authService.userEmail());
+        localStorage.setItem('userRole', this.authService.userRole());
 
         this.authService.loggedIn.set(true);
         this.notifications.success(
           'Login Exitoso',
           'Bienvenido a Tramite Goreu'
         );
-        this.personaService.getDataByEmail(email).subscribe((data: any) => {
-          this.authService.userName.set(data.nombres + ' ' + data.apellidos);
-        });
-        localStorage.setItem('userEmail', this.authService.userEmail());
-        localStorage.setItem('UserRole', this.authService.userRole());
-        localStorage.setItem('UserName', this.authService.userName());
 
+        this.personaService.getDataByEmail(email).subscribe((data: any) => {
+          //agregando al localStorage el UserName
+          this.authService.userName.set(data.nombres + ' ' + data.apellidos);
+
+          localStorage.setItem('userName', this.authService.userName());
+        });
+        console.log(
+          'signal rol para el menu en el LoginCoponent =' +
+            this.authService.userRole()
+        );
         if (this.authService.userRole() === 'Administrator') {
           navItemsAdmin.forEach((item) => {
             navItems.push(item);
@@ -83,6 +92,7 @@ export class LoginComponent {
             navItems.push(item);
           });
         }
+
         this.router.navigate(['/pages/persona']);
       } else {
         this.notifications.error('Login Fallido', 'Revisa tus credenciales');
