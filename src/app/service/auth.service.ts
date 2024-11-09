@@ -1,3 +1,9 @@
+import {
+  LoginApiResponse1,
+  LoginRequestBody1,
+  Aplicacion,
+} from './../model/auth1';
+import { Persona } from './../model/persona';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
@@ -26,15 +32,37 @@ export class AuthService {
   userRole = signal('');
   userName = signal('');
   userEmail = signal('');
+  nombreApellido = signal('');
+  aplicacion = signal('');
+  sede = signal('');
 
-  login(email: string, password: string): Observable<LoginApiResponse> {
+  login(dni: string, password: string): Observable<LoginApiResponse1> {
     const apiUrl = this.baseUrl + '/api/users/login';
-    const body: LoginRequestBody = { username: email, password };
-    return this.http.post<LoginApiResponse>(apiUrl, body).pipe(
+    const body: LoginRequestBody1 = { username: dni, password };
+    return this.http.post<LoginApiResponse1>(apiUrl, body).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => {
-        const errorResponse: LoginApiResponse = {
+        const errorResponse: LoginApiResponse1 = {
           success: false,
-          data: { expirationDate: '', token: '', roles: [] },
+          data: {
+            expirationDate: '',
+            token: '',
+            roles: [],
+            persona: {
+              id: 0,
+              nombres: '',
+              apellidos: '',
+              fechaNac: '',
+              direccion: '',
+              referencia: '',
+              celular: '',
+              edad: '',
+              email: '',
+              tipoDoc: '',
+              nroDoc: '',
+            },
+            sede: { id: 0, descripcion: '' },
+            aplicaciones: [],
+          },
           errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
         };
 

@@ -26,32 +26,51 @@ export class AppComponent {
   router = inject(Router);
 
   constructor() {
-    const userEmail = localStorage.getItem('userEmail');
     const userRole = localStorage.getItem('userRole');
     const userName = localStorage.getItem('userName');
+    const sede = localStorage.getItem('sede');
+    const aplicacion = localStorage.getItem('Aplicacion');
+    const userEmail = localStorage.getItem('userEmail');
+    const nombreApellido = localStorage.getItem('nombreApellido');
     console.log('---------------------------------------');
-    console.log('localStorage correo =' + userEmail);
+
     console.log('localStorage rol =' + userRole);
     console.log('localStorage Name =' + userName);
+    console.log('localStorage Sede =' + sede);
+    console.log('localStorage Aplicacion =' + aplicacion);
+
     console.log('---------------------------------------');
-    if (userEmail && userRole && userName) {
-      this.authService.userEmail.set(userEmail);
+
+    if (
+      sede &&
+      userRole &&
+      userName &&
+      aplicacion &&
+      userEmail &&
+      nombreApellido
+    ) {
+      this.authService.aplicacion.set(aplicacion);
+      this.authService.sede.set(sede);
       this.authService.userRole.set(userRole);
       this.authService.userName.set(userName);
-      console.log('signal correo =' + this.authService.userEmail());
+      this.authService.userEmail.set(userEmail);
+      this.authService.nombreApellido.set(nombreApellido);
+
       console.log('signal rol =' + this.authService.userRole());
       console.log('signal Name =' + this.authService.userName());
+      console.log('signal sede =' + this.authService.sede());
+      console.log('signal Aplicacion =' + this.authService.aplicacion());
       console.log('---------------------------------------');
 
       console.log(
         'signal rol para el menu en el  appCoponent=' +
           this.authService.userRole()
       );
-      if (this.authService.userRole() === 'Administrator') {
+      if (this.authService.userRole() === 'Administrador') {
         navItemsAdmin.forEach((item) => {
           navItems.push(item);
         });
-      } else if (this.authService.userRole() === 'Customer') {
+      } else if (this.authService.userRole() === 'Cliente') {
         navItemsUser.forEach((item) => {
           navItems.push(item);
         });

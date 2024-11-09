@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
+import { NavItem } from 'src/app/layouts/full/vertical/sidebar/nav-item/nav-item';
 import {
   navItems,
   navItemsAdmin,
@@ -15,6 +16,7 @@ import {
 } from 'src/app/layouts/full/vertical/sidebar/sidebar-data';
 import { MaterialModule } from 'src/app/material.module';
 import { AuthService } from 'src/app/service/auth.service';
+import { MenuService } from 'src/app/service/menu.service';
 import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { CoreService } from 'src/app/services/core.service';
 
@@ -30,7 +32,8 @@ export class LoginComponent {
   constructor(private settings: CoreService) {}
 
   loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
+    //email: new FormControl('', [Validators.required, Validators.email]),
+    dni: new FormControl('', [Validators.required, Validators.minLength(8)]),
     password: new FormControl('', [
       Validators.required,
       Validators.minLength(8),
@@ -41,6 +44,7 @@ export class LoginComponent {
   router = inject(Router);
   notifications = inject(NotificationsService);
   personaService = inject(PersonaServiceService);
+  menuService = inject(MenuService);
   // get f() {
   //   return this.loginForm.controls;
   // }
@@ -50,48 +54,71 @@ export class LoginComponent {
     this.router.navigate(['/dashboards/dashboard1']);
   }
   login() {
-    const email = this.loginForm.controls.email.value!;
+    const dni = this.loginForm.controls.dni.value!;
     const password = this.loginForm.controls.password.value!;
-    this.authService.login(email, password).subscribe((response) => {
-      console.log('response', response);
+    this.authService.login(dni, password).subscribe((response) => {
+      console.log('response con data 1', response);
       if (response && response.success) {
-        console.log('login successfull');
+        console.log('login successfull1');
 
+        //para el localstorage
         localStorage.setItem('token', response.data.token);
 
         //cargar los siganals
-        this.authService.userEmail.set(email);
+        this.authService.nombreApellido.set(
+          response.data.persona.nombres + ' ' + response.data.persona.apellidos
+        );
+        this.authService.userEmail.set(response.data.persona.email),
+          this.authService.userName.set(dni);
         this.authService.userRole.set(response.data.roles[0]);
+        this.authService.aplicacion.set(
+          response.data.aplicaciones[0].descripcion
+        );
+        this.authService.sede.set(response.data.sede.descripcion);
 
         //agregar al localStorage userEmail y el userRole
-        localStorage.setItem('userEmail', this.authService.userEmail());
         localStorage.setItem('userRole', this.authService.userRole());
+        localStorage.setItem('Aplicacion', this.authService.aplicacion());
+        localStorage.setItem('sede', this.authService.sede());
+        localStorage.setItem('userEmail', this.authService.userEmail());
+        localStorage.setItem(
+          'nombreApellido',
+          this.authService.nombreApellido()
+        );
+        localStorage.setItem('userName', this.authService.userName());
 
+        //signals
         this.authService.loggedIn.set(true);
         this.notifications.success(
           'Login Exitoso',
           'Bienvenido a Tramite Goreu'
         );
 
-        this.personaService.getDataByEmail(email).subscribe((data: any) => {
-          //agregando al localStorage el UserName
-          this.authService.userName.set(data.nombres + ' ' + data.apellidos);
+        //tarer menu por aplicacion
+        this.menuService
+          .GetByAplicationAsync(response.data.aplicaciones[0].id)
+          .subscribe((data: any[]) => {
+            console.log('menu', data);
+            data.forEach((nav) => {
+              console.log('nav', nav);
+              if (!nav.parentMenuId) {
+                const navItem: NavItem = {
+                  id: nav.id,
+                  displayName: nav.displayName,
+                  iconName: nav.iconName,
+                  route: nav.route,
+                  children: [],
+                };
+                navItems.push(navItem);
+              }
+            });
 
-          localStorage.setItem('userName', this.authService.userName());
-        });
-        console.log(
-          'signal rol para el menu en el LoginCoponent =' +
-            this.authService.userRole()
-        );
-        if (this.authService.userRole() === 'Administrator') {
-          navItemsAdmin.forEach((item) => {
-            navItems.push(item);
+            navItems.forEach((parentNav: NavItem) => {
+              parentNav.children = data.filter(
+                (nav) => nav.parentMenuId === parentNav.id
+              );
+            });
           });
-        } else if (this.authService.userRole() === 'Customer') {
-          navItemsUser.forEach((item) => {
-            navItems.push(item);
-          });
-        }
 
         this.router.navigate(['/pages/persona']);
       } else {

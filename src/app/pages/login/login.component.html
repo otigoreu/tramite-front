@@ -61,20 +61,18 @@
 
           <form class="m-t-30" [formGroup]="loginForm">
             <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
-              >Email</mat-label
+              >Dni</mat-label
             >
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input type="email" matInput formControlName="email" />
-              @if(loginForm.controls.email.touched
-              &&loginForm.controls.email.invalid){
+              <input matInput formControlName="dni" />
+              @if(loginForm.controls.dni.touched
+              &&loginForm.controls.dni.invalid){
               <mat-hint class="m-b-16 error-msg">
-                @if (loginForm.controls.email.hasError('email') &&
-                !loginForm.controls.email.hasError('required')) {
-                <div class="text-error">Ingresa un email válido</div>
-                } @if (loginForm.controls.email.hasError('required')) {
-                <div class="text-error">
-                  Email es <strong>requerido</strong>
-                </div>
+                @if (loginForm.controls.dni.hasError('minlength') &&
+                !loginForm.controls.dni.hasError('required')) {
+                <div class="text-error">Ingresa un dni válido</div>
+                } @if (loginForm.controls.dni.hasError('required')) {
+                <div class="text-error">Dni es <strong>requerido</strong></div>
                 }
               </mat-hint>
               }

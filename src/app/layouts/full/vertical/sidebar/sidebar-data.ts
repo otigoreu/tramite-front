@@ -696,3 +696,45 @@ export const navItemsUser: NavItem[] = [
     route: '/charts/radial-radar',
   },
 ];
+export const navItemsAdmin2: NavItem[] = [
+  {
+    navCap: 'Tables',
+  },
+  {
+    displayName: 'Candlestick',
+    iconName: 'chart-candle',
+    route: '/charts/candlestick',
+  },
+  {
+    displayName: 'Column',
+    iconName: 'chart-dots',
+    route: '/charts/column',
+  },
+  {
+    displayName: 'Doughnut & Pie',
+    iconName: 'chart-donut-3',
+    route: '/charts/doughnut-pie',
+  },
+  {
+    displayName: 'Tables',
+    iconName: 'layout',
+    route: 'tables',
+    children: [
+      {
+        displayName: 'Basic Table',
+        iconName: 'point',
+        route: 'tables/basic-table',
+      },
+      {
+        displayName: 'Selection Table',
+        iconName: 'point',
+        route: 'tables/selection-table',
+      },
+      {
+        displayName: 'Sortable Table',
+        iconName: 'point',
+        route: 'tables/sortable-table',
+      },
+    ],
+  },
+];
