@@ -84,4 +84,18 @@ export class PersonaServiceService {
       nroDoc: user.nroDoc,
     });
   }
+  newPerson(user: PersonaNew) {
+    return this.http.post( 'https://localhost:7179/api/personal/RegisterPerson', {
+      nombres: user.nombres,
+      apellidos: user.apellidos,
+      fechaNac: user.fechaNac,
+      direccion: user.direccion,
+      referencia: user.referencia,
+      celular: user.celular,
+      edad: user.edad,
+      email: user.email,
+      tipoDoc: user.tipoDoc,
+      nroDoc: user.nroDoc,
+    });
+  }
 }
