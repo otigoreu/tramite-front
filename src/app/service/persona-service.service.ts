@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Persona, PersonaNew, Personas } from '../model/persona';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { map, Subject, finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 interface GetPersonsApiResponse {
@@ -29,13 +29,25 @@ export class PersonaServiceService {
 
   http = inject(HttpClient);
 
+  private personaChange: Subject<Persona[]> = new Subject<Persona[]>();
+
   constructor() {}
-  getData() {
+getData() {
     return this.http
       .get<GetPersonsApiResponse>(this.baseUrl + '/api/personas/nombre')
       .pipe(map((response) => response.data));
   }
-  getDataByEmail(email: string) {
+getDatafilter() {
+    return this.http
+      .get<GetPersonsApiResponse>(this.baseUrl + '/api/personas/nombrefilter')
+      .pipe(map((response) => response.data));
+  }
+getDataPageable(p:number, s:number) {
+    return this.http
+      .get<GetPersonsApiResponse>(`${this.baseUrl}/api/personas/nombre?nombres=&Page=${p}&RecordsPerPage=${s}`)
+      .pipe(map((response) => response.data));
+  }
+getDataByEmail(email: string) {
     return this.http
       .get<GetPersonsApiResponse>(
         this.baseUrl + '/api/personas/email?email=' + email
@@ -43,33 +55,45 @@ export class PersonaServiceService {
       .pipe(map((response) => response.data));
   }
 
-  deletePerson(id: number) {
+deletePerson(id: number) {
     return this.http.delete<DeletePersonResponse>(
-      this.baseUrl + '/api/personas/' + id
+      this.baseUrl+'/api/personas/'+id
     );
   }
 
-  getPerson(id: number) {
+getPerson(id: number) {
     return this.http.get<GetPersonApiResponse>(
       this.baseUrl + '/api/personas/' + id
     );
   }
 
-  edit(user: Personas) {
-    return this.http.put(this.baseUrl + '/api/personas/' + user.id, {
-      nombres: user.nombres,
-      apellidos: user.apellidos,
-      fechaNac: user.fechaNac,
-      direccion: user.direccion,
-      referencia: user.referencia,
-      celular: user.celular,
-      edad: user.edad,
-      email: user.email,
-      tipoDoc: user.tipoDoc,
-      nroDoc: user.nroDoc,
-    });
+  //editar version 2
+update(id:number,persondialog: Persona) {
+    return this.http.put(`${this.baseUrl}/api/personas/${id}`,persondialog);
   }
 
+  //nuevo version 2
+save(personadialog: Persona) {
+    return this.http.post(`${this.baseUrl}/api/personas/`,personadialog);
+  }
+//nuevo version 3
+newPerson(persondialog: Persona) {
+  return this.http.post( 'https://localhost:7179/api/personal/RegisterPerson', persondialog);
+}
+
+updatePerson(id:number,persondialog: Persona) {
+  return this.http.put(`https://localhost:7179/api/personal/UpdatePerson/${id}`,persondialog);
+}
+
+finalized(id: number){
+  return this.http.delete<DeletePersonResponse>(`${this.baseUrl}/api/personas/finalized/${id}`);
+}
+initialized(id: number){
+  return this.http.get<DeletePersonResponse>(`${this.baseUrl}/api/personas/initialized/${id}`);
+
+}
+
+//nuevo version 1
   new(user: PersonaNew) {
     return this.http.post(this.baseUrl + '/api/personas/', {
       nombres: user.nombres,
@@ -84,18 +108,20 @@ export class PersonaServiceService {
       nroDoc: user.nroDoc,
     });
   }
-  newPerson(user: PersonaNew) {
-    return this.http.post( 'https://localhost:7179/api/personal/RegisterPerson', {
-      nombres: user.nombres,
-      apellidos: user.apellidos,
-      fechaNac: user.fechaNac,
-      direccion: user.direccion,
-      referencia: user.referencia,
-      celular: user.celular,
-      edad: user.edad,
-      email: user.email,
-      tipoDoc: user.tipoDoc,
-      nroDoc: user.nroDoc,
-    });
-  }
+//editar version 1
+edit(user: Personas) {
+  return this.http.put(this.baseUrl + '/api/personas/' + user.id, {
+    nombres: user.nombres,
+    apellidos: user.apellidos,
+    fechaNac: user.fechaNac,
+    direccion: user.direccion,
+    referencia: user.referencia,
+    celular: user.celular,
+    edad: user.edad,
+    email: user.email,
+    tipoDoc: user.tipoDoc,
+    nroDoc: user.nroDoc,
+  });
+}
+
 }

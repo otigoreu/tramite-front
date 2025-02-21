@@ -25,7 +25,7 @@ export interface Persona {
   email: string;
   tipoDoc: string;
   nroDoc: string;
-  status: boolean;
+  status: string;
 }
 export interface PersonaNew {
   nombres: string;

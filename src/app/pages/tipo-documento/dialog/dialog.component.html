@@ -1,0 +1,72 @@
+
+<mat-card-header>
+  <mat-card-title class="m-b-0">Tipo Documento</mat-card-title>
+</mat-card-header>
+<mat-card-content class="b-t-1">
+<mat-dialog-content style="max-width: 600px">
+  <form #userForm="ngForm">
+
+    <div class="row">
+      <div class="col-sm-4 d-flex align-items-center justify-content-end">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
+            >Descripcion
+          </mat-label>
+      </div>
+      <div class="col-lg-8">
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="descripcion"
+            name="descripcion"
+            [(ngModel)]="tipoDocumento.descripcion"
+            placeholder="Descripcion"
+          />
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4 d-flex align-items-center justify-content-end">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
+            >Sigla
+          </mat-label>
+      </div>
+      <div class="col-lg-8">
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="abrev"
+            name="abrev"
+            [(ngModel)]="tipoDocumento.abrev"
+            placeholder="Sigla"
+          />
+        </mat-form-field>
+      </div>
+
+
+
+    </div>
+    <mat-action-row>
+    <button
+      mat-flat-button
+      (click)="operate()"
+      mat-flat-button
+      color="primary"
+      [disabled]="!userForm.valid"
+    >
+      Enviar
+    </button>
+    <button
+      mat-stroked-button
+      color="warn"
+      class="m-l-8"
+      (click)="close()"
+    >
+      Cancel
+    </button>
+  </mat-action-row>
+  </form>
+</mat-dialog-content>
+</mat-card-content>
+

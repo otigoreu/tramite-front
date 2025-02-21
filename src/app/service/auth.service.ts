@@ -34,6 +34,7 @@ export class AuthService {
   userEmail = signal('');
   nombreApellido = signal('');
   aplicacion = signal('');
+  idAplicacion=signal('');
   sede = signal('');
 
   login(dni: string, password: string): Observable<LoginApiResponse1> {

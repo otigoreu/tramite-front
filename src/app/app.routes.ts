@@ -3,6 +3,7 @@ import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { PersonaComponent } from './pages/persona/persona.component';
 import { authGuard } from './pages/guards/auth.guard';
+import { TipoDocumentoComponent } from './pages/tipo-documento/tipo-documento.component';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,18 @@ export const routes: Routes = [
           urls: [
             { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Personas' },
+          ],
+        },
+      },
+      {
+        path: 'pages/tipo-documento',
+       // canActivate: [authGuard],
+        component: TipoDocumentoComponent,
+        data: {
+          title: 'Tipo Documento',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Tipo Documento' },
           ],
         },
       },

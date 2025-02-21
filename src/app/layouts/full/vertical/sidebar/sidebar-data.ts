@@ -20,7 +20,7 @@ export const navItemsAdmin: NavItem[] = [
   },
   {
     displayName: 'eCommerce',
-    iconName: 'shopping-cart',
+    iconName: 'shopping-cart',//este no
     route: '/dashboards/dashboard2',
   },
   {
@@ -89,7 +89,7 @@ export const navItemsAdmin: NavItem[] = [
       {
         displayName: 'Post',
         iconName: 'point',
-        route: 'apps/blog/post',
+        route: 'apps/blog/post',//este no
       },
       {
         displayName: 'Detail',
@@ -165,27 +165,27 @@ export const navItemsAdmin: NavItem[] = [
       {
         displayName: 'Autocomplete',
         iconName: 'point',
-        route: 'forms/forms-elements/autocomplete',
+        route: 'forms/forms-elements/autocomplete',// este no
       },
       {
         displayName: 'Button',
         iconName: 'point',
-        route: 'forms/forms-elements/button',
+        route: 'forms/forms-elements/button',//este no
       },
       {
         displayName: 'Checkbox',
         iconName: 'point',
-        route: 'forms/forms-elements/checkbox',
+        route: 'forms/forms-elements/checkbox',//este no
       },
       {
         displayName: 'Radio',
         iconName: 'point',
-        route: 'forms/forms-elements/radio',
+        route: 'forms/forms-elements/radio',//este no
       },
       {
         displayName: 'Datepicker',
         iconName: 'point',
-        route: 'forms/forms-elements/datepicker',
+        route: 'forms/forms-elements/datepicker', //este no
       },
     ],
   },
@@ -313,7 +313,7 @@ export const navItemsAdmin: NavItem[] = [
     route: '/charts/area',
   },
   {
-    displayName: 'Candlestick',
+    displayName: 'Candlestick',//este no
     iconName: 'chart-candle',
     route: '/charts/candlestick',
   },

@@ -108,7 +108,7 @@ export class NewDialogComponent implements OnInit {
       tipoDoc: this.editForm.controls.tipoDoc.value!,
       nroDoc: this.editForm.controls.nroDoc.value!,
     };
-    this.appService.newPerson(user).subscribe(() => {
+    this.appService.new(user).subscribe(() => {
       this.dialog.close();
     });
   }

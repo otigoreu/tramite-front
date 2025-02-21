@@ -33,7 +33,7 @@ export class LoginComponent {
 
   loginForm = new FormGroup({
     //email: new FormControl('', [Validators.required, Validators.email]),
-    dni: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    dni: new FormControl('', [Validators.required, Validators.minLength(8),Validators.maxLength(8)]),
     password: new FormControl('', [
       Validators.required,
       Validators.minLength(8),
@@ -65,20 +65,17 @@ export class LoginComponent {
         localStorage.setItem('token', response.data.token);
 
         //cargar los siganals
-        this.authService.nombreApellido.set(
-          response.data.persona.nombres + ' ' + response.data.persona.apellidos
-        );
-        this.authService.userEmail.set(response.data.persona.email),
-          this.authService.userName.set(dni);
+        this.authService.nombreApellido.set(response.data.persona.nombres + ' ' + response.data.persona.apellidos);
+        this.authService.userEmail.set(response.data.persona.email),this.authService.userName.set(dni);
         this.authService.userRole.set(response.data.roles[0]);
-        this.authService.aplicacion.set(
-          response.data.aplicaciones[0].descripcion
-        );
+        this.authService.aplicacion.set(response.data.aplicaciones[0].descripcion);
         this.authService.sede.set(response.data.sede.descripcion);
+        this.authService.idAplicacion.set((response.data.aplicaciones[0].id).toString());
 
         //agregar al localStorage userEmail y el userRole
         localStorage.setItem('userRole', this.authService.userRole());
         localStorage.setItem('Aplicacion', this.authService.aplicacion());
+
         localStorage.setItem('sede', this.authService.sede());
         localStorage.setItem('userEmail', this.authService.userEmail());
         localStorage.setItem(
@@ -93,6 +90,7 @@ export class LoginComponent {
           'Login Exitoso',
           'Bienvenido a Tramite Goreu'
         );
+        localStorage.setItem('idAplicacion',this.authService.idAplicacion());
 
         //tarer menu por aplicacion
         this.menuService

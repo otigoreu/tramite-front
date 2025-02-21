@@ -14,7 +14,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterOutlet } from '@angular/router';
-import { Personas } from 'src/app/model/persona';
+import { Persona, Personas } from 'src/app/model/persona';
 import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { EditDialogComponent } from './edit-dialog/edit-dialog.component';
 import { NewDialogComponent } from './new-dialog/new-dialog.component';
@@ -27,8 +27,16 @@ import {
   provideNativeDateAdapter,
 } from '@angular/material/core';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, NgIf } from '@angular/common';
 import { CustomDateAdapter } from 'src/app/material/custom-adapter';
+import { Data } from '../../model/auth1';
+
+import { DialogPersonaComponent } from './dialog-persona/dialog-persona.component';
+
+//imports apra idioma español en fechas
+import { registerLocaleData } from '@angular/common';
+import localeES from '@angular/common/locales/es';
+registerLocaleData(localeES);
 
 @Component({
   selector: 'app-persona',
@@ -38,7 +46,7 @@ import { CustomDateAdapter } from 'src/app/material/custom-adapter';
     TablerIconsModule,
     MatNativeDateModule,
     NgScrollbarModule,
-    CommonModule,
+    CommonModule, MatPaginatorModule,DatePipe,NgIf
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -54,7 +62,6 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   appService = inject(PersonaServiceService);
 
   displayedColumns: string[] = [
-    'id',
     'nombres',
     'status',
     'email',
@@ -63,28 +70,49 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   ];
   dataSource: MatTableDataSource<Personas>;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+ // @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
+    Object.create(null);
   @ViewChild(MatSort) sort!: MatSort;
+
+  totalElements: number;
 
   dialog = inject(MatDialog);
 
   constructor() {
-    const users: Personas[] = [];
-    this.dataSource = new MatTableDataSource(users);
+    const persona: Personas[] = [];
+    this.dataSource = new MatTableDataSource(persona);
+  }
+
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadDataFilter();
+   //this.loadData();
+  // this.loadDataPAgeable(1,5);
   }
 
   loadData() {
     this.appService.getData().subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
+      this.dataSource.paginator = this.paginator;
     });
   }
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+  loadDataFilter() {
+    this.appService.getDatafilter().subscribe((response) => {
+      this.dataSource = new MatTableDataSource(response);
+      this.dataSource.paginator = this.paginator;
+    });
+  }
+  loadDataPAgeable(p:number, s:number) {
+    this.appService.getDataPageable(p,s).subscribe((response) => {
+      this.dataSource = new MatTableDataSource(response);
+      //this.dataSource.paginator = this.paginator;
+      this.totalElements= Object.keys(response).length;
+    });
   }
 
   applyFilter2(event: Event) {
@@ -103,7 +131,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     if (confirm('Eliminar?')) {
       this.appService.deletePerson(id).subscribe((response) => {
         if (response.success) {
-          alert('Usuario eliminado');
+          alert('Persona eliminada');
           this.loadData();
         }
       });
@@ -130,4 +158,44 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         this.loadData();
       });
   }
+ openDialog(personaDialog?:Persona) {
+    this.dialog.open(DialogPersonaComponent, {
+      width:'800px',height:'600px',
+
+      data:personaDialog
+    }).afterClosed()
+    .subscribe(() => {
+      this.loadDataFilter();
+    });
+
+  }
+showmore(e:any){
+  this.appService.getDataPageable(e.pageIndex+1 , e.pageSize).subscribe((response) => {
+    this.dataSource = new MatTableDataSource(response);
+    this.totalElements= Object.keys(response).length;
+  });
+
+}
+finalized(id:number) {
+  if (confirm('Deshabilitar?')) {
+    this.appService.finalized(id).subscribe((response) => {
+      if (response.success) {
+        alert('Persona Deshabilitada');
+        this.loadDataFilter();
+      }
+    });
+  }
+}
+
+initialized(id:number) {
+  if (confirm('Habilitar?')) {
+    this.appService.initialized(id).subscribe((response) => {
+      if (response.success) {
+        alert('Persona Habilitada');
+        this.loadDataFilter();
+      }
+    });
+  }
+}
+
 }
