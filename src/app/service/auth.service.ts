@@ -1,9 +1,7 @@
 import {
   LoginApiResponse1,
   LoginRequestBody1,
-  Aplicacion,
 } from './../model/auth1';
-import { Persona } from './../model/persona';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
@@ -11,8 +9,6 @@ import { environment } from 'src/environments/environment';
 import {
   ForgotPasswordApiResponse,
   ForgotPasswordRequestBody,
-  LoginApiResponse,
-  LoginRequestBody,
   RegisterApiResponse,
   RegisterRequestBody,
 } from '../model/auth';
