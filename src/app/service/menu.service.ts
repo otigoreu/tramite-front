@@ -2,9 +2,10 @@ import { DashboardsRoutes } from './../pages/dashboards/dashboards.routes';
 import { Data } from './../model/auth1';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+
 import { Menu } from '../model/menu';
 import { map } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root',

@@ -34,6 +34,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "https://otigoreu.github.io/tramite-front/",
               "budgets": [
                 {
                   "type": "initial",
@@ -95,7 +96,15 @@
           }
         },
         "deploy": {
-          "builder": "angular-cli-ghpages:deploy"
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "dir": "dist/Modernize"
+          },
+          "configurations": {
+            "production": {
+              "repo": "https://github.com/otigoreu/tramite-front"
+            }
+          }
         }
       }
     }

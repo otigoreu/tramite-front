@@ -2,7 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { Persona, PersonaNew, Personas } from '../model/persona';
 import { HttpClient } from '@angular/common/http';
 import { map, Subject, finalize } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.development';
+
 
 interface GetPersonsApiResponse {
   data: Personas[];

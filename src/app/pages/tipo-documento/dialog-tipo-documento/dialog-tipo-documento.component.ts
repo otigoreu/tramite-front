@@ -1,5 +1,3 @@
-
-
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -7,14 +5,11 @@ import { MaterialModule } from 'src/app/material.module';
 import { TipoDocumento } from 'src/app/model/tipoDocumento';
 import { TipoDocumentoService } from '../../../service/tipo-documento.service';
 
-
-
 @Component({
   selector: 'app-dialog-tipo-documento',
   standalone: true,
   imports: [MatDialogModule,MaterialModule,FormsModule, ReactiveFormsModule],
   templateUrl: './dialog-tipo-documento.component.html',
-  styleUrl: './dialog-tipo-documento.component.scss'
 })
 export class DialogTipoDocumentoComponent {
 

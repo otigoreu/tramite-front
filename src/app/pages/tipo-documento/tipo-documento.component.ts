@@ -16,7 +16,7 @@ import { DialogComponent } from './dialog/dialog.component';
   standalone: true,
   imports: [MaterialModule, TablerIconsModule, NgIf],
   templateUrl: './tipo-documento.component.html',
-  styleUrl: './tipo-documento.component.scss',
+
 })
 export class TipoDocumentoComponent {
   appService = inject(TipoDocumentoService);
@@ -56,7 +56,6 @@ export class TipoDocumentoComponent {
   openDialog(tipodocumento?: TipoDocumento) {
     this.dialog.open(DialogTipoDocumentoComponent, {
           width:'600px',height:'335px',
-
           data:tipodocumento
         }).afterClosed()
         .subscribe(() => {

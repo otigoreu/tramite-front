@@ -77,14 +77,24 @@
           </mat-header-cell>
           <mat-cell *matCellDef="let row">
             <div class="d-flex align-items-center gap-12 p-y-14">
-              <button mat-mini-fab color="primary" aria-label="Example icon button with a delete icon" (click)="openDialog(row)" matTooltip="Editar" matTooltipPosition="above">
+              <button mat-mini-fab color="primary" aria-label="Example icon button with a delete icon"
+              (click)="openDialog(row)"
+              matTooltip="Editar"
+              matTooltipPosition="above">
                 <i-tabler class="icon-20" name="edit"></i-tabler>
               </button>
-              <button mat-mini-fab color="warn" aria-label="Example icon button with a delete icon" (click)="delete(row.id)" matTooltip="Eliminar" matTooltipPosition="below">
-                <i-tabler class="icon-20" name="trash"></i-tabler>
+              <button mat-mini-fab color="warn" aria-label="Example icon button with a delete icon"
+              (click)="delete(row.id)"
+              matTooltip="Eliminar"
+              matTooltipPosition="below">
+                <i-tabler class="icon-20"
+                name="trash"></i-tabler>
               </button>
               @if(!row.status){
-              <button mat-mini-fab color="accent" aria-label="Example icon button with a delete icon" (click)="initialized(row.id)" matTooltip="Activar" matTooltipPosition="above">
+              <button mat-mini-fab color="accent" aria-label="Example icon button with a delete icon"
+              (click)="initialized(row.id)"
+              matTooltip="Activar"
+              matTooltipPosition="above">
                 <i-tabler class="icon-20" name="arrow-narrow-up"></i-tabler>
               </button>
             }

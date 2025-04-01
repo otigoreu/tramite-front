@@ -37,15 +37,15 @@ export class AppComponent {
     const userEmail = localStorage.getItem('userEmail');
     const nombreApellido = localStorage.getItem('nombreApellido');
     const idAplicacion= localStorage.getItem('idAplicacion');
-    console.log('---------------------------------------');
+    // console.log('---------------------------------------');
 
-    console.log('localStorage rol =' + userRole);
-    console.log('localStorage Name =' + userName);
-    console.log('localStorage Sede =' + sede);
-    console.log('localStorage Aplicacion =' + aplicacion);
-    console.log('localStorage idAplicacion =' + idAplicacion);
+    // console.log('localStorage rol =' + userRole);
+    // console.log('localStorage Name =' + userName);
+    // console.log('localStorage Sede =' + sede);
+    // console.log('localStorage Aplicacion =' + aplicacion);
+    // console.log('localStorage idAplicacion =' + idAplicacion);
 
-    console.log('---------------------------------------');
+    // console.log('---------------------------------------');
 
     if (
       sede &&
@@ -63,12 +63,12 @@ export class AppComponent {
       this.authService.nombreApellido.set(nombreApellido);
       this.authService.idAplicacion.set(idAplicacion);
 
-      console.log('signal rol =' + this.authService.userRole());
-      console.log('signal Name =' + this.authService.userName());
-      console.log('signal sede =' + this.authService.sede());
-      console.log('signal Aplicacion =' + this.authService.aplicacion());
-      console.log('signal rol para el menu en el  appCoponent='+this.authService.userRole());
-      console.log('---------------------------------------');
+      // console.log('signal rol =' + this.authService.userRole());
+      // console.log('signal Name =' + this.authService.userName());
+      // console.log('signal sede =' + this.authService.sede());
+      // console.log('signal Aplicacion =' + this.authService.aplicacion());
+      // console.log('signal rol para el menu en el  appCoponent='+this.authService.userRole());
+      // console.log('---------------------------------------');
 
       // if (this.authService.userRole() === 'Administrador') {
       //   navItemsAdmin.forEach((item) => {
@@ -86,13 +86,13 @@ export class AppComponent {
 
      //tarer menu por aplicacion
      if(idAplicacion){
-      console.log('idAplicacion: '+idAplicacion);
+      // console.log('idAplicacion: '+idAplicacion);
       this.menuService
       .GetByAplicationAsync(parseInt(idAplicacion))
       .subscribe((data: any[]) => {
         console.log('menu', data);
         data.forEach((nav) => {
-          console.log('nav', nav);
+          // console.log('nav', nav);
           if (!nav.parentMenuId) {
             const navItem: NavItem = {
               id: nav.id,
