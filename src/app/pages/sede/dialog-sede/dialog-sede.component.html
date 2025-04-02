@@ -1,6 +1,6 @@
 
 <mat-card-header>
-  <mat-card-title class="m-b-0">Aplicacion</mat-card-title>
+  <mat-card-title class="m-b-0">Sede</mat-card-title>
 </mat-card-header>
 <mat-card-content class="b-t-1">
 <mat-dialog-content style="max-width: 600px">
@@ -21,7 +21,7 @@
             id="descripcion"
             name="descripcion"
             [formControl]="appForm.controls.descripcion"
-            [(ngModel)]="aplicacion.descripcion"
+            [(ngModel)]="sede.descripcion"
             placeholder="Descripcion"
           />
           @if(appForm.controls.descripcion.touched
@@ -60,3 +60,4 @@
 </mat-card-content>
 
 <!------------------------------------------>
+

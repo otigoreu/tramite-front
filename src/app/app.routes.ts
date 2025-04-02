@@ -5,6 +5,7 @@ import { PersonaComponent } from './pages/persona/persona.component';
 import { authGuard } from './pages/guards/auth.guard';
 import { TipoDocumentoComponent } from './pages/tipo-documento/tipo-documento.component';
 import { AplicacionComponent } from './pages/aplicacion/aplicacion.component';
+import { SedeComponent } from './pages/sede/sede.component';
 
 export const routes: Routes = [
   {
@@ -48,6 +49,18 @@ export const routes: Routes = [
         component: AplicacionComponent,
         data: {
           title: 'Aplicaciones',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Aplicaicon' },
+          ],
+        },
+      },
+      {
+        path: 'pages/sede',
+       // canActivate: [authGuard],
+        component: SedeComponent,
+        data: {
+          title: 'Sedes',
           urls: [
             { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Aplicaicon' },

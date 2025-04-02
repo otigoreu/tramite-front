@@ -56,7 +56,7 @@ constructor(){
   }
 
   loadData(){
-    this.appService.getData().subscribe((response)=>{
+    this.appService.getDataIgnoreQuery().subscribe((response)=>{
       this.dataSource=new MatTableDataSource(response);
       this.dataSource.paginator=this.paginator;
     });
@@ -72,5 +72,36 @@ openDialog(aplicacion?:Aplicacion){
     this.loadData();
   });
 }
+delete(id:number) {
+  if(confirm('Eliminar')){
+    this.appService.delete(id).subscribe((response)=>{
+      if(response.success){
+        alert('Aplicacion eliminada');
+        this.loadData();
+      }
+    })
+  }
+  }
+  finalized(id:number) {
+    if (confirm('Desactivar?')) {
+      this.appService.finalized(id).subscribe((response) => {
+        if (response.success) {
+          alert('Aplicacion desactivada');
+          this.loadData();
+        }
+      });
+    }
+  }
+
+  initialized(id:number) {
+    if (confirm('Activar?')) {
+      this.appService.initialized(id).subscribe((response) => {
+        if (response.success) {
+          alert('Aplicacion Activada');
+          this.loadData();
+        }
+      });
+    }
+  }
 
 }

@@ -4,10 +4,9 @@ import { Usuario } from "./usuario";
 
 
 export interface Sede{
-  id: number;
-  descripcion: string;
-  usuarios:Usuario[];
-  sedeAplicaciones:SedeAplicaicon[];
+  id :number;
+  descripcion:string;
+  status:string
 
 }
 
