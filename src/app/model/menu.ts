@@ -1,10 +1,6 @@
-export interface Menu {
-  data: Data[];
-  success: boolean;
-  errorMessage: null;
-}
 
-export interface Data {
+
+export interface Menu {
   id: number;
   displayName: string;
   iconName: string;
