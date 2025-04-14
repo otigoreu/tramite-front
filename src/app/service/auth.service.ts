@@ -4,7 +4,7 @@ import {
 } from './../model/auth1';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 import {
   ForgotPasswordApiResponse,
@@ -15,6 +15,13 @@ import {
 import { NotificationsService } from 'angular2-notifications';
 import { navItems } from '../layouts/full/vertical/sidebar/sidebar-data';
 import { environment } from 'src/environments/environment.development';
+import { Rol } from '../model/rol';
+
+interface GetRol{
+  data:Rol[];
+  success:string;
+  errorMessage:string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -105,6 +112,9 @@ export class AuthService {
       navItems.pop();
     }
   }
-
+getDataRoles(){
+  return this.http.get<GetRol>('${this.baseUrl}/users/roles')
+  .pipe(map((response)=>response.data));
+}
   constructor() {}
 }

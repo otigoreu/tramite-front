@@ -3,12 +3,12 @@ import { Data } from './../model/auth1';
 import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { Menu } from '../model/menu';
+import { Menu, MenuInfo, MenuWithRol } from '../model/menu';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 
 interface GetMenu{
-  data:Menu[];
+  data:MenuInfo[];
   success:string;
   errorMessage:string;
 }
@@ -40,7 +40,10 @@ export class MenuService {
     .pipe(map((response)=>response.data));
   }
   save(menu:Menu){
-    return this.http.post(`${this.baseUrl}/api/menus/`,menu);
+    return this.http.post(`${this.baseUrl}/api/menus/single`,menu);
+  }
+  saveWithRol(menu:MenuWithRol){
+    return this.http.post(`${this.baseUrl}/api/menus`,menu);
   }
   update(id:number, menu:Menu){
     return this.http.put(`${this.baseUrl}/api/menus/?id=${id}`,menu)

@@ -5,19 +5,12 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { RouterOutlet } from '@angular/router';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { Persona, Personas } from 'src/app/model/persona';
 import { PersonaServiceService } from 'src/app/service/persona-service.service';
-import { EditDialogComponent } from './edit-dialog/edit-dialog.component';
-import { NewDialogComponent } from './new-dialog/new-dialog.component';
 import { MaterialModule } from 'src/app/material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import {
@@ -137,27 +130,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
       });
     }
   }
-  edit(id: number) {
-    this.dialog
-      .open(EditDialogComponent, {
-        data: {
-          personId: id,
-        },
-      })
-      .afterClosed()
-      .subscribe(() => {
-        this.loadData();
-      });
-  }
 
-  new() {
-    this.dialog
-      .open(NewDialogComponent)
-      .afterClosed()
-      .subscribe(() => {
-        this.loadData();
-      });
-  }
  openDialog(personaDialog?:Persona) {
     this.dialog.open(DialogPersonaComponent, {
       width:'800px',height:'600px',

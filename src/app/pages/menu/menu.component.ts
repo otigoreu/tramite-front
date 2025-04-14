@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, ViewChild } from '@angular/
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Menu } from 'src/app/model/menu';
+import { Menu, MenuInfo } from 'src/app/model/menu';
 import { MenuService } from 'src/app/service/menu.service';
 import { DialogMenuComponent } from './dialog-menu/dialog-menu.component';
 import { MaterialModule } from 'src/app/material.module';
@@ -11,6 +11,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CommonModule } from '@angular/common';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-menu',
@@ -29,16 +30,16 @@ export class MenuComponent {
   appService=inject(AplicacionService)
 
   displayedColumns:string[]=[
-    'displayName','iconName','route','idAplicacion','ParentMenuId','status','acciones'
+    'displayName','iconName','route','Aplicacion','ParentMenuId','status','acciones'
   ];
 
-  dataSource:MatTableDataSource<Menu>;
+  dataSource:MatTableDataSource<MenuInfo>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =Object.create(null);
   @ViewChild(MatSort) sort!: MatSort;
-  dialog: any;
+  dialog = inject(MatDialog);
 
   constructor(){
-    const menus:Menu[]=[];
+    const menus:MenuInfo[]=[];
     this.dataSource=new MatTableDataSource(menus);
   }
   ngOnInit():void{
