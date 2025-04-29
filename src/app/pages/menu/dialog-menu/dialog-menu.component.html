@@ -1,3 +1,17 @@
 <form>
-  <button type="button" (click)="save()">test save</button>
+  <input type="text" id="displayName">
+  <input type="text" id="iconName">
+  <input type="text" id="ruta">
+  <select name="aplication" id="idAplicacion">
+    @for (aplicacion of aplicaciones; track $index) {
+      <option [value]="aplicacion.id">{{aplicacion.descripcion}}</option>
+    }
+  </select>
+  <select name="parentMenu" id="parentMenu">
+    <option [value]="null">Sin Parent Menu</option>
+    @for (menu of menus; track $index) {
+      <option [value]="menu.id">{{menu.displayName}}</option>
+    }
+  </select>
+  <!-- <button type="button" (click)="save()">test save</button> -->
 </form>

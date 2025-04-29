@@ -12,6 +12,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CommonModule } from '@angular/common';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { MatDialog } from '@angular/material/dialog';
+import { Dialog2Component } from './dialog-2/dialog-2.component';
+import { Aplicacion } from '../../model/aplicacion';
 
 @Component({
   selector: 'app-menu',
@@ -27,10 +29,12 @@ import { MatDialog } from '@angular/material/dialog';
 export class MenuComponent {
 
   menuService=inject(MenuService)
-  appService=inject(AplicacionService)
+
+
+
 
   displayedColumns:string[]=[
-    'displayName','iconName','route','Aplicacion','ParentMenuId','status','acciones'
+    'id','displayName','iconName','route','Aplicacion','ParentMenuId','status','acciones'
   ];
 
   dataSource:MatTableDataSource<MenuInfo>;
@@ -44,6 +48,7 @@ export class MenuComponent {
   }
   ngOnInit():void{
     this.loadData();
+
   }
 
   loadData(){
@@ -52,17 +57,21 @@ export class MenuComponent {
 
       // console.log(this.dataSource);
       this.dataSource.paginator=this.paginator;
+
     });
   }
+
+
   applyFilter(filterValue: any): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   openDialog(menu?:Menu){
-    this.dialog.open(DialogMenuComponent,{
+    this.dialog.open(Dialog2Component,{
         data:menu
       }).afterClosed().subscribe(()=>{
         this.loadData();
       });
+
   }
   delete(id:number){
     if(confirm('Eliminar')){
