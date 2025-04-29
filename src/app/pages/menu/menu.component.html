@@ -26,6 +26,13 @@
     <div class="table-responsive">
       <table mat-table [dataSource]="dataSource" class="w-100" matSort>
 
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            Id Menu
+          </th>
+          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.id}}</td>
+        </ng-container>
+
         <ng-container matColumnDef="displayName">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Nombre
@@ -55,12 +62,13 @@
           <td mat-cell *matCellDef="let row" class="f-s-14">{{row.aplicacion | uppercase}}</td>
         </ng-container>
 
+
         <ng-container matColumnDef="ParentMenuId">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Menu Padre
           </th>
           <td mat-cell *matCellDef="let row" class="f-s-14">
-            {{row.ParentMenuId || '---'}}
+            {{row.parentMenuId || '-----'}}
 
           </td>
         </ng-container>
@@ -123,7 +131,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
       <mat-paginator
-        [pageSizeOptions]="[5, 10, 20]"
+        [pageSizeOptions]="[5, 10, 20,50,100]"
         showFirstLastButtons
       ></mat-paginator>
     </div>

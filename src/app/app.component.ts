@@ -90,7 +90,7 @@ export class AppComponent {
       this.menuService
       .GetByAplicationAsync(parseInt(idAplicacion))
       .subscribe((data: any[]) => {
-        console.log('menu', data);
+        //console.log('menu', data);
         data.forEach((nav) => {
           // console.log('nav', nav);
           if (!nav.parentMenuId) {

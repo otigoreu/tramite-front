@@ -46,6 +46,9 @@ export class MenuService {
     return this.http.post(`${this.baseUrl}/api/menus`,menu);
   }
   update(id:number, menu:Menu){
+    return this.http.put(`${this.baseUrl}/api/menus/single/?id=${id}`,menu)
+  }
+  updateWithRol(id:number, menu:Menu){
     return this.http.put(`${this.baseUrl}/api/menus/?id=${id}`,menu)
   }
   delete(id:number){

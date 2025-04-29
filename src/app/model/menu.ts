@@ -5,8 +5,8 @@ export interface Menu {
   displayName: string;
   iconName: string;
   route: string;
-  idAplicacion: number;
-  parentMenuId: number;
+  idAplicacion:number;
+  parentMenuId: number | null;
 }
 
 export interface MenuInfo {
@@ -14,7 +14,7 @@ export interface MenuInfo {
   displayName: string;
   iconName: string;
   route: string;
-  aplicacionId:number;
+  idAplicacion:number;
   aplicacion: string;
   parentMenuId: number;
 }
@@ -26,5 +26,16 @@ export interface MenuWithRol {
   route: string;
   idAplicacion: number;
   roles:string[];
+  parentMenuId: number;
+}
+
+export interface menuFull{
+  id?: number;
+  displayName: string;
+  iconName: string;
+  route: string;
+  idAplicacion: number;
+  aplicacion?: string;
+  roles?:string[];
   parentMenuId: number;
 }
