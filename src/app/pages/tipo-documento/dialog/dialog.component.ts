@@ -3,7 +3,7 @@ import { Component, Inject, Optional } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
-import { AppKichenSinkDialogContentComponent } from '../../datatable/kichen-sink/kichen-sink.component';
+
 import { TipoDocumento } from 'src/app/model/tipoDocumento';
 import { TipoDocumentoService } from 'src/app/service/tipo-documento.service';
 import { CoreService } from 'src/app/services/core.service';
@@ -27,7 +27,7 @@ export class DialogComponent {
 
   constructor(
       public datePipe: DatePipe,
-      public dialogRef: MatDialogRef<AppKichenSinkDialogContentComponent>,
+
       @Optional() @Inject(MAT_DIALOG_DATA) public data: TipoDocumento,
       private _dialogRef:MatDialogRef<DialogComponent>,
       private tipoDocumentoService:TipoDocumentoService,

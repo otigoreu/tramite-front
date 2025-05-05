@@ -27,7 +27,7 @@ export const routes: Routes = [
         data: {
           title: 'Personas',
           urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+           //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Personas' },
           ],
         },
@@ -39,7 +39,7 @@ export const routes: Routes = [
         data: {
           title: 'Tipo Documento',
           urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+           //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Tipo Documento' },
           ],
         },
@@ -51,7 +51,7 @@ export const routes: Routes = [
         data: {
           title: 'Aplicaciones',
           urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Aplicaicon' },
           ],
         },
@@ -63,8 +63,8 @@ export const routes: Routes = [
         data: {
           title: 'Sedes',
           urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Aplicaicon' },
+           //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Sedes' },
           ],
         },
       },
@@ -75,8 +75,8 @@ export const routes: Routes = [
         data: {
           title: 'Menus',
           urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Menu' },
+           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Menus' },
           ],
         },
       },
@@ -85,81 +85,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },
-      {
-        path: 'dashboards',
-        loadChildren: () =>
-          import('./pages/dashboards/dashboards.routes').then(
-            (m) => m.DashboardsRoutes
-          ),
-      },
-      {
-        path: 'ui-components',
-        loadChildren: () =>
-          import('./pages/ui-components/ui-components.routes').then(
-            (m) => m.UiComponentsRoutes
-          ),
-      },
-      {
-        path: 'forms',
-        loadChildren: () =>
-          import('./pages/forms/forms.routes').then((m) => m.FormsRoutes),
-      },
-      {
-        path: 'charts',
-        loadChildren: () =>
-          import('./pages/charts/charts.routes').then((m) => m.ChartsRoutes),
-      },
-      {
-        path: 'apps',
-        loadChildren: () =>
-          import('./pages/apps/apps.routes').then((m) => m.AppsRoutes),
-      },
-      {
-        path: 'widgets',
-        loadChildren: () =>
-          import('./pages/widgets/widgets.routes').then((m) => m.WidgetsRoutes),
-      },
-      {
-        path: 'tables',
-        loadChildren: () =>
-          import('./pages/tables/tables.routes').then((m) => m.TablesRoutes),
-      },
-      {
-        path: 'datatable',
-        loadChildren: () =>
-          import('./pages/datatable/datatable.routes').then(
-            (m) => m.DatatablesRoutes
-          ),
-      },
-      {
-        path: 'theme-pages',
-        loadChildren: () =>
-          import('./pages/theme-pages/theme-pages.routes').then(
-            (m) => m.ThemePagesRoutes
-          ),
-      },
+
+
     ],
   },
-  {
-    path: '',
-    component: BlankComponent,
-    children: [
-      {
-        path: 'authentication',
-        loadChildren: () =>
-          import('./pages/authentication/authentication.routes').then(
-            (m) => m.AuthenticationRoutes
-          ),
-      },
-      {
-        path: 'landingpage',
-        loadChildren: () =>
-          import('./pages/theme-pages/landingpage/landingpage.routes').then(
-            (m) => m.LandingPageRoutes
-          ),
-      },
-    ],
-  },
+
   {
     path: 'login',
     pathMatch: 'full',

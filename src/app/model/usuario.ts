@@ -10,6 +10,11 @@ export interface Usuario{
 
 }
 
+export interface Login{
+  username:string;
+  password:string;
+}
+
 export interface Usuariofull{
 
   firstName: string;
@@ -22,4 +27,17 @@ export interface Usuariofull{
   confirmPassword: string
 
 
+}
+
+export interface ChangePassword{
+  oldPassword :string;
+  newPassword:string;
+}
+
+
+export interface NewPasswordRequest{
+  email:string;
+  token:string;
+  newPassword:string;
+  confirmNewPassword:string;
 }

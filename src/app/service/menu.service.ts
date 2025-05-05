@@ -1,6 +1,6 @@
-import { DashboardsRoutes } from './../pages/dashboards/dashboards.routes';
-import { Data } from './../model/auth1';
-import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
+
+
+import { HttpClient} from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { Menu, MenuInfo, MenuWithRol } from '../model/menu';

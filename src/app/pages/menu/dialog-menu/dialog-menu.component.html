@@ -1,17 +1,197 @@
-<form>
-  <input type="text" id="displayName">
-  <input type="text" id="iconName">
-  <input type="text" id="ruta">
-  <select name="aplication" id="idAplicacion">
-    @for (aplicacion of aplicaciones; track $index) {
-      <option [value]="aplicacion.id">{{aplicacion.descripcion}}</option>
-    }
-  </select>
-  <select name="parentMenu" id="parentMenu">
-    <option [value]="null">Sin Parent Menu</option>
-    @for (menu of menus; track $index) {
-      <option [value]="menu.id">{{menu.displayName}}</option>
-    }
-  </select>
-  <!-- <button type="button" (click)="save()">test save</button> -->
-</form>
+
+<mat-card-header>
+  <mat-card-title class="m-b-0">Menu</mat-card-title>
+</mat-card-header>
+<mat-card-content class="b-t-1">
+<mat-dialog-content style="max-width: 600px">
+  <form [formGroup]="appForm">
+
+    <div class="row">
+      <div class="col-sm-4 d-flex align-items-center justify-content-end">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
+            >Descripcion
+          </mat-label>
+      </div>
+       <div class="col-lg-8">
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="displayName"
+            name="displayName"
+            [formControl]="appForm.controls.displayName"
+            [(ngModel)]="menu.displayName"
+            placeholder="DisplayName"
+          />
+          @if(appForm.controls.displayName.touched
+          &&appForm.controls.displayName.invalid){
+          <mat-hint class="m-b-16 error-msg">
+            @if (appForm.controls.displayName.hasError('required')) {
+            <div class="text-error">Nombre <strong>requerido</strong></div>
+            }
+          </mat-hint>
+          }
+        </mat-form-field>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-4 d-flex align-items-center justify-content-end">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
+            >Icono
+          </mat-label>
+      </div>
+      <div class="col-lg-8">
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="iconName"
+            name="iconName"
+            [formControl]="appForm.controls.iconName"
+            [(ngModel)]="menu.iconName"
+            placeholder="IconName"
+          />
+          @if(appForm.controls.iconName.touched
+          &&appForm.controls.iconName.invalid){
+          <mat-hint class="m-b-16 error-msg">
+            @if (appForm.controls.iconName.hasError('required')) {
+            <div class="text-error">Icono <strong>requerido</strong></div>
+            }
+          </mat-hint>
+          }
+        </mat-form-field>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-4 d-flex align-items-center justify-content-end">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
+            >Ruta
+          </mat-label>
+      </div>
+      <div class="col-lg-8">
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="route"
+            name="route"
+            [formControl]="appForm.controls.route"
+            [(ngModel)]="menu.route"
+            placeholder="Route"
+          />
+          @if(appForm.controls.route.touched
+          &&appForm.controls.route.invalid){
+          <mat-hint class="m-b-16 error-msg">
+            @if (appForm.controls.route.hasError('required')) {
+            <div class="text-error">Ruta <strong>requerido</strong></div>
+            }
+          </mat-hint>
+          }
+        </mat-form-field>
+      </div>
+
+    </div>
+
+
+    <div class="row">
+      <div class="col-sm-4 d-flex align-items-center justify-content-end">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
+            >Aplicacion2
+          </mat-label>
+      </div>
+      <div class="col-lg-8">
+        <mat-form-field appearance="outline" class="w-100" >
+          <mat-select [(ngModel)]="menu.idAplicacion" required id="idAplicacion" [formControl]="appForm.controls.idAplicacion" >
+            @for(app of aplicacion; track $index){
+              <mat-option [value]="app.id">{{app.descripcion | uppercase}}</mat-option>
+            }
+            </mat-select>
+            @if(appForm.controls.idAplicacion.touched
+            &&appForm.controls.idAplicacion.invalid){
+            <mat-hint class="m-b-16 error-msg">
+              @if (appForm.controls.idAplicacion.hasError('required')) {
+              <div class="text-error">Aplicacion <strong>requerida</strong></div>
+              }
+            </mat-hint>
+            }
+        </mat-form-field>
+      </div>
+
+    </div>
+
+
+    <!-- <div class="row">
+      <div class="col-sm-4 d-flex align-items-center justify-content-end">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
+            >Menu Parent
+          </mat-label>
+      </div>
+      <div class="col-lg-8">
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+
+            id="descripcion"
+            name="descripcion"
+
+            [(ngModel)]="menu.parentMenuId"
+            placeholder="Descripcion"
+          />
+
+        </mat-form-field>
+      </div>
+
+    </div> -->
+
+
+    <div class="row">
+      <div class="col-sm-4 d-flex align-items-center justify-content-end">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
+            >Menu Padre
+          </mat-label>
+      </div>
+      <div class="col-lg-8">
+        <mat-form-field appearance="outline" class="w-100" >
+          <mat-select [(ngModel)]="menu.parentMenuId" id="parentMenuId" [formControl]="appForm.controls.parentMenuId" >
+            <mat-option [value]="null">-----</mat-option>
+            @for(men of menus; track $index){
+            <mat-option [value]="men.id">{{men.id }} - {{men.displayName}}</mat-option>
+            }
+            </mat-select>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <mat-action-row>
+      <button
+      mat-flat-button
+      (click)="operate()"
+      mat-flat-button
+      color="primary"
+      [disabled]="appForm.invalid"
+    >
+      Enviar
+    </button>
+    <button
+      mat-stroked-button
+      color="warn"
+      class="m-l-8"
+      (click)="close()"
+    >
+      Cancel
+    </button>
+  </mat-action-row>
+  </form>
+</mat-dialog-content>
+</mat-card-content>
+
+<!------------------------------------------>
+
+

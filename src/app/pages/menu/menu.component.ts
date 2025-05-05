@@ -4,7 +4,6 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Menu, MenuInfo } from 'src/app/model/menu';
 import { MenuService } from 'src/app/service/menu.service';
-import { DialogMenuComponent } from './dialog-menu/dialog-menu.component';
 import { MaterialModule } from 'src/app/material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -12,8 +11,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CommonModule } from '@angular/common';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Dialog2Component } from './dialog-2/dialog-2.component';
 import { Aplicacion } from '../../model/aplicacion';
+import { DialogMenuComponent } from './dialog-menu/dialog-menu.component';
 
 @Component({
   selector: 'app-menu',
@@ -66,7 +65,7 @@ export class MenuComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   openDialog(menu?:Menu){
-    this.dialog.open(Dialog2Component,{
+    this.dialog.open(DialogMenuComponent,{
         data:menu
       }).afterClosed().subscribe(()=>{
         this.loadData();

@@ -1,76 +1,80 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-  ChangeDetectorRef
-} from '@angular/core';
-import { Aplicacion } from 'src/app/model/aplicacion';
-
-import { Menu, MenuInfo } from 'src/app/model/menu';
-import { AplicacionService } from 'src/app/service/aplicacion.service';
+import { ChangeDetectionStrategy, Component, Inject, inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { Menu } from 'src/app/model/menu';
 import { MenuService } from 'src/app/service/menu.service';
+import { DialogSedeComponent } from '../../sede/dialog-sede/dialog-sede.component';
+import { MaterialModule } from 'src/app/material.module';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Aplicacion } from 'src/app/model/aplicacion';
+import { AplicacionService } from 'src/app/service/aplicacion.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dialog-menu',
   standalone: true,
-  imports: [],
+  imports: [MatDialogModule,MaterialModule,FormsModule, ReactiveFormsModule,CommonModule],
   templateUrl: './dialog-menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DialogMenuComponent implements OnInit {
+export class DialogMenuComponent implements OnInit{
 
-  changeDetectorRef = inject(ChangeDetectorRef);
+  menu:Menu;
+  aplicacion:Aplicacion[]=[];
+  menus:Menu[]=[];
+  appService=inject(AplicacionService)
+  menuService=inject(MenuService)
 
-  menuService = inject(MenuService);
-  applicacionService = inject(AplicacionService);
+  constructor(@Inject(MAT_DIALOG_DATA) private data:Menu,
+          private _dialogRef:MatDialogRef<DialogSedeComponent>){
 
-  aplicaciones: Aplicacion[] = [];
+    }
 
-  menus: MenuInfo[] = [];
+ appForm=new FormGroup({
+          displayName:new FormControl('',[Validators.required]),
+          iconName:new FormControl('',[Validators.required]),
+          route:new FormControl('',[Validators.required]),
+          idAplicacion:new FormControl('',[Validators.required]),
+          parentMenuId:new FormControl('',[Validators.nullValidator])
+        });
+ngOnInit(): void {
+    this.menu={...this.data}
+    this.loadApp();
+    this.loadMenus();
 
-  id: number;
-  displayName: string;
-  iconName: string;
-  route: string;
-  idAplicacion: number;
-  aplicacion:string;
-  parentMenuId: number;
-
-  ngOnInit(): void {
-    this.getAplicaciones();
-    this.getMenus();
   }
 
-  getAplicaciones() {
-    this.applicacionService.getDataIgnoreQuery().subscribe((res) => {
-      this.aplicaciones = res;
-      this.changeDetectorRef.markForCheck();
+loadApp(){
+
+    this.appService.getDataIgnoreQuery().subscribe((response)=>{
+      this.aplicacion=response;
     });
+
   }
-  getMenus() {
-    this.menuService.getDataIgnoreQuery().subscribe((res) => {
-      this.menus = res;
-      this.changeDetectorRef.markForCheck();
+  loadMenus(){
+
+    this.menuService.getDataIgnoreQuery().subscribe((response)=>{
+      this.menus=response;
     });
+
   }
 
-  // save() {
-  //   const displayName = (document.getElementById("displayName") as HTMLInputElement).value;
-  //   const iconName= (document.getElementById("iconName") as HTMLInputElement).value;
-  //   const route= (document.getElementById("ruta") as HTMLInputElement).value;
-  //   const idAplicacion= Number.parseInt((document.getElementById("idAplicacion") as HTMLSelectElement).value);
-  //   const parentMenuId = (document.getElementById("parentMenu") as HTMLSelectElement).value === null ? null : Number.parseInt((document.getElementById("parentMenu") as HTMLSelectElement).value) ;
-  //   const newMenu: Menu = {
-  //     displayName,
-  //     iconName,
-  //     route,
-  //     idAplicacion,
-  //     parentMenuId,
-  //   };
-  //   this.menuService.save(newMenu).subscribe((res) => {
-  //     console.log('res', res);
-  //     alert("Menu guardado!");
-  //   });
-  // }
+close(){
+      this._dialogRef.close();
+    }
+operate(){
+  console.log('menu',this.menu);
+          if(this.menu!=null && this.menu.id>0){
+            console.log('menu edit',this.menu);
+            this.menuService.update(this.menu.id, this.menu).subscribe(()=>{
+              this._dialogRef.close();
+            })
+          }else {
+            console.log('menu new',this.menu);
+            this.menuService.save(this.menu).subscribe(()=>{
+              this._dialogRef.close();
+            });
+          }
+          this.close();
+
+        }
 }
