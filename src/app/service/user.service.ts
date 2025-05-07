@@ -1,8 +1,27 @@
-import { ChangePassword, Login } from './../model/usuario';
-import { HttpClient } from '@angular/common/http';
+import { ChangePassword, Login, LoginResponse, RegisterRequest, RegisterResponse } from './../model/usuario';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { NewPasswordRequest, Usuario } from '../model/usuario';
+import { catchError, of } from 'rxjs';
+
+
+interface RegisterApiResponse{
+  data:RegisterResponse;
+  success:boolean;
+  errorMessage:string;
+}
+
+interface LoginApiResponse{
+  data:LoginResponse;
+  success:boolean;
+  errorMessage:string;
+}
+
+interface ForgotPasswordApiResponse {
+  success: boolean;
+  errorMessage: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -16,16 +35,65 @@ http=inject (HttpClient);
 
 
 
-  registerUser(user:Usuario){
-    return this.http.post(`${this.baseUrl}/api/users/Register`,user);
+  registerUser(user:RegisterRequest){
+    return this.http.post<RegisterApiResponse>(`${this.baseUrl}/api/users/Register`,user).pipe(
+          catchError((httpErrorResponse: HttpErrorResponse) => {
+            const errorResponse: RegisterApiResponse = {
+              success: false,
+              data: { expirationDate: '', token: '', userId: '', roles: [] },
+              errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
+            };
+            return of(errorResponse);
+          })
+        );
   }
 
   loginUser(login:Login){
-    return this.http.post(`${this.baseUrl}/api/users/login`,login);
+    return this.http.post<LoginApiResponse>(`${this.baseUrl}/api/users/Login`,login).pipe(
+          catchError((httpErrorResponse: HttpErrorResponse) => {
+            const errorResponse: LoginApiResponse = {
+              success: false,
+              data: {
+                expirationDate: '',
+                token: '',
+                roles: [],
+                persona: {
+                  id: 0,
+                  nombres: '',
+                  apellidos: '',
+                  fechaNac: '',
+                  direccion: '',
+                  referencia: '',
+                  celular: '',
+                  edad: '',
+                  email: '',
+                  tipoDoc: '',
+                  nroDoc: '',
+                  status:'true'
+                },
+                sede: { id: 0, descripcion: '',status:'true' },
+                aplicaciones: [],
+              },
+              errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
+            };
+
+            return of(errorResponse);
+          })
+        );
   }
 
   requestTokenPassword(email:string){
-    return this.http.post(`${this.baseUrl}/api/users/RequestTokenResetPassword`,email);
+    return this.http.post<ForgotPasswordApiResponse >(`${this.baseUrl}/api/users/RequestTokenToResetPassword`,email).pipe(
+          catchError((httpErrorResponse: HttpErrorResponse) => {
+            const errorResponse: ForgotPasswordApiResponse = {
+              success: false,
+              errorMessage:
+                httpErrorResponse.error?.errorMessage || 'Unknown error',
+            };
+            return of(errorResponse);
+          })
+        );
+
   }
 
   resetPassword(body: NewPasswordRequest){

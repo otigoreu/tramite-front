@@ -1,4 +1,41 @@
-import { Rol } from "./rol";
+import { Aplicacion } from "./aplicacion";
+import { Persona, PersonaNew } from "./persona";
+import { Sede } from "./sede";
+
+export interface RegisterRequest{
+  firstName: string;
+  lastName: string;
+  userName: string;
+  email: string;
+  idPersona: number
+  idSede: number;
+  password: string
+  confirmPassword: string
+}
+
+
+export interface RegisterResponse{
+  userId: string;
+    token: string;
+    expirationDate: string;
+    roles: string[];
+}
+
+
+export interface Login{
+  username:string;
+  password:string;
+}
+
+export interface LoginResponse {
+  token: string;
+  expirationDate: string;
+  roles: string[];
+  persona: Persona;
+  sede: Sede;
+  aplicaciones: Aplicacion[];
+}
+
 
 export interface Usuario{
 
@@ -10,24 +47,6 @@ export interface Usuario{
 
 }
 
-export interface Login{
-  username:string;
-  password:string;
-}
-
-export interface Usuariofull{
-
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  idPersona: number
-  idSede: number;
-  password: string
-  confirmPassword: string
-
-
-}
 
 export interface ChangePassword{
   oldPassword :string;

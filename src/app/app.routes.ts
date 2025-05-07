@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { PersonaComponent } from './pages/persona/persona.component';
 import { authGuard } from './pages/guards/auth.guard';
@@ -98,6 +97,7 @@ export const routes: Routes = [
         (m) => m.LoginComponent
       ),
   },
+
   {
     path: 'register',
     pathMatch: 'full',
