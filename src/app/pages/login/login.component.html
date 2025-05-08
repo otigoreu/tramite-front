@@ -84,6 +84,8 @@
                 }
               </mat-form-field>
 
+              <app-simple-captcha (verified)="onCaptchaVerified($event)" />
+
               <div class="d-flex align-items-center m-b-12">
                 <a
                 routerLink="/forgot-password"
@@ -91,6 +93,14 @@
                 >¿Olvidaste tu contraseña ?</a
               >
               </div>
+              <div class="d-flex align-items-center m-b-12">
+                <a
+                routerLink="/reset-password"
+                class="text-primary f-w-600 text-decoration-none m-l-auto f-s-14"
+                >reset</a
+              >
+              </div>
+
               <button
                 mat-flat-button
                 color="primary"

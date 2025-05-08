@@ -115,6 +115,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'reset-password',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('../app/pages/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'authentication/error',
   },

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
-import { BrandingComponent } from 'src/app/layouts/full/vertical/sidebar/branding.component';
+
 import { NavItem } from 'src/app/layouts/full/vertical/sidebar/nav-item/nav-item';
 import { navItems } from 'src/app/layouts/full/vertical/sidebar/sidebar-data';
 import { MaterialModule } from 'src/app/material.module';
@@ -11,11 +11,12 @@ import { MenuService } from 'src/app/service/menu.service';
 import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { UserService } from 'src/app/service/user.service';
 import { CoreService } from 'src/app/services/core.service';
+import { SimpleCaptchaComponent } from "../simple-captcha/simple-captcha.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, BrandingComponent],
+  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule,  SimpleCaptchaComponent],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -25,6 +26,9 @@ export class LoginComponent {
 
   constructor(private settings: CoreService){}
 
+  captchaValid = false;
+
+
   loginForm = new FormGroup({
     //email: new FormControl('', [Validators.required, Validators.email]),
     dni: new FormControl('', [Validators.required, Validators.minLength(8),Validators.maxLength(8)]),
@@ -32,6 +36,7 @@ export class LoginComponent {
       Validators.required,
       Validators.minLength(8),
     ]),
+    captchaResult: new FormControl(false, Validators.pattern('true')),
   });
 
 authService = inject(AuthService);
@@ -119,5 +124,8 @@ authService = inject(AuthService);
           console.log('login falied');
         }
       });
+    }
+    onCaptchaVerified(result: boolean) {
+      this.loginForm.controls['captchaResult'].setValue(result);
     }
  }
