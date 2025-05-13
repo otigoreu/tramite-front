@@ -1,209 +1,291 @@
-
-
 <mat-card class="cardWithShadow theme-card">
-<mat-card-header>
-  <mat-card-title class="m-b-0">Persona</mat-card-title>
-</mat-card-header>
-<mat-card-content class="b-t-1">
+  <mat-card-header>
+    <mat-card-title class="m-b-0">Persona</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="b-t-1">
+    <!-- inicio matcard -->
+    <form [formGroup]="personaForm">
+      <div class="row">
+        <!-- primera columna -->
+        <div class="col-lg-6 col-sm-6">
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  matInput
+                  required
+                  id="nombres"
+                  name="nombres"
+                  [formControl]="personaForm.controls.nombres"
+                  placeholder="Nombres"
+                  [(ngModel)]="persona.nombres"
+                />
+                @if(personaForm.controls.nombres.touched&&personaForm.controls.nombres.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.nombres.hasError('required')){
+                  <div class="text-error">
+                    nombres <strong>requeridos</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
 
-  <!-- inicio matcard -->
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  id="apellidos"
+                  name="apellidos"
+                  matInput
+                  placeholder="Apellidos"
+                  [formControl]="personaForm.controls.apellidos"
+                  [(ngModel)]="persona.apellidos"
+                />
+                @if(personaForm.controls.apellidos.touched&&personaForm.controls.apellidos.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.apellidos.hasError('required')){
+                  <div class="text-error">
+                    apellidos <strong>requeridos</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  matInput
+                  id="fechaNac"
+                  name="fechaNac"
+                  [matDatepicker]="picker"
+                  placeholder="Fecha de Nacimiento"
+                  [formControl]="personaForm.controls.fechaNac"
+                  [(ngModel)]="persona.fechaNac"
+                />
+                @if(personaForm.controls.fechaNac.touched&&personaForm.controls.fechaNac.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.fechaNac.hasError('required')){
+                  <div class="text-error">
+                    fecha de nacimiento <strong>requerida</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  matInput
+                  id="direccion"
+                  name="direccion"
+                  placeholder="Direccion"
+                  [formControl]="personaForm.controls.direccion"
+                  [(ngModel)]="persona.direccion"
+                />
+                @if(personaForm.controls.direccion.touched&&personaForm.controls.direccion.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.direccion.hasError('required')){
+                  <div class="text-error">
+                    Direccion <strong>requerida</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  matInput
+                  id="referencia"
+                  name="referencia"
+                  placeholder="Referencia"
+                  [formControl]="personaForm.controls.referencia"
+                  [(ngModel)]="persona.referencia"
+                />
+                @if(personaForm.controls.referencia.touched&&personaForm.controls.referencia.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.referencia.hasError('required')){
+                  <div class="text-error">
+                    referencia <strong>requerida</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
 
-  <form #userForm="ngForm">
-<div class="row">
-  <!-- primera columna -->
-  <div class="col-lg-6 col-sm-6">
-    <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >nombres
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input
-          type="text"
-          matInput
-          required
-            id="nombres"
-            name="nombres"
-          placeholder="Nombres"
-          [(ngModel)]="personaDialog.nombres">
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >Apellidos
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input type="text" required id="apellidos"
-          name="apellidos" matInput placeholder="Apellidos" [(ngModel)]="personaDialog.apellidos">
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >Fecha de nacimiento
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input type="text" required matInput id="fechaNac"
-          name="fechaNac" [matDatepicker]="picker" placeholder="Fecha de nacimiento" [(ngModel)]="personaDialog.fechaNac">
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="picker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
-    </div>
-	<div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >Direccion
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input type="text" required matInput id="direccion"
-          name="direccion" placeholder="Direccion" [(ngModel)]="personaDialog.direccion">
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >Direccion
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input type="text" required matInput id="referencia"
-          name="referencia" placeholder="Referencia" [(ngModel)]="personaDialog.referencia">
-        </mat-form-field>
-      </div>
-    </div>
-	<!-- <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >Estado
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input matInput placeholder="6.-estado" [(ngModel)]="personaDialog.status">
-        </mat-form-field>
-      </div>
-    </div> -->
+        <!-- segunda columna -->
+        <div class="col-lg-6 col-sm-6">
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  matInput
+                  id="celular"
+                  name="celular"
+                  placeholder="Celular"
+                  [formControl]="personaForm.controls.celular"
+                  [(ngModel)]="persona.celular"
+                />
+                @if(personaForm.controls.celular.touched&&personaForm.controls.celular.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.celular.hasError('required')){
+                  <div class="text-error">
+                    celular <strong>requerido</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  id="edad"
+                  name="edad"
+                  matInput
+                  placeholder="Edad"
+                  [formControl]="personaForm.controls.edad"
+                  [(ngModel)]="persona.edad"
+                />
+                @if(personaForm.controls.edad.touched&&personaForm.controls.edad.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.edad.hasError('required')){
+                  <div class="text-error">edad <strong>requerida</strong></div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  matInput
+                  id="email"
+                  name="email"
+                  placeholder="Email"
+                  [formControl]="personaForm.controls.email"
+                  [(ngModel)]="persona.email"
+                />
+                @if(personaForm.controls.email.touched&&personaForm.controls.email.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.email.hasError('required')){
+                  <div class="text-error">email <strong>requerido</strong></div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
 
-  </div>
-
-  <!-- segunda columna -->
-  <div class="col-lg-6 col-sm-6">
-    <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >Celular
-        </mat-label>
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-select
+                  [(ngModel)]="persona.tipoDoc"
+                  id="tipoDoc"
+                  placeholder="tipo de documento"
+                  [formControl]="personaForm.controls.tipoDoc"
+                >
+                  @for(tipodocumento of tipoDocus; track $index){
+                  <mat-option [value]="tipodocumento.abrev">{{
+                    tipodocumento.descripcion
+                  }}</mat-option>
+                  }
+                </mat-select>
+                @if(personaForm.controls.tipoDoc.touched&&personaForm.controls.tipoDoc.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.tipoDoc.hasError('required')){
+                  <div class="text-error">
+                    Tipo documento <strong>requerido</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+          <!-- fin tipo documento -->
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  matInput
+                  id="nroDoc"
+                  name="nroDoc"
+                  placeholder="Numero de Documento"
+                  [formControl]="personaForm.controls.nroDoc"
+                  [(ngModel)]="persona.nroDoc"
+                />
+                @if(personaForm.controls.nroDoc.touched&&personaForm.controls.nroDoc.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.nroDoc.hasError('required')){
+                  <div class="text-error">
+                    numero de Documento <strong>requerido</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input type="text" required matInput id="celular"
-          name="celular" placeholder="Nro de Celular" [(ngModel)]="personaDialog.celular">
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >Edad
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input type="text" required id="edad"
-          name="edad" matInput  placeholder="Edad" [(ngModel)]="personaDialog.edad">
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >Email
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input type="text" required matInput id="email"
-          name="email" placeholder="Email" [(ngModel)]="personaDialog.email">
-        </mat-form-field>
-      </div>
-    </div>
-    <!-- tipo documento -->
-	<!-- <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >TipoDoc
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input matInput placeholder="10.-tipodoc" [(ngModel)]="personaDialog.tipoDoc">
-        </mat-form-field>
-      </div>
-    </div> -->
-
-    <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >TypeDoc
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>DNI, Carnet Extranjeria, Ruc</mat-label>
-          <select matNativeControl
-          required
-          id="tipoDoc"
-          name="tipoDoc"
-          placeholder="Tipo de Documento"
-          [(ngModel)]="personaDialog.tipoDoc" >
-              <option value="dni">DNI</option>
-              <option value="cex">Carnet Extranjeria</option>
-              <option value="ruc">RUC</option>
-          </select>
-        </mat-form-field>
-      </div>
-    </div>
-<!-- fin tipo documento -->
-	<div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-24"
-          >NroDoc
-        </mat-label>
-      </div>
-      <div class="col-sm-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input type="text" required matInput id="nroDoc"
-          name="nroDoc"  placeholder="Numero de Documento" [(ngModel)]="personaDialog.nroDoc">
-        </mat-form-field>
-      </div>
-    </div>
-  </div>
-
-</div>
-<mat-action-row class="align-items-left ">
-  <button mat-flat-button color="primary" mat-button (click)="operate()"[disabled]="!userForm.valid">Done</button>
-  <button mat-flat-button color="warn" mat-button (click)="close()">Cancel</button>
-</mat-action-row>
-</form>
-<!-- fin mat-card -->
-</mat-card-content>
+      <mat-action-row class="align-items-left">
+        <button
+          mat-flat-button
+          color="primary"
+          mat-button
+          (click)="operate()"
+          [disabled]="personaForm.invalid"
+        >
+          Done
+        </button>
+        <button mat-flat-button color="warn" mat-button (click)="close()">
+          Cancel
+        </button>
+      </mat-action-row>
+    </form>
+    <!-- fin mat-card -->
+  </mat-card-content>
 </mat-card>
-
-

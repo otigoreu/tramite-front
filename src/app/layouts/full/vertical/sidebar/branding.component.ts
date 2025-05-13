@@ -8,21 +8,23 @@ import { CoreService } from 'src/app/services/core.service';
   template: `
     <div class="branding">
       @if(options.theme === 'light') {
-      <a href="/">
+
         <img
-          src="./assets/images/logos/dark-logo.svg"
+          src="./assets/images/logos/GRU_LOGO_HORI.svg"
           class="align-middle m-2"
           alt="logo"
+          style="max-width: 80%"
         />
-      </a>
+
       } @if(options.theme === 'dark') {
-      <a href="/">
+
         <img
-          src="./assets/images/logos/light-logo.svg"
+          src="./assets/images/logos/GRU_LOGO_HORI.svg"
           class="align-middle m-2"
           alt="logo"
+          style="max-width: 80%"
         />
-      </a>
+
       }
     </div>
   `,

@@ -55,6 +55,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   appService = inject(PersonaServiceService);
 
   displayedColumns: string[] = [
+    'item',
     'nombres',
     'status',
     'email',
@@ -133,7 +134,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
 
  openDialog(personaDialog?:Persona) {
     this.dialog.open(DialogPersonaComponent, {
-      width:'800px',height:'600px',
+      width:'600px',height:'600px',
 
       data:personaDialog
     }).afterClosed()

@@ -5,7 +5,7 @@
         <mat-form-field appearance="outline" class="w-100 hide-hint">
           <input
             matInput
-            placeholder="Search User"
+            placeholder="Buscar Menu"
             (keyup)="applyFilter($any($event.target).value)"
           />
           <mat-icon matSuffix>
@@ -26,12 +26,13 @@
     <div class="table-responsive">
       <table mat-table [dataSource]="dataSource" class="w-100" matSort>
 
-        <ng-container matColumnDef="id">
+         <ng-container matColumnDef="item">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Id Menu
+            Item
           </th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.id}}</td>
+          <td mat-cell *matCellDef="let row ; let i = index;" class="f-s-14">{{i+1}}</td>
         </ng-container>
+
 
         <ng-container matColumnDef="displayName">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
@@ -39,6 +40,15 @@
           </th>
           <td mat-cell *matCellDef="let row" class="f-s-14">{{row.displayName}}</td>
         </ng-container>
+
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            Id Menu
+          </th>
+          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.id}}</td>
+        </ng-container>
+
         <ng-container matColumnDef="iconName">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Icono
@@ -99,19 +109,19 @@
           <td mat-cell *matCellDef="let row" class="action-link">
             <a
               (click)="openDialog(row)"
-              class="m-r-10 cursor-pointer"
+              class="m-r-10 cursor-pointer" matTooltip="Editar" matTooltipPosition="above"
               ><i-tabler name="edit" class="icon-18"></i-tabler
             ></a>
             <a
               (click)="delete(row.id)"
-              class="m-r-10 cursor-pointer"
+              class="m-r-10 cursor-pointer" matTooltip="Eliminar" matTooltipPosition="below"
             >
               <i-tabler name="trash" class="icon-18"></i-tabler>
             </a>
             @if(!row.status){
               <a
                 (click)="initialized(row.id)"
-                class="m-r-10 cursor-pointer"
+                class="m-r-10 cursor-pointer" matTooltip="Habilitar" matTooltipPosition="above"
               >
                 <i-tabler name="circle-arrow-up" class="icon-18"></i-tabler>
               </a>
@@ -119,7 +129,7 @@
             @else{
               <a
                 (click)="finalized(row.id)"
-                class="m-r-10 cursor-pointer"
+                class="m-r-10 cursor-pointer" matTooltip="Deshabilitar" matTooltipPosition="right"
               >
                 <i-tabler name="circle-arrow-down" class="icon-18"></i-tabler>
               </a>
@@ -131,7 +141,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
       <mat-paginator
-        [pageSizeOptions]="[5, 10, 20,50,100]"
+        [pageSizeOptions]="[ 10, 20,50,100]"
         showFirstLastButtons
       ></mat-paginator>
     </div>

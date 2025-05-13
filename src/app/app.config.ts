@@ -35,7 +35,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
   jwtInterceptor,
   loadingScreenInterceptor,
-} from './pages/interceptors/auth.interceptor';
+} from './pages/Authentication/interceptors/auth.interceptor';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { NgxLoadingModule } from 'ngx-loading';
 

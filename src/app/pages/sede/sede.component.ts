@@ -27,6 +27,7 @@ export class SedeComponent {
 sedeService= inject(SedeService);
 
 displayedColumns:string[]=[
+  'item',
   'descripcion',
   'status',
   'acciones'
@@ -63,6 +64,7 @@ applyFilter(filterValue: any): void {
 
 openDialog(sede?:Sede){
   this.dialog.open(DialogSedeComponent,{
+    width:'400px',height:'260px',
       data:sede
     }).afterClosed().subscribe(()=>{
       this.loadData();

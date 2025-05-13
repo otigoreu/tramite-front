@@ -32,6 +32,7 @@ export class AplicacionComponent  {
 
 
   displayedColumns: string[] = [
+    'item',
     'descripcion',
     'status',
     'acciones'
@@ -67,6 +68,7 @@ constructor(){
 
 openDialog(aplicacion?:Aplicacion){
   this.dialog.open(DialogAplicacionComponent,{
+    width:'400px',height:'260px',
     data:aplicacion
   }).afterClosed().subscribe(()=>{
     this.loadData();

@@ -7,12 +7,8 @@
   <form [formGroup]="appForm">
 
     <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
-            >Descripcion
-          </mat-label>
-      </div>
-       <div class="col-lg-8">
+
+       <div class="col-lg-12">
         <mat-form-field appearance="outline" class="w-100">
           <input
             type="text"
@@ -22,13 +18,13 @@
             name="displayName"
             [formControl]="appForm.controls.displayName"
             [(ngModel)]="menu.displayName"
-            placeholder="DisplayName"
+            placeholder="Descripcion"
           />
           @if(appForm.controls.displayName.touched
           &&appForm.controls.displayName.invalid){
           <mat-hint class="m-b-16 error-msg">
             @if (appForm.controls.displayName.hasError('required')) {
-            <div class="text-error">Nombre <strong>requerido</strong></div>
+            <div class="text-error">Descripcion <strong>requerido</strong></div>
             }
           </mat-hint>
           }
@@ -37,12 +33,8 @@
 
     </div>
     <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
-            >Icono
-          </mat-label>
-      </div>
-      <div class="col-lg-8">
+
+      <div class="col-lg-12">
         <mat-form-field appearance="outline" class="w-100">
           <input
             type="text"
@@ -52,7 +44,7 @@
             name="iconName"
             [formControl]="appForm.controls.iconName"
             [(ngModel)]="menu.iconName"
-            placeholder="IconName"
+            placeholder="Icono"
           />
           @if(appForm.controls.iconName.touched
           &&appForm.controls.iconName.invalid){
@@ -67,12 +59,8 @@
 
     </div>
     <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
-            >Ruta
-          </mat-label>
-      </div>
-      <div class="col-lg-8">
+
+      <div class="col-lg-12">
         <mat-form-field appearance="outline" class="w-100">
           <input
             type="text"
@@ -82,7 +70,7 @@
             name="route"
             [formControl]="appForm.controls.route"
             [(ngModel)]="menu.route"
-            placeholder="Route"
+            placeholder="Ruta"
           />
           @if(appForm.controls.route.touched
           &&appForm.controls.route.invalid){
@@ -99,14 +87,10 @@
 
 
     <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
-            >Aplicacion2
-          </mat-label>
-      </div>
-      <div class="col-lg-8">
+
+      <div class="col-lg-12">
         <mat-form-field appearance="outline" class="w-100" >
-          <mat-select [(ngModel)]="menu.idAplicacion" required id="idAplicacion" [formControl]="appForm.controls.idAplicacion" >
+          <mat-select [(ngModel)]="menu.idAplicacion" placeholder="Aplicacion" required id="idAplicacion" [formControl]="appForm.controls.idAplicacion" >
             @for(app of aplicacion; track $index){
               <mat-option [value]="app.id">{{app.descripcion | uppercase}}</mat-option>
             }
@@ -124,44 +108,17 @@
 
     </div>
 
-
-    <!-- <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
-            >Menu Parent
-          </mat-label>
-      </div>
-      <div class="col-lg-8">
-        <mat-form-field appearance="outline" class="w-100">
-          <input
-            type="text"
-            matInput
-
-            id="descripcion"
-            name="descripcion"
-
-            [(ngModel)]="menu.parentMenuId"
-            placeholder="Descripcion"
-          />
-
-        </mat-form-field>
-      </div>
-
-    </div> -->
-
-
     <div class="row">
-      <div class="col-sm-4 d-flex align-items-center justify-content-end">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-16"
-            >Menu Padre
-          </mat-label>
-      </div>
-      <div class="col-lg-8">
+
+      <div class="col-lg-12">
         <mat-form-field appearance="outline" class="w-100" >
-          <mat-select [(ngModel)]="menu.parentMenuId" id="parentMenuId" [formControl]="appForm.controls.parentMenuId" >
+          <mat-select [(ngModel)]="menu.parentMenuId"
+          id="parentMenuId"
+          placeholder="Menu Padre"
+          [formControl]="appForm.controls.parentMenuId" >
             <mat-option [value]="null">-----</mat-option>
             @for(men of menus; track $index){
-            <mat-option [value]="men.id">{{men.id }} - {{men.displayName}}</mat-option>
+            <mat-option [value]="men.id">{{men.displayName}} - {{men.id}}</mat-option>
             }
             </mat-select>
         </mat-form-field>

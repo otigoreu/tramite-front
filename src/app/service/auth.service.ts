@@ -1,12 +1,16 @@
 import {
   LoginApiResponse1,
   LoginRequestBody1,
+  ResetPasswordApiResponse,
+  ResetPasswordRequestBody,
 } from './../model/auth1';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, EMPTY, map, Observable, of } from 'rxjs';
 
 import {
+  ChangePasswordApiResponse,
+  ChangePasswordRequestBody,
   ForgotPasswordApiResponse,
   ForgotPasswordRequestBody,
   RegisterApiResponse,
@@ -116,5 +120,35 @@ getDataRoles(){
   return this.http.get<GetRol>('${this.baseUrl}/users/roles')
   .pipe(map((response)=>response.data));
 }
+
+resetPassword(email:string, token:string,newPassword:string, confirmNewPassword:string) {
+  const body: ResetPasswordRequestBody={email,token,newPassword,confirmNewPassword};
+  return this.http.post<ResetPasswordApiResponse>(this.baseUrl + '/api/users/ResetPassword',body).pipe(
+        catchError((httpErrorResponse: HttpErrorResponse) => {
+        const errorResponse: ChangePasswordApiResponse = {
+          success: false,
+          errorMessage:
+            httpErrorResponse.error?.errorMessage || 'Unknown error',
+        };
+        return of(errorResponse);
+      })
+    );
+}
+ changePassword(oldPassword:string,newPassword: string): Observable<ChangePasswordApiResponse> {
+    const apiUrl = this.baseUrl + '/api/users/ChangePassword';
+    const body: ChangePasswordRequestBody = { oldPassword,newPassword };
+    return this.http.post<ChangePasswordApiResponse>(apiUrl, body).pipe(
+      catchError((httpErrorResponse: HttpErrorResponse) => {
+        const errorResponse: ChangePasswordApiResponse = {
+          success: false,
+          errorMessage:
+            httpErrorResponse.error?.errorMessage || 'Unknown error',
+        };
+        return of(errorResponse);
+      })
+    );
+  }
+
+
   constructor() {}
 }

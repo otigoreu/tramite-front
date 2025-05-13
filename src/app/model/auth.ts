@@ -38,6 +38,17 @@ export interface ForgotPasswordApiResponse {
   errorMessage: string;
 }
 
+export interface ChangePasswordApiResponse {
+  success: boolean;
+  errorMessage: string;
+}
+
+
 export interface ForgotPasswordRequestBody {
   email: string;
+}
+
+export interface ChangePasswordRequestBody {
+  oldPassword: string;
+  newPassword:string;
 }

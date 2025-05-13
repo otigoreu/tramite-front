@@ -5,6 +5,8 @@ import {
   Input,
   ViewEncapsulation,
   inject,
+  WritableSignal,
+  input,
 } from '@angular/core';
 import { CoreService } from 'src/app/services/core.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,10 +15,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { AuthService } from 'src/app/service/auth.service';
+
+import { ChangePasswordComponent } from 'src/app/pages/Authentication/change-Password/change-Password.component';
 
 interface notifications {
   id: number;
@@ -55,7 +59,7 @@ interface quicklinks {
     CommonModule,
     NgScrollbarModule,
     TablerIconsModule,
-    MaterialModule,
+    MaterialModule,UpperCasePipe
   ],
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
@@ -100,28 +104,45 @@ export class HeaderComponent {
     },
   ];
 
+appHeader:string;
+
   constructor(
     private vsidenav: CoreService,
     public dialog: MatDialog,
     private translate: TranslateService
+
   ) {
     translate.setDefaultLang('es');
+    const aplicacion = localStorage.getItem('Aplicacion');
+    if(aplicacion){
+      this.appHeader=aplicacion;
+    }
   }
 
-  openDialog() {
-    const dialogRef = this.dialog.open(AppSearchDialogComponent);
+ openDialog(){
 
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
-    });
+    this.dialog.open(ChangePasswordComponent);
+
   }
+
+
+  // openDialog() {
+  //   const dialogRef = this.dialog.open(AppSearchDialogComponent);
+
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     console.log(`Dialog result: ${result}`);
+  //     console.log('aplicacion',this.appHeader);
+  //   });
+
+  // }
 
   changeLanguage(lang: any): void {
     this.translate.use(lang.code);
     this.selectedLanguage = lang;
   }
 
-  notifications: notifications[] = [
+  notifications:notifications[]=[]
+  notifications1: notifications[] = [
     {
       id: 1,
       img: '/assets/images/profile/user-1.jpg',
@@ -158,22 +179,22 @@ export class HeaderComponent {
     {
       id: 1,
       img: '/assets/images/svgs/icon-account.svg',
-      title: 'My Profile',
-      subtitle: 'Account Settings',
-      link: '/',
+      title: 'Mi perfil',
+      subtitle: 'Configuraciones de la cuenta',
+      link: '/change-password',
     },
     {
       id: 2,
       img: '/assets/images/svgs/icon-inbox.svg',
-      title: 'My Inbox',
-      subtitle: 'Messages & Email',
+      title: 'Mi bandeja de entrada',
+      subtitle: 'Mensajes y correo electrónico',
       link: '/apps/email/inbox',
     },
     {
       id: 3,
       img: '/assets/images/svgs/icon-tasks.svg',
-      title: 'My Tasks',
-      subtitle: 'To-do and Daily Tasks',
+      title: 'Mis tareas',
+      subtitle: 'Tareas diarias y pendientes',
       link: '/apps/taskboard',
     },
   ];
@@ -291,9 +312,13 @@ export class AppSearchDialogComponent {
   searchText: string = '';
   navItems = navItems;
 
+
   navItemsData = navItems.filter((navitem) => navitem.displayName);
 
   // filtered = this.navItemsData.find((obj) => {
   //   return obj.displayName == this.searchinput;
   // });
+
+
+
 }

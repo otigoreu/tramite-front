@@ -70,3 +70,14 @@ export interface ForgotPasswordApiResponse1 {
 export interface ForgotPasswordRequestBody1 {
   email: string;
 }
+export interface ResetPasswordRequestBody {
+  email: string;
+  token: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export interface ResetPasswordApiResponse {
+  success: boolean;
+  errorMessage: string;
+}

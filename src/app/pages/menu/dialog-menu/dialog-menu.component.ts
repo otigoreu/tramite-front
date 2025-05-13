@@ -21,11 +21,13 @@ export class DialogMenuComponent implements OnInit{
   menu:Menu;
   aplicacion:Aplicacion[]=[];
   menus:Menu[]=[];
-  appService=inject(AplicacionService)
-  menuService=inject(MenuService)
+  appService=inject(AplicacionService);
+  menuService=inject(MenuService);
+  _dialogRef=inject(MatDialogRef);
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data:Menu,
-          private _dialogRef:MatDialogRef<DialogSedeComponent>){
+  constructor(
+          @Inject(MAT_DIALOG_DATA) private data:Menu
+        ){
 
     }
 

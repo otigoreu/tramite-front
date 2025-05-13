@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, inject } from '@angular/core';
+import { Component, Output, EventEmitter, Input, inject, computed, OnInit } from '@angular/core';
 import { CoreService } from 'src/app/services/core.service';
 import { MatDialog } from '@angular/material/dialog';
 import { navItems } from '../../vertical/sidebar/sidebar-data';
@@ -9,6 +9,8 @@ import { MaterialModule } from 'src/app/material.module';
 import { BrandingComponent } from '../../vertical/sidebar/branding.component';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth.service';
+
+
 
 interface notifications {
   id: number;
@@ -93,6 +95,8 @@ export class AppHorizontalHeaderComponent {
   ) {
     translate.setDefaultLang('en');
   }
+
+
 
   openDialog() {
     const dialogRef = this.dialog.open(AppHorizontalSearchDialogComponent);
@@ -274,6 +278,7 @@ export class AppHorizontalHeaderComponent {
   templateUrl: 'search-dialog.component.html',
 })
 export class AppHorizontalSearchDialogComponent {
+
   searchText: string = '';
   navItems = navItems;
 
@@ -282,4 +287,6 @@ export class AppHorizontalSearchDialogComponent {
   // filtered = this.navItemsData.find((obj) => {
   //   return obj.displayName == this.searchinput;
   // });
+
+
 }

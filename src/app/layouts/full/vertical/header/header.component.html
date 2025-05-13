@@ -26,13 +26,7 @@
   <!-- --------------------------------------------------------------- -->
   <!--  Search -->
   <!-- --------------------------------------------------------------- -->
-  <button
-    mat-icon-button
-    (click)="openDialog()"
-    class="d-flex justify-content-center"
-  >
-    <i-tabler name="search" class="icon-20 d-flex"></i-tabler>
-  </button>
+  <div class="text-center ">{{appHeader |uppercase}}</div>
 
 
   <span class="flex-1-auto"></span>
@@ -49,25 +43,7 @@
   <!-- --------------------------------------------------------------- -->
   <!-- langugage Dropdown -->
   <!-- --------------------------------------------------------------- -->
-  <button [matMenuTriggerFor]="flags" mat-icon-button class="m-r-5">
-    <img
-      [src]="selectedLanguage.icon"
-      class="rounded-circle object-cover icon-20"
-    />
-  </button>
-  <mat-menu #flags="matMenu" class="cardWithShadow">
-    @for(lang of languages; track lang.icon) {
-    <button mat-menu-item (click)="changeLanguage(lang)">
-      <div class="d-flex align-items-center">
-        <img
-          [src]="lang.icon"
-          class="rounded-circle object-cover m-r-8 icon-20"
-        />
-        <span class="mat-subtitle-1 f-s-14">{{ lang.language }}</span>
-      </div>
-    </button>
-    }
-  </mat-menu>
+
 
   <!-- --------------------------------------------------------------- -->
   <!-- Notification Dropdown -->
@@ -86,7 +62,7 @@
   </button>
   <mat-menu #notificationmenu="matMenu" class="topbar-dd cardWithShadow">
     <div class="d-flex align-items-center p-x-32 p-y-16">
-      <h6 class="f-s-16 f-w-600 m-0 mat-subtitle-1">Notifications</h6>
+      <h6 class="f-s-16 f-w-600 m-0 mat-subtitle-1">Notificaciones</h6>
       <span class="m-l-auto">
         <span class="bg-primary text-white p-x-8 p-y-4 f-w-500 rounded f-s-12"
           >5 new</span
@@ -110,7 +86,7 @@
 
     <div class="p-y-12 p-x-32">
       <button mat-stroked-button color="primary" class="w-100">
-        See all notifications
+        Ver todas las notificaciones
       </button>
     </div>
   </mat-menu>
@@ -130,9 +106,9 @@
     />
   </button>
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
-    <ng-scrollbar class="position-relative" style="height: 647px">
+    <ng-scrollbar class="position-relative" style="height: 500px">
       <div class="p-x-32 p-y-16">
-        <h6 class="f-s-16 f-w-600 m-0 mat-subtitle-1">User Profile</h6>
+        <h6 class="f-s-16 f-w-600 m-0 mat-subtitle-1">Perfil de usuario</h6>
 
         <div class="d-flex align-items-center p-b-24 b-b-1 m-t-16">
           <img
@@ -155,52 +131,34 @@
         </div>
       </div>
       <div class="p-x-32">
-        @for(profile of profiledd; track profile.title) {
+
         <a
           class="p-y-16 text-decoration-none d-block text-hover-primary"
-          [routerLink]="[profile.link]"
+
+          (click)="openDialog()"
         >
           <div class="d-flex align-items-center">
             <button
               mat-mini-fab
               class="text-primary bg-light-primary shadow-none rounded"
             >
-              <img [src]="profile.img" width="20" />
+              <img src="/assets/images/svgs/icon-account.svg" width="20" />
             </button>
 
             <div class="m-l-16">
               <h5
                 class="f-s-14 f-w-600 m-0 textprimary mat-subtitle-1 hover-text"
               >
-                {{ profile.title }}
+                Cambiar Contraseña
               </h5>
-              <span class="mat-body-1">{{ profile.subtitle }}</span>
+              <span class="mat-body-1">Cambia tu Contraseña</span>
             </div>
           </div>
         </a>
-        }
+
 
         <!-- upgrade -->
-        <div
-          class="p-24 overflow-hidden bg-light-primary rounded position-relative m-y-16"
-        >
-          <div class="d-flex align-items-center">
-            <div>
-              <h5 class="f-s-18 m-0 f-w-600 m-b-12 mat-subtitle-1">
-                Unlimited <br />
-                Access
-              </h5>
-              <button mat-flat-button color="primary">Upgrade</button>
-            </div>
-            <div class="m-l-auto">
-              <img
-                src="/assets/images/backgrounds/unlimited-bg.png"
-                alt="upgrade-bg"
-                class="upgrade-bg"
-              />
-            </div>
-          </div>
-        </div>
+
       </div>
 
       <div class="p-y-12 p-x-32">

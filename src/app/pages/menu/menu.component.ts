@@ -33,7 +33,7 @@ export class MenuComponent {
 
 
   displayedColumns:string[]=[
-    'id','displayName','iconName','route','Aplicacion','ParentMenuId','status','acciones'
+    'item','displayName','id','iconName','route','Aplicacion','ParentMenuId','status','acciones'
   ];
 
   dataSource:MatTableDataSource<MenuInfo>;
@@ -66,6 +66,7 @@ export class MenuComponent {
   }
   openDialog(menu?:Menu){
     this.dialog.open(DialogMenuComponent,{
+      width:'400px',height:'570px',
         data:menu
       }).afterClosed().subscribe(()=>{
         this.loadData();

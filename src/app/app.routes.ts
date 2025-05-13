@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { FullComponent } from './layouts/full/full.component';
 import { PersonaComponent } from './pages/persona/persona.component';
-import { authGuard } from './pages/guards/auth.guard';
+import { authGuard } from './pages/Authentication/guards/auth.guard';
 import { TipoDocumentoComponent } from './pages/tipo-documento/tipo-documento.component';
 import { AplicacionComponent } from './pages/aplicacion/aplicacion.component';
 import { SedeComponent } from './pages/sede/sede.component';
@@ -93,7 +93,7 @@ export const routes: Routes = [
     path: 'login',
     pathMatch: 'full',
     loadComponent: () =>
-      import('../app/pages/login/login.component').then(
+      import('../app/pages/Authentication/login/login.component').then(
         (m) => m.LoginComponent
       ),
   },
@@ -102,7 +102,7 @@ export const routes: Routes = [
     path: 'register',
     pathMatch: 'full',
     loadComponent: () =>
-      import('../app/pages/register/register.component').then(
+      import('./pages/Authentication/register/register.component').then(
         (m) => m.RegisterComponent
       ),
   },
@@ -110,7 +110,7 @@ export const routes: Routes = [
     path: 'forgot-password',
     pathMatch: 'full',
     loadComponent: () =>
-      import('../app/pages/forgot-password/forgot-password.component').then(
+      import('../app/pages/Authentication/forgot-password/forgot-password.component').then(
         (m) => m.ForgotPasswordComponent
       ),
   },
@@ -118,8 +118,16 @@ export const routes: Routes = [
     path: 'reset-password',
     pathMatch: 'full',
     loadComponent: () =>
-      import('../app/pages/reset-password/reset-password.component').then(
+      import('./pages/Authentication/reset-password/reset-password.component').then(
         (m) => m.ResetPasswordComponent
+      ),
+  },
+  {
+    path: 'change-password',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./pages/Authentication/change-Password/change-Password.component').then(
+        (m) => m.ChangePasswordComponent
       ),
   },
   {

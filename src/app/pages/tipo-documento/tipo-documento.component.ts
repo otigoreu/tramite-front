@@ -9,7 +9,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { TipoDocumento } from 'src/app/model/tipoDocumento';
 import { TipoDocumentoService } from 'src/app/service/tipo-documento.service';
 import { DialogTipoDocumentoComponent } from './dialog-tipo-documento/dialog-tipo-documento.component';
-import { DialogComponent } from './dialog/dialog.component';
+
 
 @Component({
   selector: 'app-tipo-documento',
@@ -22,7 +22,7 @@ export class TipoDocumentoComponent {
   appService = inject(TipoDocumentoService);
 
   displayedColumns: string[] = [
-
+    'item',
     'descripcion',
     'abrev',
     'status',
@@ -55,23 +55,14 @@ export class TipoDocumentoComponent {
   }
   openDialog(tipodocumento?: TipoDocumento) {
     this.dialog.open(DialogTipoDocumentoComponent, {
-          width:'600px',height:'335px',
+          width:'400px',height:'335px',
           data:tipodocumento
         }).afterClosed()
         .subscribe(() => {
           this.loadData();
         });
   }
-  openDialog2(tipodocumento?: TipoDocumento) {
-    this.dialog.open(DialogComponent, {
-          width:'500px',height:'335px',
 
-          data:tipodocumento
-        }).afterClosed()
-        .subscribe(() => {
-          this.loadData();
-        });
-  }
 
 
   delete(id: number) {
