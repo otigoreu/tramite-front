@@ -60,7 +60,7 @@ export class AppComponent {
       this.authService.userRole.set(userRole);
       this.authService.userName.set(userName);
       this.authService.userEmail.set(userEmail);
-      this.authService.nombreApellido.set(nombreApellido);
+      this.authService.nombresApellidos.set(nombreApellido);
       this.authService.idAplicacion.set(idAplicacion);
 
       // console.log('signal rol =' + this.authService.userRole());

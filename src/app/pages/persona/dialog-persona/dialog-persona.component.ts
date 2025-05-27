@@ -35,15 +35,16 @@ export class DialogPersonaComponent {
 
   personaForm=new FormGroup({
             nombres:new FormControl('',[Validators.required]),
-            apellidos:new FormControl('',[Validators.required]),
+            apellidoPat:new FormControl('',[Validators.required]),
+            apellidoMat:new FormControl('',[Validators.required]),
             fechaNac:new FormControl('',[Validators.required]),
             direccion:new FormControl('',[Validators.required]),
             referencia:new FormControl('',[Validators.nullValidator]),
-            celular:new FormControl('',[Validators.required]),
+            celular:new FormControl('',[Validators.required, Validators.minLength(8)]),
             edad:new FormControl('',[Validators.required]),
-            email:new FormControl('',[Validators.required]),
+            email:new FormControl('',[Validators.required,Validators.email]),
             tipoDoc:new FormControl('',[Validators.required]),
-            nroDoc:new FormControl('',[Validators.nullValidator]),
+            nroDoc:new FormControl('',[Validators.nullValidator, Validators.minLength(8)]),
           });
 
 

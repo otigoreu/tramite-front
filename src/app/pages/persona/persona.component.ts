@@ -57,9 +57,10 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = [
     'item',
     'nombres',
-    'status',
+    'apellidos',
     'email',
     'fechaNac',
+    'status',
     'actions',
   ];
   dataSource: MatTableDataSource<Personas>;
@@ -134,7 +135,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
 
  openDialog(personaDialog?:Persona) {
     this.dialog.open(DialogPersonaComponent, {
-      width:'600px',height:'600px',
+      width:'600px',height:'675px',
 
       data:personaDialog
     }).afterClosed()

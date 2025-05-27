@@ -26,7 +26,8 @@ export interface Aplicacion {
 export interface Persona1 {
   id: number;
   nombres: string;
-  apellidos: string;
+  apellidoPat: string;
+  apellidoMat: string;
   fechaNac: string;
   direccion: string;
   referencia: string;

@@ -40,7 +40,7 @@ export class AuthService {
   userRole = signal('');
   userName = signal('');
   userEmail = signal('');
-  nombreApellido = signal('');
+  nombresApellidos = signal('');
   aplicacion = signal('');
   idAplicacion=signal('');
   sede = signal('');
@@ -59,7 +59,8 @@ export class AuthService {
             persona: {
               id: 0,
               nombres: '',
-              apellidos: '',
+              apellidoPat: '',
+              apellidoMat: '',
               fechaNac: '',
               direccion: '',
               referencia: '',
@@ -111,7 +112,7 @@ export class AuthService {
     localStorage.clear();
     this.loggedIn.set(false);
     this.isAdministrator.set(false);
-    this.notificationsService.success('Logout exitoso', 'Hasta luego');
+    this.notificationsService.success('sesion cerrada', 'Hasta luego');
     while (navItems.length > 0) {
       navItems.pop();
     }

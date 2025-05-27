@@ -40,18 +40,43 @@
                 <input
                   type="text"
                   required
-                  id="apellidos"
-                  name="apellidos"
+                  id="apellidoPat"
+                  name="apellidoPat"
                   matInput
-                  placeholder="Apellidos"
-                  [formControl]="personaForm.controls.apellidos"
-                  [(ngModel)]="persona.apellidos"
+                  placeholder="Apellido Paterno"
+                  [formControl]="personaForm.controls.apellidoPat"
+                  [(ngModel)]="persona.apellidoPat"
                 />
-                @if(personaForm.controls.apellidos.touched&&personaForm.controls.apellidos.invalid){
+                @if(personaForm.controls.apellidoPat.touched&&personaForm.controls.apellidoPat.invalid){
                 <mat-hint class="m-b-16 error-msg">
-                  @if(personaForm.controls.apellidos.hasError('required')){
+                  @if(personaForm.controls.apellidoPat.hasError('required')){
                   <div class="text-error">
-                    apellidos <strong>requeridos</strong>
+                    apellido Paterno <strong>requerido</strong>
+                  </div>
+                  }
+                </mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-10">
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  type="text"
+                  required
+                  id="apellidoMat"
+                  name="apellidoMat"
+                  matInput
+                  placeholder="Apellido Materno"
+                  [formControl]="personaForm.controls.apellidoMat"
+                  [(ngModel)]="persona.apellidoMat"
+                />
+                @if(personaForm.controls.apellidoMat.touched&&personaForm.controls.apellidoMat.invalid){
+                <mat-hint class="m-b-16 error-msg">
+                  @if(personaForm.controls.apellidoMat.hasError('required')){
+                  <div class="text-error">
+                    apellido Materno <strong>requerido</strong>
                   </div>
                   }
                 </mat-hint>
@@ -164,6 +189,12 @@
                     celular <strong>requerido</strong>
                   </div>
                   }
+                  @if (personaForm.controls.celular.hasError('minlength')) {
+              <div class="text-error">
+                 debe tenr al menos <strong>8 digitos</strong>
+
+              </div>
+              }
                 </mat-hint>
                 }
               </mat-form-field>
@@ -209,6 +240,9 @@
                 <mat-hint class="m-b-16 error-msg">
                   @if(personaForm.controls.email.hasError('required')){
                   <div class="text-error">email <strong>requerido</strong></div>
+                  }
+                  @if(personaForm.controls.email.hasError('email')){
+                  <div class="text-error">Ingrese un email <strong>valido</strong></div>
                   }
                 </mat-hint>
                 }
@@ -263,7 +297,12 @@
                   <div class="text-error">
                     numero de Documento <strong>requerido</strong>
                   </div>
-                  }
+                  }@if (personaForm.controls.nroDoc.hasError('minlength')) {
+              <div class="text-error">
+                 debe tenr al menos <strong>8 digitos</strong>
+
+              </div>
+              }
                 </mat-hint>
                 }
               </mat-form-field>
@@ -279,10 +318,10 @@
           (click)="operate()"
           [disabled]="personaForm.invalid"
         >
-          Done
+          Guardar
         </button>
         <button mat-flat-button color="warn" mat-button (click)="close()">
-          Cancel
+          Cancelar
         </button>
       </mat-action-row>
     </form>

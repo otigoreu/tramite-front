@@ -1,5 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
 
@@ -11,46 +22,49 @@ import { MenuService } from 'src/app/service/menu.service';
 import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { UserService } from 'src/app/service/user.service';
 import { CoreService } from 'src/app/services/core.service';
-import { SimpleCaptchaComponent } from "../simple-captcha/simple-captcha.component";
-
-
-
+import { SimpleCaptchaComponent } from '../simple-captcha/simple-captcha.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule,  SimpleCaptchaComponent],
+  imports: [
+    RouterModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SimpleCaptchaComponent,
+  ],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-
   options = this.settings.getOptions();
 
-  constructor(private settings: CoreService){}
+  constructor(private settings: CoreService) {}
 
   captchaValid = false;
 
-
-
-
   loginForm = new FormGroup({
     //email: new FormControl('', [Validators.required, Validators.email]),
-    dni: new FormControl('', [Validators.required, Validators.minLength(8),Validators.maxLength(8)]),
+    dni: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.maxLength(8),
+    ]),
     password: new FormControl('', [
       Validators.required,
       Validators.minLength(8),
     ]),
   });
 
-authService = inject(AuthService);
-  usuarioService=inject(UserService);
+  authService = inject(AuthService);
+  usuarioService = inject(UserService);
   router = inject(Router);
   notifications = inject(NotificationsService);
   personaService = inject(PersonaServiceService);
   menuService = inject(MenuService);
-
-
+  menu1: string = '';
+  firstOptionMenu = signal('');
 
   submit() {
     // console.log(this.form.value);
@@ -58,84 +72,107 @@ authService = inject(AuthService);
   }
 
   login() {
-      const dni = this.loginForm.controls.dni.value!;
-      const password = this.loginForm.controls.password.value!;
+    const dni = this.loginForm.controls.dni.value!;
+    const password = this.loginForm.controls.password.value!;
 
-     // this.usuarioService.loginUser(dni, password).subscribe((response) => {
-      this.authService.login(dni, password).subscribe((response) => {
-        console.log('response con data 1', response);
-        if (response && response.success) {
-          console.log('login successfull1');
+    // this.usuarioService.loginUser(dni, password).subscribe((response) => {
+    this.authService.login(dni, password).subscribe((response) => {
+      // console.log('response con data 1', response);
+      if (response && response.success) {
+        // console.log('login successfull1');
 
-          //para el localstorage
-          localStorage.setItem('token', response.data.token);
+        //para el localstorage
+        localStorage.setItem('token', response.data.token);
 
-          //cargar los siganals
-          this.authService.nombreApellido.set(response.data.persona.nombres + ' ' + response.data.persona.apellidos);
-          this.authService.userEmail.set(response.data.persona.email),this.authService.userName.set(dni);
-          this.authService.userRole.set(response.data.roles[0]);
-          this.authService.aplicacion.set(response.data.aplicaciones[0].descripcion);
-          this.authService.sede.set(response.data.sede.descripcion);
-          this.authService.idAplicacion.set((response.data.aplicaciones[0].id).toString());
+        //cargar los siganals
+        this.authService.nombresApellidos.set(
+          response.data.persona.nombres +
+            ' ' +
+            response.data.persona.apellidoPat +
+            ' ' +
+            response.data.persona.apellidoMat
+        );
+        this.authService.userEmail.set(response.data.persona.email),
+          this.authService.userName.set(dni);
+        this.authService.userRole.set(response.data.roles[0]);
+        this.authService.aplicacion.set(
+          response.data.aplicaciones[0].descripcion
+        );
+        this.authService.sede.set(response.data.sede.descripcion);
+        this.authService.idAplicacion.set(
+          response.data.aplicaciones[0].id.toString()
+        );
 
-          //agregar al localStorage userEmail y el userRole
-          localStorage.setItem('userRole', this.authService.userRole());
-          localStorage.setItem('Aplicacion', this.authService.aplicacion());
+        //agregar al localStorage userEmail y el userRole
+        localStorage.setItem('userRole', this.authService.userRole());
+        localStorage.setItem('Aplicacion', this.authService.aplicacion());
 
-          localStorage.setItem('sede', this.authService.sede());
-          localStorage.setItem('userEmail', this.authService.userEmail());
-          localStorage.setItem(
-            'nombreApellido',
-            this.authService.nombreApellido()
+        localStorage.setItem('sede', this.authService.sede());
+        localStorage.setItem('userEmail', this.authService.userEmail());
+        localStorage.setItem(
+          'nombreApellido',
+          this.authService.nombresApellidos()
+        );
+        localStorage.setItem('userName', this.authService.userName());
+
+        //signals
+        this.authService.loggedIn.set(true);
+        this.notifications.success(
+          'Inicio de sesion Exitoso',
+          'Bienvenido a Tramite Goreu'
+        );
+        localStorage.setItem('idAplicacion', this.authService.idAplicacion());
+
+        //tarer menu por aplicacion
+        this.menuService
+          .GetByAplicationAsync(response.data.aplicaciones[0].id)
+          .subscribe((data: any[]) => {
+            // console.log('menu', data);
+            data.forEach((nav) => {
+              // console.log('nav', nav);
+              if (!nav.parentMenuId) {
+                const navItem: NavItem = {
+                  id: nav.id,
+                  displayName: nav.displayName,
+                  iconName: nav.iconName,
+                  route: nav.route,
+                  children: [],
+                };
+                navItems.push(navItem);
+                this.firstOptionMenu.set(navItems[0].route!);
+                console.log(
+              'primera opcion menu dentro ->',
+              this.firstOptionMenu()
+            );
+              }
+            }
+
           );
-          localStorage.setItem('userName', this.authService.userName());
+
+          this.router.navigate([this.firstOptionMenu()]),
 
 
-          //signals
-          this.authService.loggedIn.set(true);
-          this.notifications.success(
-            'Login Exitoso',
-            'Bienvenido a Tramite Goreu'
-          );
-          localStorage.setItem('idAplicacion',this.authService.idAplicacion());
-
-          //tarer menu por aplicacion
-          this.menuService
-            .GetByAplicationAsync(response.data.aplicaciones[0].id)
-            .subscribe((data: any[]) => {
-              console.log('menu', data);
-              data.forEach((nav) => {
-                console.log('nav', nav);
-                if (!nav.parentMenuId) {
-                  const navItem: NavItem = {
-                    id: nav.id,
-                    displayName: nav.displayName,
-                    iconName: nav.iconName,
-                    route: nav.route,
-                    children: [],
-                  };
-                  navItems.push(navItem);
-                }
-              });
-
-              navItems.forEach((parentNav: NavItem) => {
-                parentNav.children = data.filter(
-                  (nav) => nav.parentMenuId === parentNav.id
-                );
-              });
+            navItems.forEach((parentNav: NavItem) => {
+              parentNav.children = data.filter(
+                (nav) => nav.parentMenuId === parentNav.id
+              );
             });
+          });
 
-          this.router.navigate(['/pages/persona']);
-        } else {
-          this.notifications.error('Login Fallido', 'Revisa tus credenciales');
-          console.log('login falied');
-        }
-      });
-    }
-    onCaptchaVerified(isValid: boolean) {
-      this.captchaValid = isValid;
-    }
+        // console.log('primera opcion menu despues 2 ->', this.firstOptionMenu());
 
+        // this.router.navigate(['pages/persona']);
 
-
- }
+        // this.router.navigate([this.menu1]);
+      } else {
+        this.notifications.error(
+          'Inicio de sesion Fallido',
+          'Revisa tus credenciales'
+        );
+      }
+    });
+  }
+  onCaptchaVerified(isValid: boolean) {
+    this.captchaValid = isValid;
+  }
+}

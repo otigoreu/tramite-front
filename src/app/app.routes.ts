@@ -72,7 +72,7 @@ export const routes: Routes = [
        // canActivate: [authGuard],
         component: MenuComponent,
         data: {
-          title: 'Menus',
+          title: 'Menu',
           urls: [
            // { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Menus' },

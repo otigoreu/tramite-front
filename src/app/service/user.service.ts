@@ -60,7 +60,8 @@ http=inject (HttpClient);
                 persona: {
                   id: 0,
                   nombres: '',
-                  apellidos: '',
+                  apellidoPat: '',
+                  apellidoMat: '',
                   fechaNac: '',
                   direccion: '',
                   referencia: '',

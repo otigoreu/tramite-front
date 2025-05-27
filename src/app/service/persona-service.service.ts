@@ -98,7 +98,8 @@ initialized(id: number){
   new(user: PersonaNew) {
     return this.http.post(this.baseUrl + '/api/personas/', {
       nombres: user.nombres,
-      apellidos: user.apellidos,
+      apellidoPat: user.apellidoPat,
+    apellidoMat: user.apellidoMat,
       fechaNac: user.fechaNac,
       direccion: user.direccion,
       referencia: user.referencia,
@@ -113,7 +114,8 @@ initialized(id: number){
 edit(user: Personas) {
   return this.http.put(this.baseUrl + '/api/personas/' + user.id, {
     nombres: user.nombres,
-    apellidos: user.apellidos,
+    apellidoPat: user.apellidoPat,
+    apellidoMat: user.apellidoMat,
     fechaNac: user.fechaNac,
     direccion: user.direccion,
     referencia: user.referencia,

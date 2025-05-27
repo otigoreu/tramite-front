@@ -1,7 +1,8 @@
 export interface Personas {
   id: number;
   nombres: string;
-  apellidos: string;
+  apellidoPat: string;
+  apellidoMat: string;
   fechaNac: string;
   direccion: string;
   referencia: string;
@@ -16,7 +17,8 @@ export interface Personas {
 export interface Persona {
   id: number;
   nombres: string;
-  apellidos: string;
+  apellidoPat: string;
+  apellidoMat: string;
   fechaNac: string;
   direccion: string;
   referencia: string;
@@ -29,7 +31,8 @@ export interface Persona {
 }
 export interface PersonaNew {
   nombres: string;
-  apellidos: string;
+  apellidoPat: string;
+  apellidoMat: string;
   fechaNac: string;
   direccion: string;
   referencia: string;

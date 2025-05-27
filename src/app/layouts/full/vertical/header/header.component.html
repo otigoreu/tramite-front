@@ -48,6 +48,10 @@
   <!-- --------------------------------------------------------------- -->
   <!-- Notification Dropdown -->
   <!-- --------------------------------------------------------------- -->
+   <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
+             {{ authService.nombresApellidos() }}
+            </h6>
+
   <button
     mat-icon-button
     [matMenuTriggerFor]="notificationmenu"
@@ -94,6 +98,7 @@
   <!-- --------------------------------------------------------------- -->
   <!-- profile Dropdown -->
   <!-- --------------------------------------------------------------- -->
+
   <button
     mat-icon-button
     [matMenuTriggerFor]="profilemenu"
@@ -118,7 +123,7 @@
           />
           <div class="m-l-16">
             <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
-              {{ authService.nombreApellido() }}
+             {{ authService.nombresApellidos() }}
             </h6>
             <span class="f-s-14 d-block m-b-4">{{
               authService.userRole()

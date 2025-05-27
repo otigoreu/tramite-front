@@ -77,6 +77,7 @@ export class HeaderComponent {
   public selectedLanguage: any = {
     language: 'Español',
     code: 'es',
+    'type':'Pe',
     icon: '/assets/images/flag/icon-flag-es.svg',
   };
 
@@ -125,16 +126,6 @@ appHeader:string;
 
   }
 
-
-  // openDialog() {
-  //   const dialogRef = this.dialog.open(AppSearchDialogComponent);
-
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     console.log(`Dialog result: ${result}`);
-  //     console.log('aplicacion',this.appHeader);
-  //   });
-
-  // }
 
   changeLanguage(lang: any): void {
     this.translate.use(lang.code);
