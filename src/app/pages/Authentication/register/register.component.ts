@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
+import { notify2, notify3 } from 'src/app/data/mensajes.data';
 import { MaterialModule } from 'src/app/material.module';
 import { RegisterRequestBody } from 'src/app/model/auth';
 import { AuthService } from 'src/app/service/auth.service';
@@ -51,12 +52,12 @@ export class RegisterComponent {
       if (response && response.success) {
         // Redirect to the customer page
         console.log('Register successful');
-        this.notifications.success('Registro exitoso', 'Bienvenido');
+        this.notifications.set(notify2,true)
         this.router.navigate(['/login']);
       } else {
         // Display an error notification
         console.log('Register failed');
-        this.notifications.error('Registro fallido', 'Intenta otra vez');
+        this.notifications.set(notify3,true)
       }
     });
   }

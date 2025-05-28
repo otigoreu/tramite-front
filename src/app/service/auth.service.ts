@@ -20,6 +20,7 @@ import { NotificationsService } from 'angular2-notifications';
 import { navItems } from '../layouts/full/vertical/sidebar/sidebar-data';
 import { environment } from 'src/environments/environment.development';
 import { Rol } from '../model/rol';
+import { notify5 } from '../data/mensajes.data';
 
 interface GetRol{
   data:Rol[];
@@ -112,7 +113,8 @@ export class AuthService {
     localStorage.clear();
     this.loggedIn.set(false);
     this.isAdministrator.set(false);
-    this.notificationsService.success('sesion cerrada', 'Hasta luego');
+    // this.notificationsService.success('sesion cerrada', 'Hasta luego');
+    this.notificationsService.set(notify5,true,);
     while (navItems.length > 0) {
       navItems.pop();
     }

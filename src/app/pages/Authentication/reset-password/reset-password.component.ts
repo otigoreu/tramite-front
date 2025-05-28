@@ -4,6 +4,7 @@ import {FormControl, FormGroup, FormsModule,  ReactiveFormsModule, Validators } 
 
 import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
+import {  notify4, notify7 } from 'src/app/data/mensajes.data';
 import { MaterialModule } from 'src/app/material.module';
 import { ResetPasswordRequestBody } from 'src/app/model/auth1';
 
@@ -52,21 +53,16 @@ export class ResetPasswordComponent {
       confirmNewPassword: this.loginForm.controls.confirmNewPassword.value!,
       };
 
-      console.log('datos:',body.email,body.token,body.newPassword,body.confirmNewPassword);
+      // console.log('datos:',body.email,body.token,body.newPassword,body.confirmNewPassword);
 
       this.authService.resetPassword(body.email,body.token,body.newPassword,body.confirmNewPassword)
       .subscribe((response) => {
         if (response.success) {
-          this.notifications.success('Contraseña actualizada', 'Inicia sesión');
+          this.notifications.set(notify4,true);
           this.router.navigate(['/login']);
 
         }else{
-
-        this.notifications.error(
-          'envio Fallido',
-          'Revise que su correo electronico y el token sean correctos'
-
-        );
+        this.notifications.set(notify7,true);
         }
       });
     }

@@ -21,6 +21,7 @@ export class AppComponent {
   title = 'Modernize Angular Admin Tempplate';
   notificationsOptions: Options = {
     position: ['top', 'right'],
+    // position: ['top', 'left'],
     timeOut: 3000,
   };
 

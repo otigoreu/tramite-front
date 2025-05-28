@@ -12,7 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { NotificationsService } from 'angular2-notifications';
+import {  NotificationsService } from 'angular2-notifications';
 
 import { NavItem } from 'src/app/layouts/full/vertical/sidebar/nav-item/nav-item';
 import { navItems } from 'src/app/layouts/full/vertical/sidebar/sidebar-data';
@@ -23,6 +23,9 @@ import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { UserService } from 'src/app/service/user.service';
 import { CoreService } from 'src/app/services/core.service';
 import { SimpleCaptchaComponent } from '../simple-captcha/simple-captcha.component';
+import {   notify1,  notify6 } from 'src/app/data/mensajes.data';
+
+
 
 @Component({
   selector: 'app-login',
@@ -117,10 +120,12 @@ export class LoginComponent {
 
         //signals
         this.authService.loggedIn.set(true);
-        this.notifications.success(
-          'Inicio de sesion Exitoso',
-          'Bienvenido a Tramite Goreu'
-        );
+        // this.notifications.success(
+        //   'Inicio de sesion Exitoso',
+        //   'Bienvenido a Tramite Goreu'
+        // );
+        this.notifications.set(notify1,true,);
+
         localStorage.setItem('idAplicacion', this.authService.idAplicacion());
 
         //tarer menu por aplicacion
@@ -140,10 +145,7 @@ export class LoginComponent {
                 };
                 navItems.push(navItem);
                 this.firstOptionMenu.set(navItems[0].route!);
-                console.log(
-              'primera opcion menu dentro ->',
-              this.firstOptionMenu()
-            );
+
               }
             }
 
@@ -165,10 +167,7 @@ export class LoginComponent {
 
         // this.router.navigate([this.menu1]);
       } else {
-        this.notifications.error(
-          'Inicio de sesion Fallido',
-          'Revisa tus credenciales'
-        );
+        this.notifications.set(notify6,true,);
       }
     });
   }

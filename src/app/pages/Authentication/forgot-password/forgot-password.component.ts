@@ -13,7 +13,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { ForgotPasswordRequestBody } from 'src/app/model/auth';
 import { AuthService } from 'src/app/service/auth.service';
 import { CoreService } from 'src/app/services/core.service';
-
+import {   notify8, notify9 } from 'src/app/data/mensajes.data';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
@@ -51,18 +51,10 @@ export class ForgotPasswordComponent {
     this.authService.forgotPassword(body.email).subscribe((response) => {
 
       if (response.success) {
-
-        this.notifications.success(
-          'Token enviado',
-          'Revise cu correo Electronico por favor'
-        );
+        this.notifications.set(notify8,true);
         this.router.navigate(['/reset-password']);
       } else {
-
-        this.notifications.error(
-          'envio Fallido',
-          'Su correo no se encuentra Registrado'
-        );
+        this.notifications.set(notify9,true);
       }
     });
   }

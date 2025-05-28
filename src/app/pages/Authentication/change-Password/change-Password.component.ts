@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatDialogRef } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
+import { notify9 } from 'src/app/data/mensajes.data';
 import { MaterialModule } from 'src/app/material.module';
 import { AuthService } from 'src/app/service/auth.service';
 import { CoreService } from 'src/app/services/core.service';
@@ -38,14 +39,15 @@ loginForm = new FormGroup({
     });
 
 changePassword(){
-console.log('entro al metodo changePAssword');
+// console.log('entro al metodo changePAssword');
   const oldPassword= this.loginForm.controls.OldPassword.value!;
       const newPassword= this.loginForm.controls.NewPassword.value!;
       console.log('datos :', oldPassword,"-",newPassword);
       this.authService.changePassword(oldPassword,newPassword)
       .subscribe((response) => {
         if (response.success) {
-          this.notifications.success('Se cambio de contraseña exitosamente');
+          this.notifications.set(notify9,true,);
+
           this._dialogRef.close();
 
         }
