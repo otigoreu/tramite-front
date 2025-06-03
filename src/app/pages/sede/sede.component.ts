@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {  Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -15,91 +15,91 @@ import { DialogSedeComponent } from './dialog-sede/dialog-sede.component';
 @Component({
   selector: 'app-sede',
   standalone: true,
-  imports: [MaterialModule,
-        TablerIconsModule,
-        MatNativeDateModule,
-        NgScrollbarModule,
-        CommonModule, MatPaginatorModule],
-  templateUrl: './sede.component.html'
+  styleUrl: 'sede.component.scss', // Estilo asociado
+  imports: [
+    MaterialModule,
+    TablerIconsModule,
+    MatNativeDateModule,
+    NgScrollbarModule,
+    CommonModule,
+    MatPaginatorModule,
+  ],
+  templateUrl: './sede.component.html',
 })
 export class SedeComponent {
+  sedeService = inject(SedeService);
 
-sedeService= inject(SedeService);
+  displayedColumns: string[] = ['item', 'descripcion', 'status', 'acciones'];
 
-displayedColumns:string[]=[
-  'item',
-  'descripcion',
-  'status',
-  'acciones'
-]
-
-dataSource: MatTableDataSource<Sede>;
+  dataSource: MatTableDataSource<Sede>;
   // @ViewChild(MatPaginator) paginator!: MatPaginator;
-    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
-      Object.create(null);
-    @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
+    Object.create(null);
+  @ViewChild(MatSort) sort!: MatSort;
 
-dialog = inject(MatDialog);
+  dialog = inject(MatDialog);
 
-constructor(){
-  const sedes:Sede[]=[];
-  this.dataSource=new MatTableDataSource(sedes);
-
-}
-
-ngOnInit():void{
-  this.loadData();
-}
-
-loadData(){
-  this.sedeService.getDataIgnoreQuery().subscribe((response)=>{
-    this.dataSource=new MatTableDataSource(response);
-    this.dataSource.paginator=this.paginator;
-  });
-}
-
-applyFilter(filterValue: any): void {
-  this.dataSource.filter = filterValue.trim().toLowerCase();
-}
-
-openDialog(sede?:Sede){
-  this.dialog.open(DialogSedeComponent,{
-    width:'400px',height:'260px',
-      data:sede
-    }).afterClosed().subscribe(()=>{
-      this.loadData();
-    });
-}
-
-delete(id:number){
-  if(confirm('Eliminar')){
-    this.sedeService.delete(id).subscribe((response)=>{
-      if(response.success){
-        alert('Sede eliminada');
-        this.loadData();
-      }
-    })
+  constructor() {
+    const sedes: Sede[] = [];
+    this.dataSource = new MatTableDataSource(sedes);
   }
-}
-finalized(id:number){
-  if (confirm('Desactivar?')) {
-    this.sedeService.finalized(id).subscribe((response) => {
-      if (response.success) {
-        alert('Aplicacion desactivada');
-        this.loadData();
-      }
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData() {
+    this.sedeService.getDataIgnoreQuery().subscribe((response) => {
+      this.dataSource = new MatTableDataSource(response);
+      this.dataSource.paginator = this.paginator;
     });
   }
-}
-initialized(id:number){
-  if (confirm('Activar?')) {
-    this.sedeService.initialized(id).subscribe((response) => {
-      if (response.success) {
-        alert('Aplicacion Activada');
-        this.loadData();
-      }
-    });
-  }
-}
 
+  applyFilter(filterValue: any): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  openDialog(sede?: Sede) {
+    this.dialog
+      .open(DialogSedeComponent, {
+        width: '400px',
+        height: '260px',
+        data: sede,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.loadData();
+      });
+  }
+
+  delete(id: number) {
+    if (confirm('Eliminar')) {
+      this.sedeService.delete(id).subscribe((response) => {
+        if (response.success) {
+          alert('Sede eliminada');
+          this.loadData();
+        }
+      });
+    }
+  }
+  finalized(id: number) {
+    if (confirm('Desactivar?')) {
+      this.sedeService.finalized(id).subscribe((response) => {
+        if (response.success) {
+          alert('Aplicacion desactivada');
+          this.loadData();
+        }
+      });
+    }
+  }
+  initialized(id: number) {
+    if (confirm('Activar?')) {
+      this.sedeService.initialized(id).subscribe((response) => {
+        if (response.success) {
+          alert('Aplicacion Activada');
+          this.loadData();
+        }
+      });
+    }
+  }
 }

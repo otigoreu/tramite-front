@@ -12,7 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import {  NotificationsService } from 'angular2-notifications';
+import { NotificationsService } from 'angular2-notifications';
 
 import { NavItem } from 'src/app/layouts/full/vertical/sidebar/nav-item/nav-item';
 import { navItems } from 'src/app/layouts/full/vertical/sidebar/sidebar-data';
@@ -23,9 +23,7 @@ import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { UserService } from 'src/app/service/user.service';
 import { CoreService } from 'src/app/services/core.service';
 import { SimpleCaptchaComponent } from '../simple-captcha/simple-captcha.component';
-import {   notify1,  notify6 } from 'src/app/data/mensajes.data';
-
-
+import { notify1, notify6 } from 'src/app/data/mensajes.data';
 
 @Component({
   selector: 'app-login',
@@ -80,7 +78,8 @@ export class LoginComponent {
 
     // this.usuarioService.loginUser(dni, password).subscribe((response) => {
     this.authService.login(dni, password).subscribe((response) => {
-      // console.log('response con data 1', response);
+      console.log('response con data 1', response);
+
       if (response && response.success) {
         // console.log('login successfull1');
 
@@ -124,7 +123,7 @@ export class LoginComponent {
         //   'Inicio de sesion Exitoso',
         //   'Bienvenido a Tramite Goreu'
         // );
-        this.notifications.set(notify1,true,);
+        this.notifications.set(notify1, true);
 
         localStorage.setItem('idAplicacion', this.authService.idAplicacion());
 
@@ -145,20 +144,15 @@ export class LoginComponent {
                 };
                 navItems.push(navItem);
                 this.firstOptionMenu.set(navItems[0].route!);
-
               }
-            }
-
-          );
-
-          this.router.navigate([this.firstOptionMenu()]),
-
-
-            navItems.forEach((parentNav: NavItem) => {
-              parentNav.children = data.filter(
-                (nav) => nav.parentMenuId === parentNav.id
-              );
             });
+
+            this.router.navigate([this.firstOptionMenu()]),
+              navItems.forEach((parentNav: NavItem) => {
+                parentNav.children = data.filter(
+                  (nav) => nav.parentMenuId === parentNav.id
+                );
+              });
           });
 
         // console.log('primera opcion menu despues 2 ->', this.firstOptionMenu());
@@ -167,7 +161,7 @@ export class LoginComponent {
 
         // this.router.navigate([this.menu1]);
       } else {
-        this.notifications.set(notify6,true,);
+        this.notifications.set(notify6, true);
       }
     });
   }

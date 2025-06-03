@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -17,73 +22,82 @@ import { DialogMenuComponent } from './dialog-menu/dialog-menu.component';
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [MaterialModule,
-        TablerIconsModule,
-        MatNativeDateModule,
-        NgScrollbarModule,
-        CommonModule, MatPaginatorModule],
+  styleUrl: 'menu.component.scss', // Estilo asociado
+  imports: [
+    MaterialModule,
+    TablerIconsModule,
+    MatNativeDateModule,
+    NgScrollbarModule,
+    CommonModule,
+    MatPaginatorModule,
+  ],
   templateUrl: './menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuComponent {
+  menuService = inject(MenuService);
 
-  menuService=inject(MenuService)
-
-
-
-
-  displayedColumns:string[]=[
-    'item','displayName','id','iconName','route','Aplicacion','ParentMenuId','status','acciones'
+  displayedColumns: string[] = [
+    'item',
+    'displayName',
+    'id',
+    'iconName',
+    'route',
+    'Aplicacion',
+    'ParentMenuId',
+    'status',
+    'acciones',
   ];
 
-  dataSource:MatTableDataSource<MenuInfo>;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =Object.create(null);
+  dataSource: MatTableDataSource<MenuInfo>;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
+    Object.create(null);
   @ViewChild(MatSort) sort!: MatSort;
   dialog = inject(MatDialog);
 
-  constructor(){
-    const menus:MenuInfo[]=[];
-    this.dataSource=new MatTableDataSource(menus);
+  constructor() {
+    const menus: MenuInfo[] = [];
+    this.dataSource = new MatTableDataSource(menus);
   }
-  ngOnInit():void{
+  ngOnInit(): void {
     this.loadData();
-
   }
 
-  loadData(){
-    this.menuService.getDataIgnoreQuery().subscribe((response)=>{
-      this.dataSource=new MatTableDataSource(response);
+  loadData() {
+    this.menuService.getDataIgnoreQuery().subscribe((response) => {
+      this.dataSource = new MatTableDataSource(response);
 
       // console.log(this.dataSource);
-      this.dataSource.paginator=this.paginator;
-
+      this.dataSource.paginator = this.paginator;
     });
   }
-
 
   applyFilter(filterValue: any): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-  openDialog(menu?:Menu){
-    this.dialog.open(DialogMenuComponent,{
-      width:'400px',height:'570px',
-        data:menu
-      }).afterClosed().subscribe(()=>{
+  openDialog(menu?: Menu) {
+    this.dialog
+      .open(DialogMenuComponent, {
+        width: '400px',
+        height: '570px',
+        data: menu,
+      })
+      .afterClosed()
+      .subscribe(() => {
         this.loadData();
       });
-
   }
-  delete(id:number){
-    if(confirm('Eliminar')){
-      this.menuService.delete(id).subscribe((response)=>{
-        if(response.success){
+  delete(id: number) {
+    if (confirm('Eliminar')) {
+      this.menuService.delete(id).subscribe((response) => {
+        if (response.success) {
           alert('Aplicacion eliminada');
           this.loadData();
         }
-      })
+      });
     }
   }
-  initialized(id:number){
+  initialized(id: number) {
     if (confirm('Activar?')) {
       this.menuService.initialized(id).subscribe((response) => {
         if (response.success) {
@@ -93,7 +107,7 @@ export class MenuComponent {
       });
     }
   }
-  finalized(id:number){
+  finalized(id: number) {
     if (confirm('Desactivar?')) {
       this.menuService.finalized(id).subscribe((response) => {
         if (response.success) {

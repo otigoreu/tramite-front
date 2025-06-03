@@ -10,13 +10,12 @@ import { TipoDocumento } from 'src/app/model/tipoDocumento';
 import { TipoDocumentoService } from 'src/app/service/tipo-documento.service';
 import { DialogTipoDocumentoComponent } from './dialog-tipo-documento/dialog-tipo-documento.component';
 
-
 @Component({
   selector: 'app-tipo-documento',
   standalone: true,
+  styleUrl: 'tipo-documento.component.scss', // Estilo asociado
   imports: [MaterialModule, TablerIconsModule, NgIf],
   templateUrl: './tipo-documento.component.html',
-
 })
 export class TipoDocumentoComponent {
   appService = inject(TipoDocumentoService);
@@ -54,16 +53,17 @@ export class TipoDocumentoComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   openDialog(tipodocumento?: TipoDocumento) {
-    this.dialog.open(DialogTipoDocumentoComponent, {
-          width:'400px',height:'335px',
-          data:tipodocumento
-        }).afterClosed()
-        .subscribe(() => {
-          this.loadData();
-        });
+    this.dialog
+      .open(DialogTipoDocumentoComponent, {
+        width: '400px',
+        height: '335px',
+        data: tipodocumento,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.loadData();
+      });
   }
-
-
 
   delete(id: number) {
     if (confirm('Eliminar?')) {
@@ -76,7 +76,7 @@ export class TipoDocumentoComponent {
     }
   }
 
-  finalized(id:number) {
+  finalized(id: number) {
     if (confirm('Desactivar?')) {
       this.appService.finalized(id).subscribe((response) => {
         if (response.success) {
@@ -87,7 +87,7 @@ export class TipoDocumentoComponent {
     }
   }
 
-  initialized(id:number) {
+  initialized(id: number) {
     if (confirm('Activar?')) {
       this.appService.initialized(id).subscribe((response) => {
         if (response.success) {
