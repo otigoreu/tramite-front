@@ -42,10 +42,6 @@ import { NotificationMessages } from 'src/app/shared/notification-messages/notif
 export class AplicacionEditComponent {
   aplicacionForm = new FormGroup({
     descripcion: new FormControl('', Validators.required),
-    ruc: new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^\d{1,11}$/), // Solo números, hasta 11 dígitos
-    ]),
   });
 
   dialogRef = inject(MatDialogRef);
