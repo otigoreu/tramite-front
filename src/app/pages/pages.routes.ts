@@ -3,7 +3,7 @@ import { StarterComponent } from './starter/starter.component';
 
 export const PagesRoutes: Routes = [
   {
-    path: '',
+    path: 'pages/persona',
     component: StarterComponent,
     data: {
       title: 'Starter Page',

@@ -98,6 +98,7 @@ export class PersonaServiceService {
       `${this.baseUrl}/api/personas/finalized/${id}`
     );
   }
+
   initialized(id: number) {
     return this.http.get<DeletePersonResponse>(
       `${this.baseUrl}/api/personas/initialized/${id}`

@@ -29,6 +29,10 @@ import { DialogPersonaComponent } from './dialog-persona/dialog-persona.componen
 //imports apra idioma español en fechas
 import { registerLocaleData } from '@angular/common';
 import localeES from '@angular/common/locales/es';
+import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
+import { NotificationsService } from 'angular2-notifications';
+import Swal from 'sweetalert2';
+
 registerLocaleData(localeES);
 
 @Component({
@@ -50,7 +54,6 @@ registerLocaleData(localeES);
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
     { provide: DateAdapter, useClass: CustomDateAdapter },
   ],
-
   templateUrl: './persona.component.html',
 })
 export class PersonaComponent implements OnInit, AfterViewInit {
@@ -78,7 +81,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
 
   dialog = inject(MatDialog);
 
-  constructor() {
+  constructor(private notificationsService: NotificationsService) {
     const persona: Personas[] = [];
     this.dataSource = new MatTableDataSource(persona);
   }
@@ -99,12 +102,14 @@ export class PersonaComponent implements OnInit, AfterViewInit {
       this.dataSource.paginator = this.paginator;
     });
   }
+
   loadDataFilter() {
     this.appService.getDatafilter().subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
       this.dataSource.paginator = this.paginator;
     });
   }
+
   loadDataPAgeable(p: number, s: number) {
     this.appService.getDataPageable(p, s).subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
@@ -126,14 +131,27 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   }
 
   delete(id: number) {
-    if (confirm('Eliminar?')) {
-      this.appService.deletePerson(id).subscribe((response) => {
-        if (response.success) {
-          alert('Persona eliminada');
-          this.loadData();
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.deletePerson(id).subscribe((response) => {
+          if (response.success) {
+            this.notificationsService.success(
+              ...NotificationMessages.successDelete('persona')
+            );
+
+            this.loadData();
+          }
+        });
+      }
+    });
   }
 
   openDialog(personaDialog?: Persona) {
@@ -155,25 +173,50 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         this.totalElements = Object.keys(response).length;
       });
   }
+
   finalized(id: number) {
-    if (confirm('Deshabilitar?')) {
-      this.appService.finalized(id).subscribe((response) => {
-        if (response.success) {
-          alert('Persona Deshabilitada');
-          this.loadDataFilter();
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Deshabilitar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.finalized(id).subscribe((response) => {
+          if (response.success) {
+            this.notificationsService.success(
+              ...NotificationMessages.success('Persona Deshabilitada')
+            );
+            this.loadDataFilter();
+          }
+        });
+      }
+    });
   }
 
   initialized(id: number) {
-    if (confirm('Habilitar?')) {
-      this.appService.initialized(id).subscribe((response) => {
-        if (response.success) {
-          alert('Persona Habilitada');
-          this.loadDataFilter();
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Habilitar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.initialized(id).subscribe((response) => {
+          if (response.success) {
+            this.notificationsService.success(
+              ...NotificationMessages.success('Persona Habilitada')
+            );
+            this.loadDataFilter();
+          }
+        });
+      }
+    });
   }
 }
