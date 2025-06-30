@@ -16,7 +16,6 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CommonModule } from '@angular/common';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Aplicacion } from '../../model/aplicacion';
 import { DialogMenuComponent } from './dialog-menu/dialog-menu.component';
 
 @Component({

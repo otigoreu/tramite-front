@@ -1,10 +1,8 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import {
-  AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   inject,
-  OnInit,
-  signal,
   ViewChild,
 } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -13,11 +11,14 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { TablerIconsModule } from 'angular-tabler-icons';
+import { NotificationsService } from 'angular2-notifications';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MaterialModule } from 'src/app/material.module';
-import { Aplicacion } from 'src/app/model/aplicacion';
+import { ConfirmationService } from 'src/app/service/confirmation.service';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
-import { DialogAplicacionComponent } from './dialog-aplicacion/dialog-aplicacion.component';
+import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
+import { AplicacionEditComponent } from './aplicacion-edit/aplicacion-edit.component';
+import { Aplicacion } from './Modals/Aplicacion';
 
 @Component({
   selector: 'app-aplicacion',
@@ -30,82 +31,118 @@ import { DialogAplicacionComponent } from './dialog-aplicacion/dialog-aplicacion
     NgScrollbarModule,
     CommonModule,
     MatPaginatorModule,
+    NgIf,
   ],
   templateUrl: './aplicacion.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AplicacionComponent {
-  appService = inject(AplicacionService);
+  aplicacionService = inject(AplicacionService);
 
-  displayedColumns: string[] = ['item', 'descripcion', 'status', 'acciones'];
+  displayedColumns: string[] = ['descripcion', 'estado', 'actions'];
+  dataSource: MatTableDataSource<Aplicacion> =
+    new MatTableDataSource<Aplicacion>();
+  totalRecords: number = 0;
 
-  dataSource: MatTableDataSource<Aplicacion>;
-  // @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
-    Object.create(null);
+  searchTerm: string = '';
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   dialog = inject(MatDialog);
 
-  constructor() {
-    const aplicaciones: Aplicacion[] = [];
-    this.dataSource = new MatTableDataSource(aplicaciones);
-  }
+  constructor(
+    private notificationsService: NotificationsService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadAplicaciones();
   }
 
-  loadData() {
-    this.appService.getDataIgnoreQuery().subscribe((response) => {
-      this.dataSource = new MatTableDataSource(response);
-      this.dataSource.paginator = this.paginator;
+  ngAfterViewInit(): void {
+    this.paginator.page.subscribe(() => {
+      const pageIndex = this.paginator.pageIndex + 1;
+      const pageSize = this.paginator.pageSize;
+
+      this.loadAplicaciones(this.searchTerm, pageIndex, pageSize);
     });
   }
-  applyFilter(filterValue: any): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+  loadAplicaciones(
+    search: string = '',
+    page: number = 1,
+    pageSize: number = 10
+  ): void {
+    this.aplicacionService
+      .getPaginadoAplicacion(search, page, pageSize)
+      .subscribe({
+        next: (res) => {
+          this.totalRecords = res.meta.total;
+          this.dataSource.data = res.items;
+        },
+        error: (err) => {
+          console.error('Error al obtener aplicaciones', err);
+        },
+      });
   }
 
-  openDialog(aplicacion?: Aplicacion) {
+  onSearch(searchTerm: string): void {
+    this.searchTerm = searchTerm.trim();
+    this.paginator.firstPage(); // Reinicia a la primera página
+    this.loadAplicaciones(this.searchTerm);
+  }
+
+  openDialog(aplicacionDialog?: Aplicacion) {
     this.dialog
-      .open(DialogAplicacionComponent, {
-        width: '400px',
-        height: '260px',
-        data: aplicacion,
+      .open(AplicacionEditComponent, {
+        data: aplicacionDialog,
       })
       .afterClosed()
       .subscribe(() => {
-        this.loadData();
+        this.loadAplicaciones();
       });
-  }
-  delete(id: number) {
-    if (confirm('Eliminar')) {
-      this.appService.delete(id).subscribe((response) => {
-        if (response.success) {
-          alert('Aplicacion eliminada');
-          this.loadData();
-        }
-      });
-    }
-  }
-  finalized(id: number) {
-    if (confirm('Desactivar?')) {
-      this.appService.finalized(id).subscribe((response) => {
-        if (response.success) {
-          alert('Aplicacion desactivada');
-          this.loadData();
-        }
-      });
-    }
   }
 
-  initialized(id: number) {
-    if (confirm('Activar?')) {
-      this.appService.initialized(id).subscribe((response) => {
+  eliminarAplicacion(id: number) {
+    this.confirmationService.confirmAndExecute(
+      '¡No podrás revertir esto!',
+      this.aplicacionService.eliminarAplicacion(id),
+      (response) => {
         if (response.success) {
-          alert('Aplicacion Activada');
-          this.loadData();
+          this.notificationsService.success(...NotificationMessages.success());
+          this.loadAplicaciones();
         }
-      });
-    }
+      }
+    );
+  }
+
+  deshabilitarAplicacion(id: number) {
+    this.confirmationService.confirmAndExecute(
+      '¡No podrás revertir esto!',
+      this.aplicacionService.deshabilitarAplicacion(id),
+      (response) => {
+        if (response.success) {
+          this.notificationsService.success(
+            ...NotificationMessages.success('Aplicacion Deshabilitada')
+          );
+          this.loadAplicaciones();
+        }
+      }
+    );
+  }
+
+  habilitarAplicacion(id: number) {
+    this.confirmationService.confirmAndExecute(
+      '¡No podrás revertir esto!',
+      this.aplicacionService.habilitarAplicacion(id),
+      (response) => {
+        if (response.success) {
+          this.notificationsService.success(
+            ...NotificationMessages.success('Aplicacion Habilitada')
+          );
+          this.loadAplicaciones();
+        }
+      }
+    );
   }
 }

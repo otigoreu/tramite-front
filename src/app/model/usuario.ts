@@ -1,30 +1,28 @@
-import { Aplicacion } from "./aplicacion";
-import { Persona, PersonaNew } from "./persona";
-import { Sede } from "./sede";
+import { Aplicacion } from '../pages/aplicacion/Modals/Aplicacion';
+import { Persona, PersonaNew } from './persona';
+import { Sede } from './sede';
 
-export interface RegisterRequest{
+export interface RegisterRequest {
   firstName: string;
   lastName: string;
   userName: string;
   email: string;
-  idPersona: number
+  idPersona: number;
   idSede: number;
-  password: string
-  confirmPassword: string
+  password: string;
+  confirmPassword: string;
 }
 
-
-export interface RegisterResponse{
+export interface RegisterResponse {
   userId: string;
-    token: string;
-    expirationDate: string;
-    roles: string[];
+  token: string;
+  expirationDate: string;
+  roles: string[];
 }
 
-
-export interface Login{
-  username:string;
-  password:string;
+export interface Login {
+  username: string;
+  password: string;
 }
 
 export interface LoginResponse {
@@ -36,27 +34,22 @@ export interface LoginResponse {
   aplicaciones: Aplicacion[];
 }
 
-
-export interface Usuario{
-
-  id:number;
-  firstName:string;
-  lastNAme:string;
-  userName:string;
-  email:string;
-
+export interface Usuario {
+  id: number;
+  firstName: string;
+  lastNAme: string;
+  userName: string;
+  email: string;
 }
 
-
-export interface ChangePassword{
-  oldPassword :string;
-  newPassword:string;
+export interface ChangePassword {
+  oldPassword: string;
+  newPassword: string;
 }
 
-
-export interface NewPasswordRequest{
-  email:string;
-  token:string;
-  newPassword:string;
-  confirmNewPassword:string;
+export interface NewPasswordRequest {
+  email: string;
+  token: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
