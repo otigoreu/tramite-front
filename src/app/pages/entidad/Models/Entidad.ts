@@ -3,4 +3,5 @@ export interface Entidad {
   descripcion: string;
   ruc: string;
   estado: boolean;
+  cantidadAplicaciones: number;
 }

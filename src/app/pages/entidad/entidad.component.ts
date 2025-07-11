@@ -16,12 +16,12 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CommonModule, NgIf } from '@angular/common';
-import Swal from 'sweetalert2';
 import { NotificationsService } from 'angular2-notifications';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { ConfirmationService } from 'src/app/service/confirmation.service';
 import { EntidadEditComponent } from './entidad-edit/entidad-edit.component';
 import { MatDialog } from '@angular/material/dialog';
+import { EntidadAplicacionComponent } from './entidad-aplicacion/entidad-aplicacion.component';
 
 @Component({
   selector: 'app-entidad',
@@ -42,7 +42,12 @@ import { MatDialog } from '@angular/material/dialog';
 export class EntidadComponent implements OnInit, AfterViewInit {
   entidadService = inject(EntidadService);
 
-  displayedColumns: string[] = ['descripcion', 'estado', 'actions'];
+  displayedColumns: string[] = [
+    'descripcion',
+    'aplicacion',
+    'estado',
+    'actions',
+  ];
   dataSource: MatTableDataSource<Entidad> = new MatTableDataSource<Entidad>();
   totalRecords: number = 0;
 
@@ -99,7 +104,24 @@ export class EntidadComponent implements OnInit, AfterViewInit {
       })
       .afterClosed()
       .subscribe(() => {
-        this.loadEntidades();
+        const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
+        const pageSize = this.paginator.pageSize;
+
+        this.loadEntidades(this.searchTerm, pageIndex, pageSize);
+      });
+  }
+
+  openDialogAplicacion(entidadDialog?: Entidad) {
+    this.dialog
+      .open(EntidadAplicacionComponent, {
+        data: entidadDialog,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
+        const pageSize = this.paginator.pageSize;
+
+        this.loadEntidades(this.searchTerm, pageIndex, pageSize);
       });
   }
 
