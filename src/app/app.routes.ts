@@ -7,6 +7,7 @@ import { AplicacionComponent } from './pages/aplicacion/aplicacion.component';
 import { SedeComponent } from './pages/sede/sede.component';
 import { MenuComponent } from './pages/menu/menu.component';
 import { EntidadComponent } from './pages/entidad/entidad.component';
+import { UnidadorganicaComponent } from './pages/unidadorganica/unidadorganica.component';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,17 @@ export const routes: Routes = [
           urls: [
             //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Entidad' },
+          ],
+        },
+      },
+      {
+        path: 'pages/unidadorganica',
+        component: UnidadorganicaComponent,
+        data: {
+          title: 'Unidad Organica',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Unidad Organica' },
           ],
         },
       },

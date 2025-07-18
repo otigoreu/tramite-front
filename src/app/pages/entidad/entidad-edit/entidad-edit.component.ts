@@ -78,7 +78,7 @@ export class EntidadEditComponent implements OnInit {
     }
   }
 
-  guardar(): void {
+  onSubmit(): void {
     if (this.entidadForm.invalid) return;
 
     const dto: EntidadRequestDto = {
