@@ -11,7 +11,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { Sede } from 'src/app/model/sede';
 import { SedeService } from 'src/app/service/sede.service';
 import { DialogSedeComponent } from './dialog-sede/dialog-sede.component';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-sede',
   standalone: true,
@@ -72,34 +72,61 @@ openDialog(sede?:Sede){
 }
 
 delete(id:number){
-  if(confirm('Eliminar')){
-    this.sedeService.delete(id).subscribe((response)=>{
-      if(response.success){
-        alert('Sede eliminada');
-        this.loadData();
-      }
-    })
-  }
+  Swal.fire({
+           title: '¿Estás seguro?',
+           text: '¡No podrás revertir esto!',
+           icon: 'warning',
+           showCancelButton: true,
+           confirmButtonText: 'Sí, Emilinar',
+           cancelButtonText: 'Cancelar',
+         }).then((result) => {
+           if (result.isConfirmed) {
+             // lógica de confirmación
+             this.sedeService.delete(id).subscribe((response) => {
+               if (response.success) {
+                   this.loadData();
+               }
+             });
+           }
+         });
 }
 finalized(id:number){
-  if (confirm('Desactivar?')) {
-    this.sedeService.finalized(id).subscribe((response) => {
-      if (response.success) {
-        alert('Aplicacion desactivada');
-        this.loadData();
-      }
-    });
-  }
+ Swal.fire({
+       title: '¿Estás seguro?',
+       // text: '¡No podrás revertir esto!',
+       icon: 'warning',
+       showCancelButton: true,
+       confirmButtonText: 'Sí, Desactivar',
+       cancelButtonText: 'Cancelar',
+     }).then((result) => {
+       if (result.isConfirmed) {
+         // lógica de confirmación
+         this.sedeService.finalized(id).subscribe((response) => {
+           if (response.success) {
+               this.loadData();
+           }
+         });
+       }
+     });
 }
 initialized(id:number){
-  if (confirm('Activar?')) {
-    this.sedeService.initialized(id).subscribe((response) => {
-      if (response.success) {
-        alert('Aplicacion Activada');
-        this.loadData();
-      }
-    });
-  }
+  Swal.fire({
+       title: '¿Estás seguro?',
+       // text: '¡No podrás revertir esto!',
+       icon: 'success',
+       showCancelButton: true,
+       confirmButtonText: 'Sí, Activar',
+       cancelButtonText: 'Cancelar',
+     }).then((result) => {
+       if (result.isConfirmed) {
+         // lógica de confirmación
+         this.sedeService.initialized(id).subscribe((response) => {
+           if (response.success) {
+               this.loadData();
+           }
+         });
+       }
+     });
 }
 
 }

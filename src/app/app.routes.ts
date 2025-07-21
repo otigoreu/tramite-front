@@ -6,6 +6,7 @@ import { TipoDocumentoComponent } from './pages/tipo-documento/tipo-documento.co
 import { AplicacionComponent } from './pages/aplicacion/aplicacion.component';
 import { SedeComponent } from './pages/sede/sede.component';
 import { MenuComponent } from './pages/menu/menu.component';
+import { RolComponent } from './pages/rol/rol.component';
 
 export const routes: Routes = [
   {
@@ -33,7 +34,7 @@ export const routes: Routes = [
       },
       {
         path: 'pages/tipo-documento',
-       // canActivate: [authGuard],
+       canActivate: [authGuard],
         component: TipoDocumentoComponent,
         data: {
           title: 'Tipo Documento',
@@ -45,7 +46,7 @@ export const routes: Routes = [
       },
       {
         path: 'pages/aplicacion',
-       // canActivate: [authGuard],
+       canActivate: [authGuard],
         component: AplicacionComponent,
         data: {
           title: 'Aplicaciones',
@@ -56,11 +57,11 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'pages/sede',
-       // canActivate: [authGuard],
+        path: 'pages/unidadOrganica',
+       canActivate: [authGuard],
         component: SedeComponent,
         data: {
-          title: 'Sedes',
+          title: 'Unidad Organica',
           urls: [
            //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Sedes' },
@@ -69,7 +70,7 @@ export const routes: Routes = [
       },
       {
         path: 'pages/menu',
-       // canActivate: [authGuard],
+       canActivate: [authGuard],
         component: MenuComponent,
         data: {
           title: 'Menu',
@@ -80,10 +81,23 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'pages/rol',
+       canActivate: [authGuard],
+        component: RolComponent,
+        data: {
+          title: 'Rol',
+          urls: [
+           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Rol' },
+          ],
+        },
+      },
+      {
         path: 'starter',
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },
+
 
 
     ],

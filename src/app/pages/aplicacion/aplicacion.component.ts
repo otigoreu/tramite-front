@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, UpperCasePipe } from '@angular/common';
 import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,10 +8,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MaterialModule } from 'src/app/material.module';
-import { Aplicacion } from 'src/app/model/aplicacion';
+import { Aplicacion, AplicacionSede, AplicacionWithSede } from 'src/app/model/aplicacion';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { DialogAplicacionComponent } from './dialog-aplicacion/dialog-aplicacion.component';
-
+import Swal from 'sweetalert2';
 
 
 
@@ -22,7 +22,7 @@ import { DialogAplicacionComponent } from './dialog-aplicacion/dialog-aplicacion
       TablerIconsModule,
       MatNativeDateModule,
       NgScrollbarModule,
-      CommonModule, MatPaginatorModule],
+      CommonModule, MatPaginatorModule,UpperCasePipe],
   templateUrl: './aplicacion.component.html',
 
 })
@@ -34,12 +34,13 @@ export class AplicacionComponent  {
   displayedColumns: string[] = [
     'item',
     'descripcion',
+    'sede',
     'status',
     'acciones'
 
   ];
 
-  dataSource: MatTableDataSource<Aplicacion>;
+  dataSource: MatTableDataSource<AplicacionWithSede>;
     // @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
       Object.create(null);
@@ -48,7 +49,7 @@ export class AplicacionComponent  {
 dialog = inject(MatDialog);
 
 constructor(){
-  const aplicaciones:Aplicacion[]=[];
+  const aplicaciones:AplicacionWithSede[]=[];
   this.dataSource=new MatTableDataSource(aplicaciones);
 }
 
@@ -57,7 +58,7 @@ constructor(){
   }
 
   loadData(){
-    this.appService.getDataIgnoreQuery().subscribe((response)=>{
+    this.appService.getDataWithSede().subscribe((response)=>{
       this.dataSource=new MatTableDataSource(response);
       this.dataSource.paginator=this.paginator;
     });
@@ -66,44 +67,71 @@ constructor(){
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-openDialog(aplicacion?:Aplicacion){
+openDialog(aplicacion?:AplicacionSede){
   this.dialog.open(DialogAplicacionComponent,{
-    width:'400px',height:'260px',
+    width:'400px',height:'350px',
     data:aplicacion
   }).afterClosed().subscribe(()=>{
     this.loadData();
   });
 }
 delete(id:number) {
-  if(confirm('Eliminar')){
-    this.appService.delete(id).subscribe((response)=>{
-      if(response.success){
-        alert('Aplicacion eliminada');
-        this.loadData();
-      }
-    })
-  }
+    Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esto!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, Emilinar',
+            cancelButtonText: 'Cancelar',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // lógica de confirmación
+              this.appService.delete(id).subscribe((response) => {
+                if (response.success) {
+                    this.loadData();
+                }
+              });
+            }
+          });
   }
   finalized(id:number) {
-    if (confirm('Desactivar?')) {
-      this.appService.finalized(id).subscribe((response) => {
-        if (response.success) {
-          alert('Aplicacion desactivada');
-          this.loadData();
-        }
-      });
-    }
+   Swal.fire({
+         title: '¿Estás seguro?',
+         // text: '¡No podrás revertir esto!',
+         icon: 'warning',
+         showCancelButton: true,
+         confirmButtonText: 'Sí, Desactivar',
+         cancelButtonText: 'Cancelar',
+       }).then((result) => {
+         if (result.isConfirmed) {
+           // lógica de confirmación
+           this.appService.finalized(id).subscribe((response) => {
+             if (response.success) {
+                this.loadData();
+             }
+           });
+         }
+       });
   }
 
   initialized(id:number) {
-    if (confirm('Activar?')) {
-      this.appService.initialized(id).subscribe((response) => {
-        if (response.success) {
-          alert('Aplicacion Activada');
-          this.loadData();
-        }
-      });
-    }
+    Swal.fire({
+         title: '¿Estás seguro?',
+         // text: '¡No podrás revertir esto!',
+         icon: 'success',
+         showCancelButton: true,
+         confirmButtonText: 'Sí, Activar',
+         cancelButtonText: 'Cancelar',
+       }).then((result) => {
+         if (result.isConfirmed) {
+           // lógica de confirmación
+           this.appService.initialized(id).subscribe((response) => {
+             if (response.success) {
+                 this.loadData();
+             }
+           });
+         }
+       });
   }
 
 }

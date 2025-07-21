@@ -7,7 +7,26 @@ import { UsuarioAplicacion } from "./usuarioAplicacion";
 export interface Aplicacion{
   id :number;
   descripcion:string;
-  status:string
+  estado:string
+
+}
+
+export interface AplicacionWithSede{
+  id :number;
+  descripcion:string;
+  idSede:number;
+  sede:string;
+
+}
+export interface AplicacionSede{
+  id :number;
+  descripcion:string;
+  idSede:number;
+}
+
+export interface AplicacionWithSedes{
+  descripcion:string;
+  idSedes:number[];
 
 }
 export interface AplicacionFull{

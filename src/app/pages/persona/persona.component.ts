@@ -29,6 +29,7 @@ import { DialogPersonaComponent } from './dialog-persona/dialog-persona.componen
 //imports apra idioma español en fechas
 import { registerLocaleData } from '@angular/common';
 import localeES from '@angular/common/locales/es';
+import Swal from 'sweetalert2';
 registerLocaleData(localeES);
 
 @Component({
@@ -39,7 +40,10 @@ registerLocaleData(localeES);
     TablerIconsModule,
     MatNativeDateModule,
     NgScrollbarModule,
-    CommonModule, MatPaginatorModule,DatePipe,NgIf
+    CommonModule,
+    MatPaginatorModule,
+    DatePipe,
+    NgIf,
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -60,12 +64,12 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     'apellidos',
     'email',
     'fechaNac',
-    'status',
+    'estado',
     'actions',
   ];
   dataSource: MatTableDataSource<Personas>;
 
- // @ViewChild(MatPaginator) paginator!: MatPaginator;
+  // @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
     Object.create(null);
   @ViewChild(MatSort) sort!: MatSort;
@@ -79,15 +83,14 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     this.dataSource = new MatTableDataSource(persona);
   }
 
-
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit(): void {
     this.loadDataFilter();
-   //this.loadData();
-  // this.loadDataPAgeable(1,5);
+    //this.loadData();
+    // this.loadDataPAgeable(1,5);
   }
 
   loadData() {
@@ -102,11 +105,11 @@ export class PersonaComponent implements OnInit, AfterViewInit {
       this.dataSource.paginator = this.paginator;
     });
   }
-  loadDataPAgeable(p:number, s:number) {
-    this.appService.getDataPageable(p,s).subscribe((response) => {
+  loadDataPAgeable(p: number, s: number) {
+    this.appService.getDataPageable(p, s).subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
       //this.dataSource.paginator = this.paginator;
-      this.totalElements= Object.keys(response).length;
+      this.totalElements = Object.keys(response).length;
     });
   }
 
@@ -123,54 +126,84 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   }
 
   delete(id: number) {
-    if (confirm('Eliminar?')) {
-      this.appService.deletePerson(id).subscribe((response) => {
-        if (response.success) {
-          alert('Persona eliminada');
-          this.loadData();
-        }
+      Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.deletePerson(id).subscribe((response) => {
+          if (response.success) {
+              this.loadDataFilter();
+          }
+        });
+      }
+    });
+
+  }
+
+  openDialog(personaDialog?: Persona) {
+    this.dialog
+      .open(DialogPersonaComponent, {
+        width: '600px',
+        height: '675px',
+
+        data: personaDialog,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.loadDataFilter();
       });
-    }
   }
-
- openDialog(personaDialog?:Persona) {
-    this.dialog.open(DialogPersonaComponent, {
-      width:'600px',height:'675px',
-
-      data:personaDialog
-    }).afterClosed()
-    .subscribe(() => {
-      this.loadDataFilter();
-    });
-
+  showmore(e: any) {
+    this.appService
+      .getDataPageable(e.pageIndex + 1, e.pageSize)
+      .subscribe((response) => {
+        this.dataSource = new MatTableDataSource(response);
+        this.totalElements = Object.keys(response).length;
+      });
   }
-showmore(e:any){
-  this.appService.getDataPageable(e.pageIndex+1 , e.pageSize).subscribe((response) => {
-    this.dataSource = new MatTableDataSource(response);
-    this.totalElements= Object.keys(response).length;
-  });
-
-}
-finalized(id:number) {
-  if (confirm('Deshabilitar?')) {
-    this.appService.finalized(id).subscribe((response) => {
-      if (response.success) {
-        alert('Persona Deshabilitada');
-        this.loadDataFilter();
+  finalized(id: number) {
+   Swal.fire({
+      title: '¿Estás seguro?',
+      // text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Desactivar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.finalized(id).subscribe((response) => {
+          if (response.success) {
+              this.loadDataFilter();
+          }
+        });
       }
     });
   }
-}
 
-initialized(id:number) {
-  if (confirm('Habilitar?')) {
-    this.appService.initialized(id).subscribe((response) => {
-      if (response.success) {
-        alert('Persona Habilitada');
-        this.loadDataFilter();
+  initialized(id: number) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      // text: '¡No podrás revertir esto!',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Activar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.initialized(id).subscribe((response) => {
+          if (response.success) {
+              this.loadDataFilter();
+          }
+        });
       }
     });
   }
-}
-
 }

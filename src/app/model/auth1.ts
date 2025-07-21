@@ -1,3 +1,4 @@
+///usado en login
 export interface LoginApiResponse1 {
   data: Data;
   success: boolean;

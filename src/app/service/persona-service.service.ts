@@ -101,12 +101,8 @@ initialized(id: number){
       apellidoPat: user.apellidoPat,
     apellidoMat: user.apellidoMat,
       fechaNac: user.fechaNac,
-      direccion: user.direccion,
-      referencia: user.referencia,
-      celular: user.celular,
-      edad: user.edad,
       email: user.email,
-      tipoDoc: user.tipoDoc,
+      tipoDoc: user.idTipoDoc,
       nroDoc: user.nroDoc,
     });
   }
@@ -117,12 +113,8 @@ edit(user: Personas) {
     apellidoPat: user.apellidoPat,
     apellidoMat: user.apellidoMat,
     fechaNac: user.fechaNac,
-    direccion: user.direccion,
-    referencia: user.referencia,
-    celular: user.celular,
-    edad: user.edad,
     email: user.email,
-    tipoDoc: user.tipoDoc,
+    tipoDoc: user.idTipoDoc,
     nroDoc: user.nroDoc,
   });
 }
