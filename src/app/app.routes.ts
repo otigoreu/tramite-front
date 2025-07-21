@@ -82,6 +82,18 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'pages/rol',
+       // canActivate: [authGuard],
+        component: RolComponent,
+        data: {
+          title: 'Rol',
+          urls: [
+           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Rol' },
+          ],
+        },
+      },
+      {
         path: 'pages/user',
        // canActivate: [authGuard],
         component: UserComponent,

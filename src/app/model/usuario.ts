@@ -79,10 +79,12 @@ export interface ChangePasswordRequestBody {
 ///--------------------------------------------------------
 export interface Usuario{
 
-  id:number;
-  firstName:string;
-  lastNAme:string;
-  userName:string;
-  email:string;
+      id: string,
+      email: string,
+      userName: string,
+      idPersona: number,
+      nombres: string,
+      apellidoPat: string,
+      apellidoMat: string,
 
 }
