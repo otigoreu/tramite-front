@@ -6,6 +6,7 @@ import { TipoDocumentoComponent } from './pages/tipo-documento/tipo-documento.co
 import { AplicacionComponent } from './pages/aplicacion/aplicacion.component';
 import { SedeComponent } from './pages/sede/sede.component';
 import { MenuComponent } from './pages/menu/menu.component';
+import { UserComponent } from './pages/user/user.component';
 
 export const routes: Routes = [
   {
@@ -79,6 +80,7 @@ export const routes: Routes = [
           ],
         },
       },
+
       {
         path: 'starter',
         loadChildren: () =>
