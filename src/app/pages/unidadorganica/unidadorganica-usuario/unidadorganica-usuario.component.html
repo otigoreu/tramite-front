@@ -1,4 +1,4 @@
-<h2 mat-dialog-title class="m-b-24">{{ entidadDescripcion }}</h2>
+<h2 mat-dialog-title class="m-b-24">{{ unidadorganicaDescripcion }}</h2>
 <mat-divider></mat-divider>
 
 <mat-dialog-content class="mat-typography" style="max-width: 600px">
@@ -14,14 +14,12 @@
   </mat-form-field>
 
   <mat-selection-list>
-    @for (row of aplicaciones(); let i = $index; track row.idAplicacion) {
+    @for (row of usuarios(); let i = $index; track row.idUsuario) {
     <mat-list-option
       [selected]="row.estado === true"
       (selectedChange)="onSelectedChange(row, $event)"
     >
-      {{ row.descripcionAplicacion }} - Index: {{ i }} - idAplicacion:
-      {{ row.idAplicacion }} /
-      {{ row.estado }}
+      {{ row.numdoc }} - {{ row.descripcionPersona }}
     </mat-list-option>
     }
   </mat-selection-list>

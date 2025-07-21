@@ -12,11 +12,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MaterialModule } from 'src/app/material.module';
-import { Entidad } from '../Models/Entidad';
-import { EntidadaplicacionService } from 'src/app/service/entidadaplicacion.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EntidadAplicacionResponseDto } from './Models/EntidadAplicacionResponseDto';
-import { EntidadAplicacionRequestDto } from './Models/EntidadAplicacionRequestDto';
 import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/model/ApiResponse';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
@@ -27,9 +23,13 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { UnidadorganicaUsuarioResponseDto } from './Models/UnidadorganicaUsuarioResponseDto';
+import { Unidadorganica } from '../Models/Unidadorganica';
+import { UnidadorganicausuarioService } from 'src/app/service/unidadorganicausuario.service';
+import { UnidadorganicaUsuarioRequestDto } from './Models/UnidadorganicaUsuarioRequestDto';
 
 @Component({
-  selector: 'app-entidad-aplicacion',
+  selector: 'app-unidadorganica-usuario',
   standalone: true,
   imports: [
     CommonModule,
@@ -42,21 +42,21 @@ import { MatSort } from '@angular/material/sort';
     SharedModule,
     TablerIconsModule,
   ],
-  templateUrl: './entidad-aplicacion.component.html',
+  templateUrl: './unidadorganica-usuario.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EntidadAplicacionComponent implements OnInit {
+export class UnidadorganicaUsuarioComponent {
   // 👉 Inyecciones usando inject()
-  enaplicaService = inject(EntidadaplicacionService);
+  uousuarioService = inject(UnidadorganicausuarioService);
   notificationsService = inject(NotificationsService);
   dialogRef = inject(MatDialogRef);
   snackBar = inject(MatSnackBar);
 
-  // 👉 Variables relacionadas a la entidad
-  entidadDescripcion = '';
+  // 👉 Variables relacionadas a la unidadorganica
+  unidadorganicaDescripcion = '';
 
-  // 👉 Signal para manejar el listado de aplicaciones
-  aplicaciones = signal<EntidadAplicacionResponseDto[]>([]);
+  // 👉 Signal para manejar el listado de usuarios
+  usuarios = signal<UnidadorganicaUsuarioResponseDto[]>([]);
 
   // 👉 Variables de paginación y búsqueda
   totalRecords: number = 0;
@@ -72,16 +72,16 @@ export class EntidadAplicacionComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   // 👉 Constructor con inyección de datos del diálogo
-  constructor(@Inject(MAT_DIALOG_DATA) private data: Entidad) {}
+  constructor(@Inject(MAT_DIALOG_DATA) private data: Unidadorganica) {}
 
   ngOnInit(): void {
-    this.entidadDescripcion = this.data?.descripcion;
-    this.loadEntidadAplicaciones(this.data?.id);
+    this.unidadorganicaDescripcion = this.data?.descripcion;
+    this.loadUnidadorganicaUsuarios(this.data?.id);
   }
 
   // 👉 Propiedad calculada: cantidad de aplicaciones seleccionadas
   get seleccionadas(): number {
-    return this.aplicaciones().filter((app) => app.estado).length;
+    return this.usuarios().filter((app) => app.estado).length;
   }
 
   /**
@@ -91,21 +91,21 @@ export class EntidadAplicacionComponent implements OnInit {
    * @param page - Página actual
    * @param pageSize - Tamaño de página
    */
-  loadEntidadAplicaciones(
+  loadUnidadorganicaUsuarios(
     idEntidad: number,
     search: string = '',
     page: number = 1,
     pageSize: number = 10
   ): void {
-    this.aplicaciones.set([]);
+    this.usuarios.set([]);
     this.isLoading = true;
 
-    this.enaplicaService
-      .getPaginadoEntidadAplicacion(idEntidad, search, page, pageSize)
+    this.uousuarioService
+      .getPaginadoUnidadorgnicaUsuario(idEntidad, search, page, pageSize)
       .subscribe({
         next: (res) => {
           this.totalRecords = res.meta.total;
-          this.aplicaciones.set(res.data); // ✅ Actualiza el signal
+          this.usuarios.set(res.data); // ✅ Actualiza el signal
           setTimeout(() => {
             this.isLoading = false;
           }, 300); // ⚙️ Simulación de tiempo de carga
@@ -123,7 +123,7 @@ export class EntidadAplicacionComponent implements OnInit {
    */
   onSearch(searchTerm: string): void {
     this.searchTerm = searchTerm.trim();
-    this.loadEntidadAplicaciones(
+    this.loadUnidadorganicaUsuarios(
       this.data?.id,
       this.searchTerm,
       this.currentPage,
@@ -137,26 +137,32 @@ export class EntidadAplicacionComponent implements OnInit {
    * @param row - La aplicación seleccionada
    * @param selected - Estado de selección
    */
-  onSelectedChange(row: EntidadAplicacionResponseDto, selected: boolean): void {
+  onSelectedChange(
+    row: UnidadorganicaUsuarioResponseDto,
+    selected: boolean
+  ): void {
     if (this.isLoading) return; // ⚠️ Evita acciones mientras carga
 
-    const dto: EntidadAplicacionRequestDto = {
-      idEntidad: this.data?.id,
-      idAplicacion: row.idAplicacion,
+    const dto: UnidadorganicaUsuarioRequestDto = {
+      idUnidadorganica: this.data?.id,
+      idUsuario: row.idUsuario,
       estado: selected,
     };
 
     // Verifica si ya existe una relación
-    this.enaplicaService
-      .getEntidadAplicacion(dto.idEntidad, dto.idAplicacion)
+    this.uousuarioService
+      .getUnidadorganicaUsuario(dto.idUnidadorganica, dto.idUsuario)
       .subscribe({
         next: (res) => {
           const esEdicion = res.success && res.data?.id != null;
 
           // Decide si crear o actualizar
           const peticion: Observable<ApiResponse<any>> = esEdicion
-            ? this.enaplicaService.actualizarEntidadAplicacion(res.data.id, dto)
-            : this.enaplicaService.agregarEntidadAplicacion(dto);
+            ? this.uousuarioService.actualizarUnidadorganicaUsuario(
+                res.data.id,
+                dto
+              )
+            : this.uousuarioService.agregarUnidadorganicaUsuario(dto);
 
           peticion.subscribe({
             next: (res) => {
@@ -166,9 +172,9 @@ export class EntidadAplicacionComponent implements OnInit {
                   : NotificationMessages.successCrear('ENTIDAD-APLICACION');
 
                 // ✅ Actualiza el estado en el signal
-                this.aplicaciones.update((apps) =>
+                this.usuarios.update((apps) =>
                   apps.map((a) =>
-                    a.idAplicacion === row.idAplicacion
+                    a.idUsuario === row.idUsuario
                       ? { ...a, estado: selected }
                       : a
                   )
@@ -208,7 +214,7 @@ export class EntidadAplicacionComponent implements OnInit {
     this.currentPage = event.pageIndex + 1; // Angular usa índice 0, tu API índice 1
     this.currentPageSize = event.pageSize;
 
-    this.loadEntidadAplicaciones(
+    this.loadUnidadorganicaUsuarios(
       this.data?.id,
       this.searchTerm,
       this.currentPage,

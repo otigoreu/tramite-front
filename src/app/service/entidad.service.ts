@@ -23,10 +23,13 @@ export class EntidadService {
     };
 
     return this.http
-      .get<ApiResponse<Entidad[]>>(`${this.baseUrl}/api/Entidad/descripcion`, {
-        params,
-        observe: 'response', // 👈 Esto es CLAVE para acceder a headers
-      })
+      .get<ApiResponse<Entidad[]>>(
+        `${this.baseUrl}/api/entidades/descripcion`,
+        {
+          params,
+          observe: 'response', // 👈 Esto es CLAVE para acceder a headers
+        }
+      )
       .pipe(
         map((response) => {
           const items = response.body?.data ?? [];
@@ -48,7 +51,7 @@ export class EntidadService {
 
   agregarEntidad(dto: EntidadRequestDto): Observable<ApiResponse<number>> {
     return this.http.post<ApiResponse<number>>(
-      `${this.baseUrl}/api/Entidad`,
+      `${this.baseUrl}/api/entidades`,
       dto
     );
   }
@@ -58,27 +61,27 @@ export class EntidadService {
     dto: EntidadRequestDto
   ): Observable<ApiResponse<null>> {
     return this.http.put<ApiResponse<null>>(
-      `${this.baseUrl}/api/Entidad/${id}`,
+      `${this.baseUrl}/api/entidades/${id}`,
       dto
     );
   }
 
   eliminarEntidad(id: number): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(
-      `${this.baseUrl}/api/Entidad/${id}`
+      `${this.baseUrl}/api/entidades/${id}`
     );
   }
 
   deshabilitarEntidad(id: number): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
-      `${this.baseUrl}/api/Entidad/${id}/finalize`,
+      `${this.baseUrl}/api/entidades/${id}/finalize`,
       null
     );
   }
 
   habilitarEntidad(id: number): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
-      `${this.baseUrl}/api/Entidad/${id}/initialize`,
+      `${this.baseUrl}/api/entidades/${id}/initialize`,
       null
     );
   }

@@ -5,6 +5,7 @@ export interface UnidadorganicaPaginatedResponseDto {
   nombreDependencia: string;
   cantidadHijos: number;
   estado: boolean;
+  cantidadUsuarios: number;
 
   idEntidad: number;
   idDependencia?: number;

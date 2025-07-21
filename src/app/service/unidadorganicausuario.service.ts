@@ -1,36 +1,36 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../model/ApiResponse';
-import { EntidadAplicacionResponseDto } from '../pages/entidad/entidad-aplicacion/Models/EntidadAplicacionResponseDto';
+import { UnidadorganicaUsuarioResponseDto } from '../pages/unidadorganica/unidadorganica-usuario/Models/UnidadorganicaUsuarioResponseDto';
 import { map, Observable } from 'rxjs';
-import { EntidadAplicacionRequestDto } from '../pages/entidad/entidad-aplicacion/Models/EntidadAplicacionRequestDto';
+import { UnidadorganicaUsuarioRequestDto } from '../pages/unidadorganica/unidadorganica-usuario/Models/UnidadorganicaUsuarioRequestDto';
 
 @Injectable({
   providedIn: 'root',
 })
-export class EntidadaplicacionService {
+export class UnidadorganicausuarioService {
   baseUrl = environment.baseUrl;
   http = inject(HttpClient);
 
   constructor() {}
 
-  getPaginadoEntidadAplicacion(
-    idEntidad: number,
+  getPaginadoUnidadorgnicaUsuario(
+    idUnidadorganica: number,
     search = '',
     page = 1,
     pageSize = 10
   ) {
     const params = {
-      idEntidad,
+      idUnidadorganica,
       search,
       Page: page,
       RecordsPerPage: pageSize,
     };
 
     return this.http
-      .get<ApiResponse<EntidadAplicacionResponseDto[]>>(
-        `${this.baseUrl}/api/EntidadAplicacion/entidad/${idEntidad}/aplicaciones`,
+      .get<ApiResponse<UnidadorganicaUsuarioResponseDto[]>>(
+        `${this.baseUrl}/api/usuarioUnidadOrganicas/unidadorganica/${idUnidadorganica}/usuarios`,
         {
           params,
           observe: 'response', // 👈 Esto es CLAVE para acceder a headers
@@ -55,30 +55,30 @@ export class EntidadaplicacionService {
       );
   }
 
-  agregarEntidadAplicacion(
-    dto: EntidadAplicacionRequestDto
+  agregarUnidadorganicaUsuario(
+    dto: UnidadorganicaUsuarioRequestDto
   ): Observable<ApiResponse<number>> {
     return this.http.post<ApiResponse<number>>(
-      `${this.baseUrl}/api/EntidadAplicacion`,
+      `${this.baseUrl}/api/usuarioUnidadOrganicas`,
       dto
     );
   }
 
-  actualizarEntidadAplicacion(
+  actualizarUnidadorganicaUsuario(
     id: number,
-    dto: EntidadAplicacionRequestDto
+    dto: UnidadorganicaUsuarioRequestDto
   ): Observable<ApiResponse<null>> {
     return this.http.put<ApiResponse<null>>(
-      `${this.baseUrl}/api/EntidadAplicacion/${id}`,
+      `${this.baseUrl}/api/usuarioUnidadOrganicas/${id}`,
       dto
     );
   }
 
-  getEntidadAplicacion(
-    idEntidad: number,
-    idAplicacion: number
-  ): Observable<ApiResponse<EntidadAplicacionResponseDto>> {
-    const url = `${this.baseUrl}/api/EntidadAplicacion/entidad/${idEntidad}/aplicacion/${idAplicacion}`;
-    return this.http.get<ApiResponse<EntidadAplicacionResponseDto>>(url);
+  getUnidadorganicaUsuario(
+    idUnidadorganica: number,
+    idUsuario: number
+  ): Observable<ApiResponse<UnidadorganicaUsuarioResponseDto>> {
+    const url = `${this.baseUrl}/api/usuarioUnidadOrganicas/unidadorganica/${idUnidadorganica}/usuario/${idUsuario}`;
+    return this.http.get<ApiResponse<UnidadorganicaUsuarioResponseDto>>(url);
   }
 }

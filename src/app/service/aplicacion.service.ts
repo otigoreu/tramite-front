@@ -25,7 +25,7 @@ export class AplicacionService {
 
     return this.http
       .get<ApiResponse<Aplicacion[]>>(
-        `${this.baseUrl}/api/Aplicacion/descripcion`,
+        `${this.baseUrl}/api/aplicaciones/descripcion`,
         {
           params,
           observe: 'response', // 👈 Esto es CLAVE para acceder a headers
@@ -54,7 +54,7 @@ export class AplicacionService {
     dto: AplicacionRequestDto
   ): Observable<ApiResponse<number>> {
     return this.http.post<ApiResponse<number>>(
-      `${this.baseUrl}/api/Aplicacion`,
+      `${this.baseUrl}/api/aplicaciones`,
       dto
     );
   }
@@ -64,27 +64,27 @@ export class AplicacionService {
     dto: AplicacionRequestDto
   ): Observable<ApiResponse<null>> {
     return this.http.put<ApiResponse<null>>(
-      `${this.baseUrl}/api/Aplicacion/${id}`,
+      `${this.baseUrl}/api/aplicaciones/${id}`,
       dto
     );
   }
 
   eliminarAplicacion(id: number): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(
-      `${this.baseUrl}/api/Aplicacion/${id}`
+      `${this.baseUrl}/api/aplicaciones/${id}`
     );
   }
 
   deshabilitarAplicacion(id: number): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
-      `${this.baseUrl}/api/Aplicacion/${id}/finalize`,
+      `${this.baseUrl}/api/aplicaciones/${id}/finalize`,
       null
     );
   }
 
   habilitarAplicacion(id: number): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
-      `${this.baseUrl}/api/Aplicacion/${id}/initialize`,
+      `${this.baseUrl}/api/aplicaciones/${id}/initialize`,
       null
     );
   }
