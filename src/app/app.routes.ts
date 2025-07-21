@@ -6,6 +6,7 @@ import { TipoDocumentoComponent } from './pages/tipo-documento/tipo-documento.co
 import { AplicacionComponent } from './pages/aplicacion/aplicacion.component';
 import { SedeComponent } from './pages/sede/sede.component';
 import { MenuComponent } from './pages/menu/menu.component';
+import { RolComponent } from './pages/rol/rol.component';
 import { UserComponent } from './pages/user/user.component';
 
 export const routes: Routes = [
@@ -80,7 +81,18 @@ export const routes: Routes = [
           ],
         },
       },
-
+      {
+        path: 'pages/user',
+       // canActivate: [authGuard],
+        component: UserComponent,
+        data: {
+          title: 'Usuario',
+          urls: [
+           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Usuario' },
+          ],
+        },
+      },
       {
         path: 'starter',
         loadChildren: () =>

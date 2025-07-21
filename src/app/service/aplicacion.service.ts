@@ -1,11 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
-import { Aplicacion} from '../model/aplicacion';
+import { Aplicacion, AplicacionWithSede, AplicacionWithSedes} from '../model/aplicacion';
 
 import { map } from 'rxjs';
 interface GetAplicacion{
   data:Aplicacion[];
+  success:string;
+  errorMessage:string;
+}
+interface GetAplicacionWithSede{
+  data:AplicacionWithSede[];
   success:string;
   errorMessage:string;
 }
@@ -30,20 +35,24 @@ export class AplicacionService {
 
   constructor() { }
 
-getData(){
-  return this.http.get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones`)
+getDataWithSede(){
+  return this.http.get<GetAplicacionWithSede>(`${this.baseUrl}/api/aplicaciones/descripcionWithSede`)
   .pipe(map((response)=>response.data))
 }
 getDataIgnoreQuery(){
       return this.http.get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones/descripcion`)
       .pipe(map((response)=>response.data));
+
     }
 
 save (aplicacion:Aplicacion){
-  return this.http.post(`${this.baseUrl}/api/aplicaciones/`,aplicacion);
+  return this.http.post(`${this.baseUrl}/api/aplicaciones/single`,aplicacion);
+}
+saveWithSede (aplicacion:AplicacionWithSedes){
+  return this.http.post(`${this.baseUrl}/api/aplicaciones`,aplicacion);
 }
 
-update(id:number,aplicacion:Aplicacion){
+update(id:number,aplicacion:AplicacionWithSedes){
   return this.http.put(`${this.baseUrl}/api/aplicaciones/?id=${id}`,aplicacion);
 }
 

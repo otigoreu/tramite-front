@@ -3,7 +3,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatDialogRef } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
-import { notify9 } from 'src/app/data/mensajes.data';
+import { notify10, notify11, notify4, notify9 } from 'src/app/data/mensajes.data';
 import { MaterialModule } from 'src/app/material.module';
 import { AuthService } from 'src/app/service/auth.service';
 import { CoreService } from 'src/app/services/core.service';
@@ -17,7 +17,8 @@ import { CoreService } from 'src/app/services/core.service';
 })
 export class ChangePasswordComponent {
 
-
+ hide = true;
+ alignhide = true;
 
  authService = inject(AuthService);
 notifications = inject(NotificationsService);
@@ -43,17 +44,19 @@ changePassword(){
 //cambiando
   const oldPassword= this.loginForm.controls.OldPassword.value!;
       const newPassword= this.loginForm.controls.NewPassword.value!;
-      console.log('datos :', oldPassword,"-",newPassword);
       this.authService.changePassword(oldPassword,newPassword)
       .subscribe((response) => {
         if (response.success) {
-          this.notifications.set(notify9,true,);
+          this.notifications.set(notify10,true,);
 
           this._dialogRef.close();
 
         }
+        else {
+          this.notifications.set(notify11,true,);
+        }
       });
-this.close();
+//this.close();
 
  }
  close(){

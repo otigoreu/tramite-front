@@ -1,27 +1,12 @@
-import { ChangePassword, Login, LoginResponse, RegisterRequest, RegisterResponse } from './../model/usuario';
+
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
-import { NewPasswordRequest, Usuario } from '../model/usuario';
+
 import { catchError, of } from 'rxjs';
+import { ChangePasswordRequestBody, ForgotPasswordApiResponse, LoginApiResponse, LoginRequestBody, RegisterApiResponse, RegisterRequestBody, ResetPasswordRequestBody } from '../model/usuario';
 
 
-interface RegisterApiResponse{
-  data:RegisterResponse;
-  success:boolean;
-  errorMessage:string;
-}
-
-interface LoginApiResponse{
-  data:LoginResponse;
-  success:boolean;
-  errorMessage:string;
-}
-
-interface ForgotPasswordApiResponse {
-  success: boolean;
-  errorMessage: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +20,7 @@ http=inject (HttpClient);
 
 
 
-  registerUser(user:RegisterRequest){
+  registerUser(user:RegisterRequestBody){
     return this.http.post<RegisterApiResponse>(`${this.baseUrl}/api/users/Register`,user).pipe(
           catchError((httpErrorResponse: HttpErrorResponse) => {
             const errorResponse: RegisterApiResponse = {
@@ -48,35 +33,33 @@ http=inject (HttpClient);
         );
   }
 
-  loginUser(login:Login){
+  loginUser(login:LoginRequestBody){
     return this.http.post<LoginApiResponse>(`${this.baseUrl}/api/users/Login`,login).pipe(
           catchError((httpErrorResponse: HttpErrorResponse) => {
-            const errorResponse: LoginApiResponse = {
-              success: false,
-              data: {
-                expirationDate: '',
-                token: '',
-                roles: [],
-                persona: {
-                  id: 0,
-                  nombres: '',
-                  apellidoPat: '',
-                  apellidoMat: '',
-                  fechaNac: '',
-                  direccion: '',
-                  referencia: '',
-                  celular: '',
-                  edad: '',
-                  email: '',
-                  tipoDoc: '',
-                  nroDoc: '',
-                  status:'true'
-                },
-                sede: { id: 0, descripcion: '',status:'true' },
-                aplicaciones: [],
-              },
-              errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
-            };
+           const errorResponse: LoginApiResponse = {
+                     success: false,
+                     data: {
+                       expirationDate: '',
+                       token: '',
+                       roles: [],
+                       persona: {
+                         id: 0,
+                         nombres: '',
+                         apellidoPat: '',
+                         apellidoMat: '',
+                         fechaNac: '',
+                         edad:0,
+                         email: '',
+                         idTipoDoc: 0,
+                         nroDoc: '',
+                         estado: ''
+                       },
+                       entidad:{id:0,descripcion:'',ruc:'',estado:''},
+                       unidadOrganicas: [],
+                       aplicaciones: [],
+                     },
+                     errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
+                   };
 
             return of(errorResponse);
           })
@@ -97,11 +80,11 @@ http=inject (HttpClient);
 
   }
 
-  resetPassword(body: NewPasswordRequest){
+  resetPassword(body: ResetPasswordRequestBody){
     return this.http.post(`${this.baseUrl}/api/users/ResetPassword`,body)
   }
 
-  changePassword(body: ChangePassword){
+  changePassword(body: ChangePasswordRequestBody ){
     return this.http.post(`${this.baseUrl}api/users/changePassword`,body);
   }
 

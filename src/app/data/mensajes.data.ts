@@ -70,6 +70,21 @@ export const menssageNoti:Notification[]=[
     title:'Envio Fallido',
     content: 'Su correo no se encuentra Registrado',
 
+  },
+   {
+    type:NotificationType.Success,
+    icon: IconsNotify.Success ,
+    title:'Cambio de contraseña exitoso',
+    content: 'Use su nueva contraseña al iniciar sesión',
+
+
+  },
+  {
+    type:NotificationType.Warn,
+    icon: IconsNotify.Warn,
+    title:'contraseña actual Incorrecta',
+    content: 'Intenta otra vez',
+
   }
 
 
@@ -84,6 +99,8 @@ export const[
   notify6,
   notify7,
   notify8,
-  notify9
+  notify9,
+  notify10,
+  notify11
 
 ] =menssageNoti
