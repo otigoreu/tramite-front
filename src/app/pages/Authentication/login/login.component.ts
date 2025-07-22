@@ -39,6 +39,7 @@ import { notify1, notify6 } from 'src/app/data/mensajes.data';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
+  hide = true;
   options = this.settings.getOptions();
 
   constructor(private settings: CoreService) {}
@@ -78,11 +79,7 @@ export class LoginComponent {
 
     // this.usuarioService.loginUser(dni, password).subscribe((response) => {
     this.authService.login(dni, password).subscribe((response) => {
-      console.log('response con data 1', response);
-
       if (response && response.success) {
-        // console.log('login successfull1');
-
         //para el localstorage
         localStorage.setItem('token', response.data.token);
 
@@ -100,7 +97,9 @@ export class LoginComponent {
         this.authService.aplicacion.set(
           response.data.aplicaciones[0].descripcion
         );
-        this.authService.sede.set(response.data.sede.descripcion);
+        this.authService.unidadOrganicas.set(
+          response.data.unidadOrganicas[0].descripcion
+        );
         this.authService.idAplicacion.set(
           response.data.aplicaciones[0].id.toString()
         );
@@ -109,7 +108,10 @@ export class LoginComponent {
         localStorage.setItem('userRole', this.authService.userRole());
         localStorage.setItem('Aplicacion', this.authService.aplicacion());
 
-        localStorage.setItem('sede', this.authService.sede());
+        localStorage.setItem(
+          'unidadOrganica',
+          this.authService.unidadOrganicas()
+        );
         localStorage.setItem('userEmail', this.authService.userEmail());
         localStorage.setItem(
           'nombreApellido',
@@ -134,12 +136,12 @@ export class LoginComponent {
             // console.log('menu', data);
             data.forEach((nav) => {
               // console.log('nav', nav);
-              if (!nav.parentMenuId) {
+              if (!nav.idMenuPadre) {
                 const navItem: NavItem = {
                   id: nav.id,
-                  displayName: nav.displayName,
-                  iconName: nav.iconName,
-                  route: nav.route,
+                  displayName: nav.descripcion,
+                  iconName: nav.icono,
+                  route: nav.ruta,
                   children: [],
                 };
                 navItems.push(navItem);
@@ -150,7 +152,7 @@ export class LoginComponent {
             this.router.navigate([this.firstOptionMenu()]),
               navItems.forEach((parentNav: NavItem) => {
                 parentNav.children = data.filter(
-                  (nav) => nav.parentMenuId === parentNav.id
+                  (nav) => nav.idMenuPadre === parentNav.id
                 );
               });
           });

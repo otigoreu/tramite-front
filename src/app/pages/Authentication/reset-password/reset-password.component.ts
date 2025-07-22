@@ -20,6 +20,9 @@ import { CoreService } from 'src/app/services/core.service';
 })
 export class ResetPasswordComponent {
 
+ hide = true;
+ alignhide = true;
+
   options = this.settings.getOptions();
 
     constructor(private settings: CoreService) {}

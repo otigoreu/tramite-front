@@ -29,16 +29,12 @@ import { DialogPersonaComponent } from './dialog-persona/dialog-persona.componen
 //imports apra idioma español en fechas
 import { registerLocaleData } from '@angular/common';
 import localeES from '@angular/common/locales/es';
-import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
-import { NotificationsService } from 'angular2-notifications';
 import Swal from 'sweetalert2';
-
 registerLocaleData(localeES);
 
 @Component({
   selector: 'app-persona',
   standalone: true,
-  styleUrl: 'persona.component.scss', // Estilo asociado
   imports: [
     MaterialModule,
     TablerIconsModule,
@@ -54,6 +50,7 @@ registerLocaleData(localeES);
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
     { provide: DateAdapter, useClass: CustomDateAdapter },
   ],
+
   templateUrl: './persona.component.html',
 })
 export class PersonaComponent implements OnInit, AfterViewInit {
@@ -67,7 +64,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     'apellidos',
     'email',
     'fechaNac',
-    'status',
+    'estado',
     'actions',
   ];
   dataSource: MatTableDataSource<Personas>;
@@ -81,7 +78,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
 
   dialog = inject(MatDialog);
 
-  constructor(private notificationsService: NotificationsService) {
+  constructor() {
     const persona: Personas[] = [];
     this.dataSource = new MatTableDataSource(persona);
   }
@@ -102,14 +99,12 @@ export class PersonaComponent implements OnInit, AfterViewInit {
       this.dataSource.paginator = this.paginator;
     });
   }
-
   loadDataFilter() {
     this.appService.getDatafilter().subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
       this.dataSource.paginator = this.paginator;
     });
   }
-
   loadDataPAgeable(p: number, s: number) {
     this.appService.getDataPageable(p, s).subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
@@ -136,18 +131,14 @@ export class PersonaComponent implements OnInit, AfterViewInit {
       text: '¡No podrás revertir esto!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
+      confirmButtonText: 'Sí, Eliminar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
         // lógica de confirmación
         this.appService.deletePerson(id).subscribe((response) => {
           if (response.success) {
-            this.notificationsService.success(
-              ...NotificationMessages.successDelete('persona')
-            );
-
-            this.loadData();
+            this.loadDataFilter();
           }
         });
       }
@@ -157,6 +148,9 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   openDialog(personaDialog?: Persona) {
     this.dialog
       .open(DialogPersonaComponent, {
+        width: '600px',
+        height: '675px',
+
         data: personaDialog,
       })
       .afterClosed()
@@ -164,7 +158,6 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         this.loadDataFilter();
       });
   }
-
   showmore(e: any) {
     this.appService
       .getDataPageable(e.pageIndex + 1, e.pageSize)
@@ -173,23 +166,19 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         this.totalElements = Object.keys(response).length;
       });
   }
-
   finalized(id: number) {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: '¡No podrás revertir esto!',
+      // text: '¡No podrás revertir esto!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Sí, Deshabilitar',
+      confirmButtonText: 'Sí, Desactivar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
         // lógica de confirmación
         this.appService.finalized(id).subscribe((response) => {
           if (response.success) {
-            this.notificationsService.success(
-              ...NotificationMessages.success('Persona Deshabilitada')
-            );
             this.loadDataFilter();
           }
         });
@@ -200,19 +189,16 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   initialized(id: number) {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: '¡No podrás revertir esto!',
-      icon: 'warning',
+      // text: '¡No podrás revertir esto!',
+      icon: 'success',
       showCancelButton: true,
-      confirmButtonText: 'Sí, Habilitar',
+      confirmButtonText: 'Sí, Activar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
         // lógica de confirmación
         this.appService.initialized(id).subscribe((response) => {
           if (response.success) {
-            this.notificationsService.success(
-              ...NotificationMessages.success('Persona Habilitada')
-            );
             this.loadDataFilter();
           }
         });

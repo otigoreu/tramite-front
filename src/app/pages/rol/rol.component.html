@@ -5,7 +5,7 @@
         <mat-form-field appearance="outline" class="w-100 hide-hint">
           <input
             matInput
-            placeholder="Buscar Persona"
+            placeholder="Buscar Aplicacion"
             (keyup)="applyFilter($any($event.target).value)"
           />
           <mat-icon matSuffix>
@@ -25,6 +25,7 @@
   <mat-card-content>
     <div class="table-responsive">
       <table mat-table [dataSource]="dataSource" class="w-100" matSort>
+
         <ng-container matColumnDef="item">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Item
@@ -32,35 +33,13 @@
           <td mat-cell *matCellDef="let row ; let i = index;" class="f-s-14">{{i+1}}</td>
         </ng-container>
 
-        <ng-container matColumnDef="nombres">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Nombres
-          </th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.nombres}}</td>
-        </ng-container>
 
-        <ng-container matColumnDef="apellidos">
+        <ng-container matColumnDef="descripcion" >
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Apellidos
+            Descripcion
           </th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.apellidoPat }} {{ row.apellidoMat}}</td>
+          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.name}}</td>
         </ng-container>
-
-        <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Correo  Electronico
-          </th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.email}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="fechaNac">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Fecha de Nacimiento
-          </th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.fechaNac | date:'dd-MM-yyyy':'':'es'}}</td>
-        </ng-container>
-
-        <div class="flex gap-2 justify-end w-full">
         <ng-container matColumnDef="estado">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Estado
@@ -79,8 +58,10 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+
+
+        <ng-container matColumnDef="acciones" >
+          <th mat-header-cell *matHeaderCellDef >
             Acciones
           </th>
           <td mat-cell *matCellDef="let row" class="action-link">
@@ -95,7 +76,7 @@
             >
               <i-tabler name="trash" class="icon-18"></i-tabler>
             </a>
-            @if(!row.estado){
+             @if(!row.estado){
               <a
                 (click)="initialized(row.id)"
                 class="m-r-10 cursor-pointer" matTooltip="Habilitar" matTooltipPosition="above"
@@ -111,9 +92,12 @@
                 <i-tabler name="circle-arrow-down" class="icon-18"></i-tabler>
               </a>
             }
+
           </td>
         </ng-container>
-</div>
+
+
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
@@ -124,4 +108,3 @@
     </div>
   </mat-card-content>
 </mat-card>
-

@@ -7,23 +7,24 @@ import {
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Menu, MenuInfo } from 'src/app/model/menu';
+import { MenuRol, MenuWithRol } from 'src/app/model/menu';
 import { MenuService } from 'src/app/service/menu.service';
 import { MaterialModule } from 'src/app/material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CommonModule } from '@angular/common';
-import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMenuComponent } from './dialog-menu/dialog-menu.component';
+import Swal from 'sweetalert2';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  styleUrl: 'menu.component.scss', // Estilo asociado
   imports: [
     MaterialModule,
+    MatButtonModule,
     TablerIconsModule,
     MatNativeDateModule,
     NgScrollbarModule,
@@ -38,32 +39,34 @@ export class MenuComponent {
 
   displayedColumns: string[] = [
     'item',
-    'displayName',
+    'descripcion',
     'id',
-    'iconName',
-    'route',
+    'icono',
+    'ruta',
     'Aplicacion',
-    'ParentMenuId',
-    'status',
+    'Rol',
+    'IdMenuPadre',
+    'estado',
     'acciones',
   ];
 
-  dataSource: MatTableDataSource<MenuInfo>;
+  dataSource: MatTableDataSource<MenuWithRol>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
     Object.create(null);
   @ViewChild(MatSort) sort!: MatSort;
   dialog = inject(MatDialog);
 
   constructor() {
-    const menus: MenuInfo[] = [];
+    const menus: MenuWithRol[] = [];
     this.dataSource = new MatTableDataSource(menus);
   }
+
   ngOnInit(): void {
     this.loadData();
   }
 
   loadData() {
-    this.menuService.getDataIgnoreQuery().subscribe((response) => {
+    this.menuService.getDataWithRol().subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
 
       // console.log(this.dataSource);
@@ -74,11 +77,11 @@ export class MenuComponent {
   applyFilter(filterValue: any): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-  openDialog(menu?: Menu) {
+  openDialog(menu?: MenuRol) {
     this.dialog
       .open(DialogMenuComponent, {
         width: '400px',
-        height: '570px',
+        height: '650px',
         data: menu,
       })
       .afterClosed()
@@ -87,33 +90,60 @@ export class MenuComponent {
       });
   }
   delete(id: number) {
-    if (confirm('Eliminar')) {
-      this.menuService.delete(id).subscribe((response) => {
-        if (response.success) {
-          alert('Aplicacion eliminada');
-          this.loadData();
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Emilinar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.menuService.delete(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
+          }
+        });
+      }
+    });
   }
   initialized(id: number) {
-    if (confirm('Activar?')) {
-      this.menuService.initialized(id).subscribe((response) => {
-        if (response.success) {
-          alert('Aplicacion Activada');
-          this.loadData();
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      // text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Activar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.menuService.initialized(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
+          }
+        });
+      }
+    });
   }
   finalized(id: number) {
-    if (confirm('Desactivar?')) {
-      this.menuService.finalized(id).subscribe((response) => {
-        if (response.success) {
-          alert('Aplicacion desactivada');
-          this.loadData();
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      // text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Desactivar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.menuService.finalized(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
+          }
+        });
+      }
+    });
   }
 }

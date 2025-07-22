@@ -1,32 +1,17 @@
-import {
-  ChangePassword,
-  Login,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-} from './../model/usuario';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
-import { NewPasswordRequest, Usuario } from '../model/usuario';
+
 import { catchError, of } from 'rxjs';
-
-interface RegisterApiResponse {
-  data: RegisterResponse;
-  success: boolean;
-  errorMessage: string;
-}
-
-interface LoginApiResponse {
-  data: LoginResponse;
-  success: boolean;
-  errorMessage: string;
-}
-
-interface ForgotPasswordApiResponse {
-  success: boolean;
-  errorMessage: string;
-}
+import {
+  ChangePasswordRequestBody,
+  ForgotPasswordApiResponse,
+  LoginApiResponse,
+  LoginRequestBody,
+  RegisterApiResponse,
+  RegisterRequestBody,
+  ResetPasswordRequestBody,
+} from '../model/usuario';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +22,7 @@ export class UserService {
 
   constructor() {}
 
-  registerUser(user: RegisterRequest) {
+  registerUser(user: RegisterRequestBody) {
     return this.http
       .post<RegisterApiResponse>(`${this.baseUrl}/api/users/Register`, user)
       .pipe(
@@ -53,7 +38,7 @@ export class UserService {
       );
   }
 
-  loginUser(login: Login) {
+  loginUser(login: LoginRequestBody) {
     return this.http
       .post<LoginApiResponse>(`${this.baseUrl}/api/users/Login`, login)
       .pipe(
@@ -74,9 +59,10 @@ export class UserService {
                 email: '',
                 idTipoDoc: 0,
                 nroDoc: '',
-                status: 'true',
+                estado: '',
               },
-              sede: { id: 0, descripcion: '', status: 'true' },
+              entidad: { id: 0, descripcion: '', ruc: '', estado: '' },
+              unidadOrganicas: [],
               aplicaciones: [],
             },
             errorMessage:
@@ -106,11 +92,11 @@ export class UserService {
       );
   }
 
-  resetPassword(body: NewPasswordRequest) {
+  resetPassword(body: ResetPasswordRequestBody) {
     return this.http.post(`${this.baseUrl}/api/users/ResetPassword`, body);
   }
 
-  changePassword(body: ChangePassword) {
+  changePassword(body: ChangePasswordRequestBody) {
     return this.http.post(`${this.baseUrl}api/users/changePassword`, body);
   }
 

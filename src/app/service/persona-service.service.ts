@@ -98,7 +98,6 @@ export class PersonaServiceService {
       `${this.baseUrl}/api/personas/finalized/${id}`
     );
   }
-
   initialized(id: number) {
     return this.http.get<DeletePersonResponse>(
       `${this.baseUrl}/api/personas/initialized/${id}`
@@ -112,9 +111,8 @@ export class PersonaServiceService {
       apellidoPat: user.apellidoPat,
       apellidoMat: user.apellidoMat,
       fechaNac: user.fechaNac,
-      edad: user.edad,
       email: user.email,
-      idTipoDoc: user.idTipoDoc,
+      tipoDoc: user.idTipoDoc,
       nroDoc: user.nroDoc,
     });
   }
@@ -125,9 +123,8 @@ export class PersonaServiceService {
       apellidoPat: user.apellidoPat,
       apellidoMat: user.apellidoMat,
       fechaNac: user.fechaNac,
-      edad: user.edad,
       email: user.email,
-      idTipoDoc: user.idTipoDoc,
+      tipoDoc: user.idTipoDoc,
       nroDoc: user.nroDoc,
     });
   }

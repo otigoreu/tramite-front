@@ -1,26 +1,23 @@
-import {
-  LoginApiResponse1,
-  LoginRequestBody1,
-  ResetPasswordApiResponse,
-  ResetPasswordRequestBody,
-} from './../model/auth1';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { catchError, EMPTY, map, Observable, of } from 'rxjs';
-
-import {
-  ChangePasswordApiResponse,
-  ChangePasswordRequestBody,
-  ForgotPasswordApiResponse,
-  ForgotPasswordRequestBody,
-  RegisterApiResponse,
-  RegisterRequestBody,
-} from '../model/auth';
 import { NotificationsService } from 'angular2-notifications';
 import { navItems } from '../layouts/full/vertical/sidebar/sidebar-data';
 import { environment } from 'src/environments/environment.development';
 import { Rol } from '../model/rol';
 import { notify5 } from '../data/mensajes.data';
+import {
+  ChangePasswordApiResponse,
+  ChangePasswordRequestBody,
+  ForgotPasswordApiResponse,
+  ForgotPasswordRequestBody,
+  LoginApiResponse,
+  LoginRequestBody,
+  RegisterApiResponse,
+  RegisterRequestBody,
+  ResetPasswordApiResponse,
+  ResetPasswordRequestBody,
+} from '../model/usuario';
 
 interface GetRol {
   data: Rol[];
@@ -35,7 +32,6 @@ export class AuthService {
   private http = inject(HttpClient);
   private baseUrl = environment.baseUrl;
   private notificationsService = inject(NotificationsService);
-
   loading = signal(false);
   loggedIn = signal(false);
   isAdministrator = signal(false);
@@ -45,14 +41,15 @@ export class AuthService {
   nombresApellidos = signal('');
   aplicacion = signal('');
   idAplicacion = signal('');
-  sede = signal('');
+  unidadOrganicas = signal('');
+  entidad = signal('');
 
-  login(dni: string, password: string): Observable<LoginApiResponse1> {
+  login(dni: string, password: string): Observable<LoginApiResponse> {
     const apiUrl = this.baseUrl + '/api/users/login';
-    const body: LoginRequestBody1 = { username: dni, password };
-    return this.http.post<LoginApiResponse1>(apiUrl, body).pipe(
+    const body: LoginRequestBody = { username: dni, password };
+    return this.http.post<LoginApiResponse>(apiUrl, body).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => {
-        const errorResponse: LoginApiResponse1 = {
+        const errorResponse: LoginApiResponse = {
           success: false,
           data: {
             expirationDate: '',
@@ -64,15 +61,14 @@ export class AuthService {
               apellidoPat: '',
               apellidoMat: '',
               fechaNac: '',
-              direccion: '',
-              referencia: '',
-              celular: '',
-              edad: '',
+              edad: 0,
               email: '',
-              tipoDoc: '',
+              idTipoDoc: 0,
               nroDoc: '',
+              estado: '',
             },
-            sede: { id: 0, descripcion: '' },
+            entidad: { id: 0, descripcion: '', ruc: '', estado: '' },
+            unidadOrganicas: [],
             aplicaciones: [],
           },
           errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
@@ -96,7 +92,6 @@ export class AuthService {
       })
     );
   }
-
   forgotPassword(email: string): Observable<ForgotPasswordApiResponse> {
     const apiUrl = this.baseUrl + '/api/users/RequestTokenToResetPassword';
     const body: ForgotPasswordRequestBody = { email };
@@ -111,7 +106,6 @@ export class AuthService {
       })
     );
   }
-
   logout() {
     localStorage.clear();
     this.loggedIn.set(false);
@@ -122,7 +116,6 @@ export class AuthService {
       navItems.pop();
     }
   }
-
   getDataRoles() {
     return this.http
       .get<GetRol>('${this.baseUrl}/users/roles')
@@ -157,7 +150,6 @@ export class AuthService {
         })
       );
   }
-
   changePassword(
     oldPassword: string,
     newPassword: string

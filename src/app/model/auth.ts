@@ -14,6 +14,7 @@ export interface LoginRequestBody {
 }
 
 //REGISTER
+//usado en register
 export interface RegisterApiResponse {
   data: {
     userId: string;
@@ -24,6 +25,8 @@ export interface RegisterApiResponse {
   success: boolean;
   errorMessage: string;
 }
+
+//usado en register
 export interface RegisterRequestBody {
   firstName: string;
   lastName: string;
@@ -43,7 +46,7 @@ export interface ChangePasswordApiResponse {
   errorMessage: string;
 }
 
-
+//FORGOT PASSWORD
 export interface ForgotPasswordRequestBody {
   email: string;
 }

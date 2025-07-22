@@ -8,7 +8,7 @@ export interface Personas {
   email: string;
   idTipoDoc: number;
   nroDoc: string;
-  status: string;
+  estado: string;
 }
 
 export interface Persona {
@@ -21,7 +21,7 @@ export interface Persona {
   email: string;
   idTipoDoc: number;
   nroDoc: string;
-  status: string;
+  estado: string;
 }
 export interface PersonaNew {
   nombres: string;

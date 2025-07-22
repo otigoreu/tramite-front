@@ -1,55 +1,84 @@
+import { Persona } from './persona';
+import { Entidad } from './entidad';
+import { UnidadOrganica } from './unidadOrganica';
 import { Aplicacion } from '../pages/aplicacion/Modals/Aplicacion';
-import { Persona, PersonaNew } from './persona';
-import { Sede } from './sede';
 
-export interface RegisterRequest {
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  idPersona: number;
-  idSede: number;
-  password: string;
-  confirmPassword: string;
+export interface LoginApiResponse {
+  data: Data;
+  success: boolean;
+  errorMessage: null;
 }
 
-export interface RegisterResponse {
-  userId: string;
+export interface Data {
   token: string;
   expirationDate: string;
   roles: string[];
+  entidad: Entidad;
+  persona: Persona;
+  unidadOrganicas: UnidadOrganica[];
+  aplicaciones: Aplicacion[];
 }
 
-export interface Login {
+export interface LoginRequestBody {
   username: string;
   password: string;
 }
 
-export interface LoginResponse {
-  token: string;
-  expirationDate: string;
-  roles: string[];
-  persona: Persona;
-  sede: Sede;
-  aplicaciones: Aplicacion[];
+export interface RegisterRequestBody {
+  firstName: string;
+  lastName: string;
+  password: string;
+  email: string;
+  confirmPassword: string;
 }
 
+export interface RegisterApiResponse {
+  data: {
+    userId: string;
+    token: string;
+    expirationDate: string;
+    roles: string[];
+  };
+  success: boolean;
+  errorMessage: string;
+}
+
+export interface ForgotPasswordApiResponse {
+  success: boolean;
+  errorMessage: string;
+}
+
+export interface ForgotPasswordRequestBody {
+  email: string;
+}
+
+export interface ResetPasswordRequestBody {
+  email: string;
+  token: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export interface ResetPasswordApiResponse {
+  success: boolean;
+  errorMessage: string;
+}
+
+export interface ChangePasswordApiResponse {
+  success: boolean;
+  errorMessage: string;
+}
+
+export interface ChangePasswordRequestBody {
+  oldPassword: string;
+  newPassword: string;
+}
+
+///--------------------------------------------------------
 export interface Usuario {
   id: number;
   firstName: string;
   lastNAme: string;
   userName: string;
   email: string;
-}
-
-export interface ChangePassword {
-  oldPassword: string;
-  newPassword: string;
-}
-
-export interface NewPasswordRequest {
-  email: string;
-  token: string;
-  newPassword: string;
-  confirmNewPassword: string;
 }

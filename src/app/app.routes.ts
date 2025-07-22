@@ -6,8 +6,7 @@ import { TipoDocumentoComponent } from './pages/tipo-documento/tipo-documento.co
 import { AplicacionComponent } from './pages/aplicacion/aplicacion.component';
 import { SedeComponent } from './pages/sede/sede.component';
 import { MenuComponent } from './pages/menu/menu.component';
-import { EntidadComponent } from './pages/entidad/entidad.component';
-import { UnidadorganicaComponent } from './pages/unidadorganica/unidadorganica.component';
+import { RolComponent } from './pages/rol/rol.component';
 
 export const routes: Routes = [
   {
@@ -17,34 +16,13 @@ export const routes: Routes = [
       {
         path: '',
         //redirectTo: '/dashboards/dashboard1',
-        redirectTo: 'pages/persona',
+        redirectTo: '/login',
         pathMatch: 'full',
       },
-      {
-        path: 'pages/entidad',
-        component: EntidadComponent,
-        data: {
-          title: 'Entidad',
-          urls: [
-            //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Entidad' },
-          ],
-        },
-      },
-      {
-        path: 'pages/unidadorganica',
-        component: UnidadorganicaComponent,
-        data: {
-          title: 'Unidad Organica',
-          urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Unidad Organica' },
-          ],
-        },
-      },
+
       {
         path: 'pages/persona',
-        // canActivate: [authGuard],
+        canActivate: [authGuard],
         component: PersonaComponent,
         data: {
           title: 'Personas',
@@ -56,7 +34,7 @@ export const routes: Routes = [
       },
       {
         path: 'pages/tipo-documento',
-        // canActivate: [authGuard],
+        canActivate: [authGuard],
         component: TipoDocumentoComponent,
         data: {
           title: 'Tipo Documento',
@@ -66,39 +44,34 @@ export const routes: Routes = [
           ],
         },
       },
+
       {
-        path: 'pages/aplicacion',
-        // canActivate: [authGuard],
-        component: AplicacionComponent,
-        data: {
-          title: 'Aplicaciones',
-          urls: [
-            // { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Aplicaicon' },
-          ],
-        },
+        path: 'pages',
+        loadChildren: () =>
+          import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },
-      {
-        path: 'pages/sede',
-        // canActivate: [authGuard],
-        component: SedeComponent,
-        data: {
-          title: 'Sedes',
-          urls: [
-            //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Sedes' },
-          ],
-        },
-      },
+
       {
         path: 'pages/menu',
-        // canActivate: [authGuard],
+        canActivate: [authGuard],
         component: MenuComponent,
         data: {
           title: 'Menu',
           urls: [
             // { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Menus' },
+          ],
+        },
+      },
+      {
+        path: 'pages/rol',
+        canActivate: [authGuard],
+        component: RolComponent,
+        data: {
+          title: 'Rol',
+          urls: [
+            // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Rol' },
           ],
         },
       },
@@ -110,49 +83,49 @@ export const routes: Routes = [
     ],
   },
 
-  // {
-  //   path: 'login',
-  //   pathMatch: 'full',
-  //   loadComponent: () =>
-  //     import('../app/pages/Authentication/login/login.component').then(
-  //       (m) => m.LoginComponent
-  //     ),
-  // },
+  {
+    path: 'login',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('../app/pages/Authentication/login/login.component').then(
+        (m) => m.LoginComponent
+      ),
+  },
 
-  // {
-  //   path: 'register',
-  //   pathMatch: 'full',
-  //   loadComponent: () =>
-  //     import('./pages/Authentication/register/register.component').then(
-  //       (m) => m.RegisterComponent
-  //     ),
-  // },
-  // {
-  //   path: 'forgot-password',
-  //   pathMatch: 'full',
-  //   loadComponent: () =>
-  //     import(
-  //       '../app/pages/Authentication/forgot-password/forgot-password.component'
-  //     ).then((m) => m.ForgotPasswordComponent),
-  // },
-  // {
-  //   path: 'reset-password',
-  //   pathMatch: 'full',
-  //   loadComponent: () =>
-  //     import(
-  //       './pages/Authentication/reset-password/reset-password.component'
-  //     ).then((m) => m.ResetPasswordComponent),
-  // },
-  // {
-  //   path: 'change-password',
-  //   pathMatch: 'full',
-  //   loadComponent: () =>
-  //     import(
-  //       './pages/Authentication/change-Password/change-Password.component'
-  //     ).then((m) => m.ChangePasswordComponent),
-  // },
-  // {
-  //   path: '**',
-  //   redirectTo: 'authentication/error',
-  // },
+  {
+    path: 'register',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./pages/Authentication/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
+  },
+  {
+    path: 'forgot-password',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import(
+        '../app/pages/Authentication/forgot-password/forgot-password.component'
+      ).then((m) => m.ForgotPasswordComponent),
+  },
+  {
+    path: 'reset-password',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import(
+        './pages/Authentication/reset-password/reset-password.component'
+      ).then((m) => m.ResetPasswordComponent),
+  },
+  {
+    path: 'change-password',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import(
+        './pages/Authentication/change-Password/change-Password.component'
+      ).then((m) => m.ChangePasswordComponent),
+  },
+  {
+    path: '**',
+    redirectTo: 'authentication/error',
+  },
 ];

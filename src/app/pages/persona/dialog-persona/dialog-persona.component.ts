@@ -23,16 +23,14 @@ import {
   provideNativeDateAdapter,
 } from '@angular/material/core';
 import { CustomDateAdapter } from 'src/app/material/custom-adapter';
-import { MatDatepicker } from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TipoDocumento } from 'src/app/model/tipoDocumento';
 import { TipoDocumentoService } from 'src/app/service/tipo-documento.service';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { mayorDeEdadValidator } from 'src/app/shared/validators/edad.validator';
+import { ReniecService } from 'src/app/service/Pide/reniec.service';
 import { NotificationsService } from 'angular2-notifications';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { mayorDeEdadValidator } from 'src/app/shared/validators/edad.validator';
-import { TablerIconsModule } from 'angular-tabler-icons';
-import { ReniecService } from 'src/app/service/Pide/reniec.service';
 
 @Component({
   selector: 'app-dialog-persona',
@@ -40,11 +38,9 @@ import { ReniecService } from 'src/app/service/Pide/reniec.service';
   imports: [
     MaterialModule,
     FormsModule,
-    MatDatepicker,
+    MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    SharedModule,
-    TablerIconsModule,
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -61,13 +57,10 @@ export class DialogPersonaComponent {
   tipoDocService = inject(TipoDocumentoService);
   personaService = inject(PersonaServiceService);
   _dialogRef = inject(MatDialogRef);
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private data: Persona,
-    private notificationsService: NotificationsService,
-    private _snackBar: MatSnackBar,
-    private reniecService: ReniecService
-  ) {}
+  reniecService = inject(ReniecService);
+  notificationsService = inject(NotificationsService);
+  _snackBar = inject(MatSnackBar);
+  constructor(@Inject(MAT_DIALOG_DATA) private data: Persona) {}
 
   personaForm = new FormGroup({
     nombres: new FormControl('', [Validators.required]),
@@ -89,9 +82,8 @@ export class DialogPersonaComponent {
   ngOnInit(): void {
     //this.persona= this.data;
     this.persona = { ...this.data }; //spred operator
-
+    console.log('data', this.persona);
     this.loadTipoDoc();
-
     this.personaForm.controls.fechaNac.valueChanges.subscribe((fechaNac) => {
       if (fechaNac) {
         const edad = this.calcularEdad(fechaNac);
@@ -100,7 +92,6 @@ export class DialogPersonaComponent {
       }
     });
   }
-
   close() {
     this._dialogRef.close();
   }
@@ -110,10 +101,9 @@ export class DialogPersonaComponent {
       this.tipoDocus = response;
     });
   }
-
   operate() {
     if (this.persona != null && this.persona.id > 0) {
-      // actualizar
+      //update
       this.personaService.update(this.persona.id, this.persona).subscribe({
         next: () => {
           this.notificationsService.success(
@@ -128,7 +118,7 @@ export class DialogPersonaComponent {
         },
       });
     } else {
-      // registrar
+      //add
       this.personaService.save(this.persona).subscribe({
         next: (res: any) => {
           if (res?.success === false && res?.errorMessage) {
@@ -153,6 +143,7 @@ export class DialogPersonaComponent {
         },
       });
     }
+    //Angular MatDialog -> 22:46
   }
 
   calcularEdad(fechaNac: string | Date): number {

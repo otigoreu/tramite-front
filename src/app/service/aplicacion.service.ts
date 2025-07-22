@@ -88,4 +88,16 @@ export class AplicacionService {
       null
     );
   }
+
+  getDataIgnoreQuery() {
+    return this.http
+      .get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones/descripcion`)
+      .pipe(map((response) => response.data));
+  }
+}
+
+interface GetAplicacion {
+  data: Aplicacion[];
+  success: string;
+  errorMessage: string;
 }

@@ -2,40 +2,60 @@
 
 export interface Menu {
   id: number;
-  displayName: string;
-  iconName: string;
-  route: string;
+  descripcion: string;
+  icono: string;
+  ruta: string;
   idAplicacion:number;
-  parentMenuId: number | null;
+  idMenuPadre: number | null;
+}
+export interface MenuRol {
+  id: number;
+  descripcion: string;
+  icono: string;
+  ruta: string;
+  idAplicacion:number;
+  idRol:string;
+  idMenuPadre: number | null;
 }
 
 export interface MenuInfo {
   id: number;
-  displayName: string;
-  iconName: string;
-  route: string;
+  descripcion: string;
+  icono: string;
+  ruta: string;
   idAplicacion:number;
   aplicacion: string;
-  parentMenuId: number;
+  idMenuPadre: number| null;
 }
 
+export interface MenuWithRoles {
+  descripcion: string;
+  icono: string;
+  ruta: string;
+  idAplicacion: number;
+  idRoles:string[];
+  idMenuPadre: number |null;
+}
 export interface MenuWithRol {
   id: number;
-  displayName: string;
-  iconName: string;
-  route: string;
+  descripcion: string;
+  icono: string;
+  ruta: string;
   idAplicacion: number;
-  roles:string[];
-  parentMenuId: number;
+  aplicacion: string;
+  idRol:string;
+  rol: string;
+  idMenuPadre: number| null;
 }
 
 export interface menuFull{
   id?: number;
-  displayName: string;
-  iconName: string;
-  route: string;
+  descripcion: string;
+  icono: string;
+  ruta: string;
   idAplicacion: number;
   aplicacion?: string;
   roles?:string[];
-  parentMenuId: number;
+  idMenuPadre: number| null;
+
 }
