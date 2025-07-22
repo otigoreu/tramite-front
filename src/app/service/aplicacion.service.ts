@@ -1,70 +1,103 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
-import { Aplicacion, AplicacionWithSede, AplicacionWithSedes} from '../model/aplicacion';
 
-import { map } from 'rxjs';
-interface GetAplicacion{
-  data:Aplicacion[];
-  success:string;
-  errorMessage:string;
-}
-interface GetAplicacionWithSede{
-  data:AplicacionWithSede[];
-  success:string;
-  errorMessage:string;
-}
-
-interface DeleteApp{
-  success: string;
-  errorMessage: string;
-}
-interface InitApp{
-  success: string;
-  errorMessage: string;
-}
+import { map, Observable } from 'rxjs';
+import { ApiResponse } from '../model/ApiResponse';
+import { AplicacionRequestDto } from '../pages/aplicacion/Modals/AplicacionRequestDto';
+import { Aplicacion } from '../pages/aplicacion/Modals/Aplicacion';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AplicacionService {
+  baseUrl = environment.baseUrl;
+  http = inject(HttpClient);
 
-  baseUrl=environment.baseUrl;
-  http=inject(HttpClient);
+  constructor() {}
 
+  getPaginadoAplicacion(search = '', page = 1, pageSize = 10) {
+    const params = {
+      search,
+      Page: page,
+      RecordsPerPage: pageSize,
+    };
 
-  constructor() { }
+    return this.http
+      .get<ApiResponse<Aplicacion[]>>(
+        `${this.baseUrl}/api/aplicaciones/descripcion`,
+        {
+          params,
+          observe: 'response', // 👈 Esto es CLAVE para acceder a headers
+        }
+      )
+      .pipe(
+        map((response) => {
+          const items = response.body?.data ?? [];
+          const total = parseInt(
+            response.headers.get('totalrecordsquantity') ?? '0',
+            10
+          );
+          return {
+            items,
+            meta: {
+              total,
+              page,
+              pageSize,
+            },
+          };
+        })
+      );
+  }
 
-getDataWithSede(){
-  return this.http.get<GetAplicacionWithSede>(`${this.baseUrl}/api/aplicaciones/descripcionWithSede`)
-  .pipe(map((response)=>response.data))
+  agregarAplicacion(
+    dto: AplicacionRequestDto
+  ): Observable<ApiResponse<number>> {
+    return this.http.post<ApiResponse<number>>(
+      `${this.baseUrl}/api/aplicaciones`,
+      dto
+    );
+  }
+
+  actualizarAplicacion(
+    id: number,
+    dto: AplicacionRequestDto
+  ): Observable<ApiResponse<null>> {
+    return this.http.put<ApiResponse<null>>(
+      `${this.baseUrl}/api/aplicaciones/${id}`,
+      dto
+    );
+  }
+
+  eliminarAplicacion(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(
+      `${this.baseUrl}/api/aplicaciones/${id}`
+    );
+  }
+
+  deshabilitarAplicacion(id: number): Observable<ApiResponse<null>> {
+    return this.http.patch<ApiResponse<null>>(
+      `${this.baseUrl}/api/aplicaciones/${id}/finalize`,
+      null
+    );
+  }
+
+  habilitarAplicacion(id: number): Observable<ApiResponse<null>> {
+    return this.http.patch<ApiResponse<null>>(
+      `${this.baseUrl}/api/aplicaciones/${id}/initialize`,
+      null
+    );
+  }
+
+  getDataIgnoreQuery() {
+    return this.http
+      .get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones/descripcion`)
+      .pipe(map((response) => response.data));
+  }
 }
-getDataIgnoreQuery(){
-      return this.http.get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones/descripcion`)
-      .pipe(map((response)=>response.data));
 
-    }
-
-save (aplicacion:Aplicacion){
-  return this.http.post(`${this.baseUrl}/api/aplicaciones/single`,aplicacion);
-}
-saveWithSede (aplicacion:AplicacionWithSedes){
-  return this.http.post(`${this.baseUrl}/api/aplicaciones`,aplicacion);
-}
-
-update(id:number,aplicacion:AplicacionWithSedes){
-  return this.http.put(`${this.baseUrl}/api/aplicaciones/?id=${id}`,aplicacion);
-}
-
-delete(id:number){
-  return this.http.delete<DeleteApp>(`${this.baseUrl}/api/aplicaciones/${id}`);
-}
-
-finalized(id:number){
-  return this.http.delete<DeleteApp>(`${this.baseUrl}/api/aplicaciones/finalized/${id}`)
-}
-
-initialized(id:number){
-  return this.http.get<InitApp>(`${this.baseUrl}/api/aplicaciones/initialized/${id}`);
-}
+interface GetAplicacion {
+  data: Aplicacion[];
+  success: string;
+  errorMessage: string;
 }

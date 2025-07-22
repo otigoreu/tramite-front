@@ -26,8 +26,7 @@
   <!-- --------------------------------------------------------------- -->
   <!--  Search -->
   <!-- --------------------------------------------------------------- -->
-  <div class="text-center ">{{appHeader |uppercase}}</div>
-
+  <div class="text-center">{{ appHeader | uppercase }}</div>
 
   <span class="flex-1-auto"></span>
 
@@ -44,13 +43,10 @@
   <!-- langugage Dropdown -->
   <!-- --------------------------------------------------------------- -->
 
-
   <!-- --------------------------------------------------------------- -->
   <!-- Notification Dropdown -->
   <!-- --------------------------------------------------------------- -->
-   <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
-             {{ authService.nombresApellidos() }}
-            </h6>
+  <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1"></h6>
 
   <button
     mat-icon-button
@@ -122,24 +118,17 @@
             width="95"
           />
           <div class="m-l-16">
-            <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
-             {{ authService.nombresApellidos() }}
-            </h6>
-            <span class="f-s-14 d-block m-b-4">{{
-              authService.userRole()
-            }}</span>
+            <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1"></h6>
+            <span class="f-s-14 d-block m-b-4"> </span>
             <span class="d-flex align-items-center">
               <i-tabler name="mail" class="icon-15 m-r-4"></i-tabler>
-              {{ authService.userEmail() }}
             </span>
           </div>
         </div>
       </div>
       <div class="p-x-32">
-
         <a
           class="p-y-16 text-decoration-none d-block text-hover-primary"
-
           (click)="openDialog()"
         >
           <div class="d-flex align-items-center">
@@ -161,15 +150,12 @@
           </div>
         </a>
 
-
         <!-- upgrade -->
-
       </div>
 
       <div class="p-y-12 p-x-32">
         <a
           [routerLink]="['/login']"
-          (click)="authService.logout()"
           mat-stroked-button
           color="primary"
           class="w-100"

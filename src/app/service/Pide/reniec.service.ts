@@ -1,4 +1,3 @@
-
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -16,10 +15,9 @@ export interface ReniecResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReniecService {
-
   baseUrl = environment.baseUrl;
   http = inject(HttpClient);
 
@@ -37,5 +35,4 @@ export class ReniecService {
       params,
     });
   }
-
 }

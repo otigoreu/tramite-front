@@ -126,7 +126,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   }
 
   delete(id: number) {
-      Swal.fire({
+    Swal.fire({
       title: '¿Estás seguro?',
       text: '¡No podrás revertir esto!',
       icon: 'warning',
@@ -138,12 +138,11 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         // lógica de confirmación
         this.appService.deletePerson(id).subscribe((response) => {
           if (response.success) {
-              this.loadDataFilter();
+            this.loadDataFilter();
           }
         });
       }
     });
-
   }
 
   openDialog(personaDialog?: Persona) {
@@ -168,7 +167,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
       });
   }
   finalized(id: number) {
-   Swal.fire({
+    Swal.fire({
       title: '¿Estás seguro?',
       // text: '¡No podrás revertir esto!',
       icon: 'warning',
@@ -180,7 +179,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         // lógica de confirmación
         this.appService.finalized(id).subscribe((response) => {
           if (response.success) {
-              this.loadDataFilter();
+            this.loadDataFilter();
           }
         });
       }
@@ -200,7 +199,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         // lógica de confirmación
         this.appService.initialized(id).subscribe((response) => {
           if (response.success) {
-              this.loadDataFilter();
+            this.loadDataFilter();
           }
         });
       }

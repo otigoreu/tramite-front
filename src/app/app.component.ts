@@ -29,7 +29,6 @@ export class AppComponent {
   router = inject(Router);
   menuService = inject(MenuService);
 
-
   constructor() {
     const userRole = localStorage.getItem('userRole');
     const userName = localStorage.getItem('userName');
@@ -37,7 +36,7 @@ export class AppComponent {
     const aplicacion = localStorage.getItem('Aplicacion');
     const userEmail = localStorage.getItem('userEmail');
     const nombreApellido = localStorage.getItem('nombreApellido');
-    const idAplicacion= localStorage.getItem('idAplicacion');
+    const idAplicacion = localStorage.getItem('idAplicacion');
     // console.log('---------------------------------------');
 
     // console.log('localStorage rol =' + userRole);
@@ -54,7 +53,8 @@ export class AppComponent {
       userName &&
       aplicacion &&
       userEmail &&
-      nombreApellido && idAplicacion
+      nombreApellido &&
+      idAplicacion
     ) {
       this.authService.aplicacion.set(aplicacion);
       this.authService.unidadOrganicas.set(unidadOrganicas);
@@ -85,36 +85,33 @@ export class AppComponent {
       this.router.navigate(['/login']);
     }
 
-     //traer menu por aplicacion
-     if(idAplicacion){
+    //traer menu por aplicacion
+    if (idAplicacion) {
       // console.log('idAplicacion: '+idAplicacion);
       this.menuService
-      .GetByAplicationAsync(parseInt(idAplicacion))
-      .subscribe((data: any[]) => {
-        // console.log('menu', data);
-        data.forEach((nav) => {
-        //  console.log('nav', nav);
-          if (!nav.idMenuPadre) {
-            const navItem: NavItem = {
-              id: nav.id,
-              displayName: nav.descripcion,
-              iconName: nav.icono,
-              route: nav.ruta,
-              children: [],
-            };
-            navItems.push(navItem);
-          }
+        .GetByAplicationAsync(parseInt(idAplicacion))
+        .subscribe((data: any[]) => {
+          // console.log('menu', data);
+          data.forEach((nav) => {
+            //  console.log('nav', nav);
+            if (!nav.idMenuPadre) {
+              const navItem: NavItem = {
+                id: nav.id,
+                displayName: nav.descripcion,
+                iconName: nav.icono,
+                route: nav.ruta,
+                children: [],
+              };
+              navItems.push(navItem);
+            }
+          });
+
+          navItems.forEach((parentNav: NavItem) => {
+            parentNav.children = data.filter(
+              (nav) => nav.idMenuPadre === parentNav.id
+            );
+          });
         });
-
-        navItems.forEach((parentNav: NavItem) => {
-          parentNav.children = data.filter(
-            (nav) => nav.idMenuPadre=== parentNav.id
-          );
-        });
-      });
-     }
-
-
-
+    }
   }
 }

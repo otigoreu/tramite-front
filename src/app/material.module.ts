@@ -41,9 +41,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { EnterKeyFocusDirective } from './shared/directives/EnterKeyFocus.directive';
 
 @NgModule({
-  declarations: [],
+  // declarations: [EnterKeyFocusDirective],
   exports: [
     MatAutocompleteModule,
     MatCheckboxModule,
@@ -80,6 +81,8 @@ import { MatTableModule } from '@angular/material/table';
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,
+
+    // EnterKeyFocusDirective,
   ],
 })
 export class MaterialModule {}

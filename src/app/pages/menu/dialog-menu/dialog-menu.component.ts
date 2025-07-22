@@ -21,11 +21,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Aplicacion } from 'src/app/model/aplicacion';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { CommonModule } from '@angular/common';
 import { Rol } from 'src/app/model/rol';
 import { RolService } from 'src/app/service/rol.service';
+import { Aplicacion } from '../../aplicacion/Modals/Aplicacion';
 
 @Component({
   selector: 'app-dialog-menu',
@@ -64,11 +64,11 @@ export class DialogMenuComponent implements OnInit {
   ngOnInit(): void {
     this.menu = { ...this.data };
 
-    console.log('menu obtenido',this.menu);
+    console.log('menu obtenido', this.menu);
     this.loadApp();
     this.loadMenus();
     this.loadRoles();
-    if(this.menu.id>0){
+    if (this.menu.id > 0) {
       this.disableSelect.setValue(true);
     }
   }
@@ -93,19 +93,19 @@ export class DialogMenuComponent implements OnInit {
     this._dialogRef.close();
   }
   operate() {
-
-      const body: MenuWithRoles = {
+    const body: MenuWithRoles = {
       descripcion: this.appForm.controls.descripcion.value!,
       icono: this.appForm.controls.icono.value!,
       ruta: this.appForm.controls.ruta.value!,
       idAplicacion: Number.parseInt(this.appForm.controls.idAplicacion.value!),
       idRoles: [this.appForm.controls.idRol.value!],
-      idMenuPadre: this.appForm.controls.idMenuPadre.value==undefined ?null :Number.parseInt(this.appForm.controls.idMenuPadre.value!),
+      idMenuPadre:
+        this.appForm.controls.idMenuPadre.value == undefined
+          ? null
+          : Number.parseInt(this.appForm.controls.idMenuPadre.value!),
     };
 
-
     if (this.menu != null && this.menu.id > 0) {
-
       this.menuService.updateWithRol(this.menu.id, body).subscribe(() => {
         this._dialogRef.close();
       });
@@ -119,4 +119,3 @@ export class DialogMenuComponent implements OnInit {
     this.close();
   }
 }
-

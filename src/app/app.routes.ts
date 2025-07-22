@@ -28,67 +28,58 @@ export const routes: Routes = [
         data: {
           title: 'Personas',
           urls: [
-           //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
+            //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Personas' },
           ],
         },
       },
       {
         path: 'pages/tipo-documento',
+
        // canActivate: [authGuard],
+
         component: TipoDocumentoComponent,
         data: {
           title: 'Tipo Documento',
           urls: [
-           //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
+            //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Tipo Documento' },
           ],
         },
       },
+
       {
-        path: 'pages/aplicacion',
-       // canActivate: [authGuard],
-        component: AplicacionComponent,
-        data: {
-          title: 'Aplicaciones',
-          urls: [
-           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Aplicaicon' },
-          ],
-        },
+
+        path: 'pages',
+        loadChildren: () =>
+          import('./pages/pages.routes').then((m) => m.PagesRoutes),
+
       },
-      {
-        path: 'pages/sede',
-       // canActivate: [authGuard],
-        component: SedeComponent,
-        data: {
-          title: 'Sedes',
-          urls: [
-           //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Sedes' },
-          ],
-        },
-      },
+
       {
         path: 'pages/menu',
+
        // canActivate: [authGuard],
+
         component: MenuComponent,
         data: {
           title: 'Menu',
           urls: [
-           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            // { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Menus' },
           ],
         },
       },
       {
         path: 'pages/rol',
+
        // canActivate: [authGuard],
+
         component: RolComponent,
         data: {
           title: 'Rol',
           urls: [
-           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            // { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Rol' },
           ],
         },
@@ -110,8 +101,6 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },
-
-
     ],
   },
 
@@ -136,25 +125,25 @@ export const routes: Routes = [
     path: 'forgot-password',
     pathMatch: 'full',
     loadComponent: () =>
-      import('../app/pages/Authentication/forgot-password/forgot-password.component').then(
-        (m) => m.ForgotPasswordComponent
-      ),
+      import(
+        '../app/pages/Authentication/forgot-password/forgot-password.component'
+      ).then((m) => m.ForgotPasswordComponent),
   },
   {
     path: 'reset-password',
     pathMatch: 'full',
     loadComponent: () =>
-      import('./pages/Authentication/reset-password/reset-password.component').then(
-        (m) => m.ResetPasswordComponent
-      ),
+      import(
+        './pages/Authentication/reset-password/reset-password.component'
+      ).then((m) => m.ResetPasswordComponent),
   },
   {
     path: 'change-password',
     pathMatch: 'full',
     loadComponent: () =>
-      import('./pages/Authentication/change-Password/change-Password.component').then(
-        (m) => m.ChangePasswordComponent
-      ),
+      import(
+        './pages/Authentication/change-Password/change-Password.component'
+      ).then((m) => m.ChangePasswordComponent),
   },
   {
     path: '**',

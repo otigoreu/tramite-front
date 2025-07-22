@@ -6,7 +6,7 @@
           <input
             matInput
             placeholder="Buscar Aplicacion"
-            (keyup)="applyFilter($any($event.target).value)"
+            (keyup)="onSearch($any($event.target).value)"
           />
           <mat-icon matSuffix>
             <i-tabler name="search" class="icon-20"></i-tabler>
@@ -14,7 +14,7 @@
         </mat-form-field>
       </div>
       <div class="col-lg-4 d-flex align-items-center justify-content-end">
-        <button mat-flat-button (click)="openDialog()" color="primary">
+        <button mat-flat-button color="primary" (click)="openDialog()">
           Nuevo
         </button>
       </div>
@@ -25,94 +25,101 @@
   <mat-card-content>
     <div class="table-responsive">
       <table mat-table [dataSource]="dataSource" class="w-100" matSort>
-
-        <ng-container matColumnDef="item">
+        <!-- <ng-container matColumnDef="item">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Item
+            Index
           </th>
-          <td mat-cell *matCellDef="let row ; let i = index;" class="f-s-14">{{i+1}}</td>
-        </ng-container>
+          <td mat-cell *matCellDef="let row; let i = index" class="f-s-14">
+            {{ i + 1 }}
+          </td>
+        </ng-container> -->
 
-
-        <ng-container matColumnDef="descripcion" >
+        <ng-container matColumnDef="descripcion">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Descripcion
-          </th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.descripcion | uppercase}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="sede" >
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Sede
-          </th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.sede | uppercase}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="status" >
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600" >
-            Estado
+            Descripción
           </th>
           <td mat-cell *matCellDef="let row" class="f-s-14">
-            <div class="d-flex align-items-center gap-12 p-y-14" *ngIf="row.status;then activo;  else inactivo">
-              <!--<span class="f-s-16 f-w-600">{{ row.state }}</span>-->
-            </div>
-            <ng-template #activo>
-              <span class="bg-light-success text-success rounded f-w-600 p-6 p-y-4 f-s-14">Activo</span>
-            </ng-template>
-            <ng-template #inactivo>
-              <span class="bg-light-error text-error rounded f-w-600 p-6 p-y-4 f-s-14">Inactivo</span>
-            </ng-template>
-
+            {{ row.descripcion }}
           </td>
         </ng-container>
 
+        <div class="flex gap-2 justify-end w-full">
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+              Estado
+            </th>
+            <td mat-cell *matCellDef="let row" class="f-s-14">
+              <div
+                class="d-flex align-items-center gap-12 p-y-14"
+                *ngIf="row.estado; then activo; else inactivo"
+              >
+                <!--<span class="f-s-16 f-w-600">{{ row.state }}</span>-->
+              </div>
+              <ng-template #activo>
+                <span
+                  class="bg-light-success text-success rounded f-w-600 p-6 p-y-4 f-s-14"
+                  >Activo</span
+                >
+              </ng-template>
+              <ng-template #inactivo>
+                <span
+                  class="bg-light-error text-error rounded f-w-600 p-6 p-y-4 f-s-14"
+                  >Inactivo</span
+                >
+              </ng-template>
+            </td>
+          </ng-container>
 
-
-        <ng-container matColumnDef="acciones" >
-          <th mat-header-cell *matHeaderCellDef >
-            Acciones
-          </th>
-          <td mat-cell *matCellDef="let row" class="action-link">
-            <a
-              (click)="openDialog(row)"
-              class="m-r-10 cursor-pointer" matTooltip="Editar" matTooltipPosition="above"
-              ><i-tabler name="edit" class="icon-18"></i-tabler
-            ></a>
-            <a
-              (click)="delete(row.id)"
-              class="m-r-10 cursor-pointer" matTooltip="Eliminar" matTooltipPosition="below"
-            >
-              <i-tabler name="trash" class="icon-18"></i-tabler>
-            </a>
-            @if(!row.status){
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+              Acciones
+            </th>
+            <td mat-cell *matCellDef="let row" class="action-link">
               <a
-                (click)="initialized(row.id)"
-                class="m-r-10 cursor-pointer" matTooltip="Habilitar" matTooltipPosition="above"
+                (click)="openDialog(row)"
+                class="m-r-10 cursor-pointer"
+                matTooltip="Editar"
+                matTooltipPosition="above"
+                ><i-tabler name="edit" class="icon-18"></i-tabler
+              ></a>
+              <a
+                (click)="eliminarAplicacion(row.id)"
+                class="m-r-10 cursor-pointer"
+                matTooltip="Eliminar"
+                matTooltipPosition="below"
+              >
+                <i-tabler name="trash" class="icon-18"></i-tabler>
+              </a>
+              @if(!row.estado){
+              <a
+                (click)="habilitarAplicacion(row.id)"
+                class="m-r-10 cursor-pointer"
+                matTooltip="Habilitar"
+                matTooltipPosition="above"
               >
                 <i-tabler name="circle-arrow-up" class="icon-18"></i-tabler>
               </a>
-            }
-            @else{
+              } @else{
               <a
-                (click)="finalized(row.id)"
-                class="m-r-10 cursor-pointer" matTooltip="Deshabilitar" matTooltipPosition="right"
+                (click)="deshabilitarAplicacion(row.id)"
+                class="m-r-10 cursor-pointer"
+                matTooltip="Deshabilitar"
+                matTooltipPosition="right"
               >
                 <i-tabler name="circle-arrow-down" class="icon-18"></i-tabler>
               </a>
-            }
-          </td>
-        </ng-container>
-
-
-
+              }
+            </td>
+          </ng-container>
+        </div>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
       <mat-paginator
-        [pageSizeOptions]="[ 10,15, 20]"
+        [length]="totalRecords"
+        [pageSizeOptions]="[10, 15, 20]"
         showFirstLastButtons
       ></mat-paginator>
     </div>
   </mat-card-content>
 </mat-card>
-

@@ -1,7 +1,7 @@
-import { Aplicacion } from "./aplicacion";
-import { Persona } from "./persona";
+import { Persona } from './persona';
 import { Entidad } from './entidad';
-import { UnidadOrganica } from "./unidadOrganica";
+import { UnidadOrganica } from './unidadOrganica';
+import { Aplicacion } from '../pages/aplicacion/Modals/Aplicacion';
 
 export interface LoginApiResponse {
   data: Data;
@@ -13,9 +13,9 @@ export interface Data {
   token: string;
   expirationDate: string;
   roles: string[];
-  entidad:Entidad;
+  entidad: Entidad;
   persona: Persona;
-  unidadOrganicas:UnidadOrganica[];
+  unidadOrganicas: UnidadOrganica[];
   aplicaciones: Aplicacion[];
 }
 
@@ -23,7 +23,6 @@ export interface LoginRequestBody {
   username: string;
   password: string;
 }
-
 
 export interface RegisterRequestBody {
   firstName: string;
@@ -43,7 +42,6 @@ export interface RegisterApiResponse {
   success: boolean;
   errorMessage: string;
 }
-
 
 export interface ForgotPasswordApiResponse {
   success: boolean;
@@ -73,10 +71,11 @@ export interface ChangePasswordApiResponse {
 
 export interface ChangePasswordRequestBody {
   oldPassword: string;
-  newPassword:string;
+  newPassword: string;
 }
 
 ///--------------------------------------------------------
+
 export interface Usuario{
 
       id: string,

@@ -16,7 +16,6 @@ import Swal from 'sweetalert2';
   standalone: true,
   imports: [MaterialModule, TablerIconsModule, NgIf],
   templateUrl: './tipo-documento.component.html',
-
 })
 export class TipoDocumentoComponent {
   appService = inject(TipoDocumentoService);
@@ -54,74 +53,75 @@ export class TipoDocumentoComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   openDialog(tipodocumento?: TipoDocumento) {
-    this.dialog.open(DialogTipoDocumentoComponent, {
-          width:'400px',height:'335px',
-          data:tipodocumento
-        }).afterClosed()
-        .subscribe(() => {
-          this.loadData();
-        });
+    this.dialog
+      .open(DialogTipoDocumentoComponent, {
+        width: '400px',
+        height: '335px',
+        data: tipodocumento,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.loadData();
+      });
   }
-
-
 
   delete(id: number) {
     Swal.fire({
-          title: '¿Estás seguro?',
-          text: '¡No podrás revertir esto!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, Emilinar',
-          cancelButtonText: 'Cancelar',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // lógica de confirmación
-            this.appService.deleteTipoDocu(id).subscribe((response) => {
-              if (response.success) {
-                  this.loadData();
-              }
-            });
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Emilinar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.deleteTipoDocu(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
           }
         });
+      }
+    });
   }
 
-  finalized(id:number) {
+  finalized(id: number) {
     Swal.fire({
-          title: '¿Estás seguro?',
-          // text: '¡No podrás revertir esto!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, Desactivar',
-          cancelButtonText: 'Cancelar',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // lógica de confirmación
-            this.appService.finalized(id).subscribe((response) => {
-              if (response.success) {
-                  this.loadData();
-              }
-            });
+      title: '¿Estás seguro?',
+      // text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Desactivar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.finalized(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
           }
         });
+      }
+    });
   }
 
-  initialized(id:number) {
+  initialized(id: number) {
     Swal.fire({
-          title: '¿Estás seguro?',
-          // text: '¡No podrás revertir esto!',
-          icon: 'success',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, Activar',
-          cancelButtonText: 'Cancelar',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // lógica de confirmación
-            this.appService.initialized(id).subscribe((response) => {
-              if (response.success) {
-                  this.loadData();
-              }
-            });
+      title: '¿Estás seguro?',
+      // text: '¡No podrás revertir esto!',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Activar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.appService.initialized(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
           }
         });
+      }
+    });
   }
 }

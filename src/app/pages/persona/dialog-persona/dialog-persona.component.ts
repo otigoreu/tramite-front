@@ -1,10 +1,27 @@
 import { Persona } from './../../../model/persona';
-import { Component, ElementRef, inject, Inject, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  inject,
+  Inject,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
 import { PersonaServiceService } from '../../../service/persona-service.service';
-import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import {
+  DateAdapter,
+  MAT_DATE_LOCALE,
+  MatNativeDateModule,
+  provideNativeDateAdapter,
+} from '@angular/material/core';
 import { CustomDateAdapter } from 'src/app/material/custom-adapter';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TipoDocumento } from 'src/app/model/tipoDocumento';
@@ -18,46 +35,54 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-dialog-persona',
   standalone: true,
-  imports: [MaterialModule, FormsModule,MatDatepickerModule,MatNativeDateModule,ReactiveFormsModule],
-    providers: [
-      provideNativeDateAdapter(),
-      { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
-      { provide: DateAdapter, useClass: CustomDateAdapter },
-    ],
-  templateUrl: './dialog-persona.component.html'
+  imports: [
+    MaterialModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+  ],
+  providers: [
+    provideNativeDateAdapter(),
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+  ],
+  templateUrl: './dialog-persona.component.html',
 })
 export class DialogPersonaComponent {
   @ViewChild('emailInput') emailInput!: ElementRef<HTMLInputElement>;
 
-  persona:Persona;
-  tipoDocus:TipoDocumento[]=[];
-  tipoDocService=inject(TipoDocumentoService);
-  personaService=inject(PersonaServiceService);
-  _dialogRef=inject(MatDialogRef);
-  reniecService=inject(ReniecService);
-  notificationsService=inject(NotificationsService);
-_snackBar=inject(MatSnackBar);
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private data:Persona
-  ){}
+  persona: Persona;
+  tipoDocus: TipoDocumento[] = [];
+  tipoDocService = inject(TipoDocumentoService);
+  personaService = inject(PersonaServiceService);
+  _dialogRef = inject(MatDialogRef);
+  reniecService = inject(ReniecService);
+  notificationsService = inject(NotificationsService);
+  _snackBar = inject(MatSnackBar);
+  constructor(@Inject(MAT_DIALOG_DATA) private data: Persona) {}
 
+  personaForm = new FormGroup({
+    nombres: new FormControl('', [Validators.required]),
+    apellidoPat: new FormControl('', [Validators.required]),
+    apellidoMat: new FormControl('', [Validators.required]),
+    fechaNac: new FormControl('', [
+      Validators.required,
+      mayorDeEdadValidator(18),
+    ]),
+    edad: new FormControl({ value: '', disabled: true }),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    idTipoDoc: new FormControl('', [Validators.required]),
+    nroDoc: new FormControl('', [
+      Validators.nullValidator,
+      Validators.minLength(8),
+    ]),
+  });
 
-  personaForm=new FormGroup({
-            nombres:new FormControl('',[Validators.required]),
-            apellidoPat:new FormControl('',[Validators.required]),
-            apellidoMat:new FormControl('',[Validators.required]),
-            fechaNac: new FormControl('', [Validators.required,mayorDeEdadValidator(18),]),
-            edad: new FormControl({ value: '', disabled: true }),
-            email:new FormControl('',[Validators.required,Validators.email]),
-            idTipoDoc:new FormControl('',[Validators.required]),
-            nroDoc:new FormControl('',[Validators.nullValidator, Validators.minLength(8)]),
-          });
-
-
-  ngOnInit():void{
+  ngOnInit(): void {
     //this.persona= this.data;
-    this.persona={...this.data};//spred operator
-    console.log('data',this.persona);
+    this.persona = { ...this.data }; //spred operator
+    console.log('data', this.persona);
     this.loadTipoDoc();
     this.personaForm.controls.fechaNac.valueChanges.subscribe((fechaNac) => {
       if (fechaNac) {
@@ -66,24 +91,20 @@ _snackBar=inject(MatSnackBar);
         this.persona.edad = edad; // si estás usando ngModel también
       }
     });
-
   }
-  close(){
+  close() {
     this._dialogRef.close();
   }
 
-  loadTipoDoc(){
-    this.tipoDocService.getData().subscribe((response)=>{
-      this.tipoDocus=response;
+  loadTipoDoc() {
+    this.tipoDocService.getData().subscribe((response) => {
+      this.tipoDocus = response;
     });
   }
-  operate(){
-    if(this.persona !=null && this.persona.id>0){
+  operate() {
+    if (this.persona != null && this.persona.id > 0) {
       //update
-      this.personaService.update(this.persona.id, this.persona)
-      .subscribe(
-
-       {
+      this.personaService.update(this.persona.id, this.persona).subscribe({
         next: () => {
           this.notificationsService.success(
             ...NotificationMessages.successUpdate('persona')
@@ -95,15 +116,10 @@ _snackBar=inject(MatSnackBar);
             err?.error?.errorMessage || 'Error al actualizar persona.';
           this.notificationsService.error(...NotificationMessages.error(msg));
         },
-      }
-
-
-    );
-    }else{
+      });
+    } else {
       //add
-      this.personaService.save(this.persona)
-      .subscribe(
-       {
+      this.personaService.save(this.persona).subscribe({
         next: (res: any) => {
           if (res?.success === false && res?.errorMessage) {
             this.notificationsService.warn(
@@ -125,12 +141,9 @@ _snackBar=inject(MatSnackBar);
             verticalPosition: 'top',
           });
         },
-      }
-
-    );
+      });
     }
     //Angular MatDialog -> 22:46
-
   }
 
   calcularEdad(fechaNac: string | Date): number {
@@ -172,5 +185,4 @@ _snackBar=inject(MatSnackBar);
       },
     });
   }
-
 }
