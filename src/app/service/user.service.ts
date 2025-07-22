@@ -2,16 +2,17 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 
-import { catchError, of } from 'rxjs';
-import {
-  ChangePasswordRequestBody,
-  ForgotPasswordApiResponse,
-  LoginApiResponse,
-  LoginRequestBody,
-  RegisterApiResponse,
-  RegisterRequestBody,
-  ResetPasswordRequestBody,
-} from '../model/usuario';
+
+import { catchError, map, of } from 'rxjs';
+import { ChangePasswordRequestBody, ForgotPasswordApiResponse, LoginApiResponse, LoginRequestBody, RegisterApiResponse, RegisterRequestBody, ResetPasswordRequestBody, Usuario } from '../model/usuario';
+
+interface GetUsuario{
+  data:Usuario[];
+  success:string;
+  errorMessage:string;
+}
+
+
 
 @Injectable({
   providedIn: 'root',
@@ -149,4 +150,12 @@ export class UserService {
   revokeRoleNameById(id: string, roleName: string) {
     return this.http.post(`${this.baseUrl}/api/users/role/revoke`, id);
   }
+
+////////////////////////////////////////////////////////////////////////
+  getAll(){
+    return this.http.get<GetUsuario>(`${this.baseUrl}/api/users/userNames`)
+    .pipe(map((response)=>response.data));
+  }
+
+
 }

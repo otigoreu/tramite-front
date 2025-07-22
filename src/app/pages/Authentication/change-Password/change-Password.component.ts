@@ -41,6 +41,7 @@ loginForm = new FormGroup({
 
 changePassword(){
 // console.log('entro al metodo changePAssword');
+//cambiando
   const oldPassword= this.loginForm.controls.OldPassword.value!;
       const newPassword= this.loginForm.controls.NewPassword.value!;
       this.authService.changePassword(oldPassword,newPassword)

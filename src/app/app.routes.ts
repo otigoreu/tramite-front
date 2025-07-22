@@ -7,6 +7,7 @@ import { AplicacionComponent } from './pages/aplicacion/aplicacion.component';
 import { SedeComponent } from './pages/sede/sede.component';
 import { MenuComponent } from './pages/menu/menu.component';
 import { RolComponent } from './pages/rol/rol.component';
+import { UserComponent } from './pages/user/user.component';
 
 export const routes: Routes = [
   {
@@ -34,7 +35,9 @@ export const routes: Routes = [
       },
       {
         path: 'pages/tipo-documento',
-        canActivate: [authGuard],
+
+       // canActivate: [authGuard],
+
         component: TipoDocumentoComponent,
         data: {
           title: 'Tipo Documento',
@@ -46,14 +49,18 @@ export const routes: Routes = [
       },
 
       {
+
         path: 'pages',
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
+
       },
 
       {
         path: 'pages/menu',
-        canActivate: [authGuard],
+
+       // canActivate: [authGuard],
+
         component: MenuComponent,
         data: {
           title: 'Menu',
@@ -65,13 +72,27 @@ export const routes: Routes = [
       },
       {
         path: 'pages/rol',
-        canActivate: [authGuard],
+
+       // canActivate: [authGuard],
+
         component: RolComponent,
         data: {
           title: 'Rol',
           urls: [
             // { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Rol' },
+          ],
+        },
+      },
+      {
+        path: 'pages/user',
+       // canActivate: [authGuard],
+        component: UserComponent,
+        data: {
+          title: 'Usuario',
+          urls: [
+           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Usuario' },
           ],
         },
       },
