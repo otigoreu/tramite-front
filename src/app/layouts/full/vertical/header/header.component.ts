@@ -18,9 +18,9 @@ import { RouterModule } from '@angular/router';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { AuthService } from 'src/app/service/auth.service';
+// import { AuthService } from 'src/app/service/auth.service';
 
-import { ChangePasswordComponent } from 'src/app/pages/Authentication/change-Password/change-Password.component';
+// import { ChangePasswordComponent } from 'src/app/pages/Authentication/change-Password/change-Password.component';
 
 interface notifications {
   id: number;
@@ -59,7 +59,8 @@ interface quicklinks {
     CommonModule,
     NgScrollbarModule,
     TablerIconsModule,
-    MaterialModule,UpperCasePipe
+    MaterialModule,
+    UpperCasePipe,
   ],
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
@@ -70,14 +71,14 @@ export class HeaderComponent {
   @Output() toggleMobileNav = new EventEmitter<void>();
   @Output() toggleMobileFilterNav = new EventEmitter<void>();
   @Output() toggleCollapsed = new EventEmitter<void>();
-  authService = inject(AuthService);
+  // authService = inject(AuthService);
 
   showFiller = false;
 
   public selectedLanguage: any = {
     language: 'Español',
     code: 'es',
-    'type':'Pe',
+    type: 'Pe',
     icon: '/assets/images/flag/icon-flag-es.svg',
   };
 
@@ -105,34 +106,30 @@ export class HeaderComponent {
     },
   ];
 
-appHeader:string;
+  appHeader: string;
 
   constructor(
     private vsidenav: CoreService,
     public dialog: MatDialog,
     private translate: TranslateService
-
   ) {
     translate.setDefaultLang('es');
     const aplicacion = localStorage.getItem('Aplicacion');
-    if(aplicacion){
-      this.appHeader=aplicacion;
+    if (aplicacion) {
+      this.appHeader = aplicacion;
     }
   }
 
- openDialog(){
-
-    this.dialog.open(ChangePasswordComponent);
-
+  openDialog() {
+    // this.dialog.open(ChangePasswordComponent);
   }
-
 
   changeLanguage(lang: any): void {
     this.translate.use(lang.code);
     this.selectedLanguage = lang;
   }
 
-  notifications:notifications[]=[]
+  notifications: notifications[] = [];
   notifications1: notifications[] = [
     {
       id: 1,
@@ -303,13 +300,9 @@ export class AppSearchDialogComponent {
   searchText: string = '';
   navItems = navItems;
 
-
   navItemsData = navItems.filter((navitem) => navitem.displayName);
 
   // filtered = this.navItemsData.find((obj) => {
   //   return obj.displayName == this.searchinput;
   // });
-
-
-
 }

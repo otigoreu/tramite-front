@@ -1,0 +1,39 @@
+<h2 mat-dialog-title class="m-b-24">{{ titulo }}</h2>
+
+<mat-divider></mat-divider>
+<mat-dialog-content class="mat-typography" style="max-width: 600px">
+  <form [formGroup]="aplicacionForm">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Descripcion</mat-label>
+      <input
+        matInput
+        required
+        placeholder="Nombres"
+        formControlName="descripcion"
+        appEnterKeyFocus
+      />
+      @if(aplicacionForm.controls.descripcion.touched &&
+      aplicacionForm.controls.descripcion.invalid){
+      <mat-hint class="m-b-16 error-msg">
+        @if(aplicacionForm.controls.descripcion.hasError('required')){
+        <div class="text-error">Nombre(s) <strong>requeridos</strong></div>
+        }
+      </mat-hint>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+<mat-dialog-actions class="p-24">
+  <button
+    mat-flat-button
+    [mat-dialog-close]="true"
+    [disabled]="aplicacionForm.invalid"
+    color="primary"
+    (click)="guardar()"
+  >
+    Guardar
+  </button>
+  <button mat-stroked-button color="warn" mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>

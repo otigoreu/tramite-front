@@ -1,0 +1,45 @@
+<h2 mat-dialog-title class="m-b-24">{{ unidadorganicaDescripcion }}</h2>
+<mat-divider></mat-divider>
+
+<mat-dialog-content class="mat-typography" style="max-width: 600px">
+  <mat-form-field appearance="outline" class="w-100 hide-hint">
+    <input
+      matInput
+      placeholder="Buscar Aplicación"
+      (keyup)="onSearch($any($event.target).value)"
+    />
+    <mat-icon matSuffix>
+      <i-tabler name="search" class="icon-20"></i-tabler>
+    </mat-icon>
+  </mat-form-field>
+
+  <mat-selection-list>
+    @for (row of usuarios(); let i = $index; track row.idUsuario) {
+    <mat-list-option
+      [selected]="row.estado === true"
+      (selectedChange)="onSelectedChange(row, $event)"
+    >
+      {{ row.numdoc }} - {{ row.descripcionPersona }}
+    </mat-list-option>
+    }
+  </mat-selection-list>
+
+  <p class="mat-subtitle-2 f-w-600 p-16 bg-light-primary rounded">
+    Opciones seleccionadas:
+    {{ seleccionadas }}
+  </p>
+
+  <mat-paginator
+    [length]="totalRecords"
+    [pageSize]="10"
+    [pageSizeOptions]="[10, 15, 20]"
+    showFirstLastButtons
+    (page)="onPageChange($event)"
+  >
+  </mat-paginator>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+<mat-dialog-actions class="p-24">
+  <button mat-stroked-button color="warn" mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>

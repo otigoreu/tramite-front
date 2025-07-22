@@ -1,0 +1,52 @@
+<h2 mat-dialog-title class="m-b-24">{{ titulo }}</h2>
+
+<mat-divider></mat-divider>
+<mat-dialog-content class="mat-typography" style="max-width: 600px">
+  <form [formGroup]="uoForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Entidad</mat-label>
+      <mat-select formControlName="idEntidad">
+        <mat-option *ngFor="let e of entidades" [value]="e.id">
+          {{ e.descripcion }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="uoForm.get('idEntidad')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Unidad Orgánica</mat-label>
+      <mat-select formControlName="idDependencia">
+        <mat-option *ngFor="let u of unidadorganicas" [value]="u.id">
+          {{ u.descripcion }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="uoForm.get('idDependencia')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Descripción</mat-label>
+      <input matInput formControlName="descripcion" />
+      <mat-error *ngIf="uoForm.get('descripcion')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+<mat-dialog-actions class="p-24">
+  <button
+    mat-flat-button
+    [mat-dialog-close]="true"
+    [disabled]="uoForm.invalid"
+    color="primary"
+    (click)="onSubmit()"
+  >
+    Guardar
+  </button>
+  <button mat-stroked-button color="warn" mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>

@@ -21,6 +21,8 @@ import {   notify8, notify9 } from 'src/app/data/mensajes.data';
   templateUrl: './forgot-password.component.html',
 })
 export class ForgotPasswordComponent {
+
+
   options = this.settings.getOptions();
 
   constructor(private settings: CoreService) {}

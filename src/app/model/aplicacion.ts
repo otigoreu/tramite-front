@@ -1,21 +1,27 @@
-import { Menu } from "./menu";
-import { SedeAplicaicon } from "./sedeAplicaicon";
-import { UsuarioAplicacion } from "./usuarioAplicacion";
+import { Menu } from './menu';
+import { SedeAplicaicon } from './sedeAplicaicon';
+import { UsuarioAplicacion } from './usuarioAplicacion';
 
-
-
-export interface Aplicacion{
-  id :number;
-  descripcion:string;
-  status:string
-
+export interface AplicacionWithSede {
+  id: number;
+  descripcion: string;
+  idSede: number;
+  sede: string;
 }
-export interface AplicacionFull{
-  id :number;
-  descripcion:string;
-  menus:Menu[];
-  sedeAplicaicones:SedeAplicaicon[];
-  usuarioAplicaicones:UsuarioAplicacion[];
+export interface AplicacionSede {
+  id: number;
+  descripcion: string;
+  idSede: number;
+}
 
-
+export interface AplicacionWithSedes {
+  descripcion: string;
+  idSedes: number[];
+}
+export interface AplicacionFull {
+  id: number;
+  descripcion: string;
+  menus: Menu[];
+  sedeAplicaicones: SedeAplicaicon[];
+  usuarioAplicaicones: UsuarioAplicacion[];
 }

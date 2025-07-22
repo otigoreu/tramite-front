@@ -46,7 +46,7 @@ export class SedeService {
     return this.http.put(`${this.baseUrl}/api/sedes/?id=${id}`,sede)
   }
   delete(id:number){
-    return this.http.delete<DeleteSede>(`${this.baseUrl}/api/sedes/delete/${id}`)
+    return this.http.delete<DeleteSede>(`${this.baseUrl}/api/sedes/${id}`)
   }
   initialized(id:number){
     return this.http.get<InitSede>(`${this.baseUrl}/api/sedes/initialized/${id}`);

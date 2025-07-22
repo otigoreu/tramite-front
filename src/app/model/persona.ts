@@ -4,14 +4,11 @@ export interface Personas {
   apellidoPat: string;
   apellidoMat: string;
   fechaNac: string;
-  direccion: string;
-  referencia: string;
-  celular: string;
-  edad: string;
+  edad: number;
   email: string;
-  tipoDoc: string;
+  idTipoDoc: number;
   nroDoc: string;
-  status: string;
+  estado: string;
 }
 
 export interface Persona {
@@ -20,25 +17,19 @@ export interface Persona {
   apellidoPat: string;
   apellidoMat: string;
   fechaNac: string;
-  direccion: string;
-  referencia: string;
-  celular: string;
-  edad: string;
+  edad: number;
   email: string;
-  tipoDoc: string;
+  idTipoDoc: number;
   nroDoc: string;
-  status: string;
+  estado: string;
 }
 export interface PersonaNew {
   nombres: string;
   apellidoPat: string;
   apellidoMat: string;
   fechaNac: string;
-  direccion: string;
-  referencia: string;
-  celular: string;
-  edad: string;
+  edad: number;
   email: string;
-  tipoDoc: string;
+  idTipoDoc: number;
   nroDoc: string;
 }
