@@ -30,7 +30,7 @@ export const PagesRoutes: Routes = [
         },
       },
       {
-        path: 'unidadorganica',
+        path: 'unidadOrganica',
         component: UnidadorganicaComponent,
         data: {
           title: 'UnidadOrganica',
