@@ -45,7 +45,7 @@ export class AuthService {
   entidad = signal('');
 
   login(dni: string, password: string): Observable<LoginApiResponse> {
-    const apiUrl = this.baseUrl + '/api/users/login';
+    const apiUrl = this.baseUrl + '/api/users/Login';
     const body: LoginRequestBody = { username: dni, password };
     return this.http.post<LoginApiResponse>(apiUrl, body).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => {
@@ -80,7 +80,7 @@ export class AuthService {
   }
 
   register(body: RegisterRequestBody): Observable<RegisterApiResponse> {
-    const apiUrl = this.baseUrl + '/api/users/register';
+    const apiUrl = this.baseUrl + '/api/users/Register';
     return this.http.post<RegisterApiResponse>(apiUrl, body).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => {
         const errorResponse: RegisterApiResponse = {

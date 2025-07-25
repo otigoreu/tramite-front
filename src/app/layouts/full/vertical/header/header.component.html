@@ -46,6 +46,9 @@
   <!-- --------------------------------------------------------------- -->
   <!-- Notification Dropdown -->
   <!-- --------------------------------------------------------------- -->
+    <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
+             {{ authService.nombresApellidos() }}
+            </h6>
   <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1"></h6>
 
   <button
@@ -101,7 +104,7 @@
     aria-label="Notifications"
   >
     <img
-      src="/assets/images/profile/user-1.jpg"
+      src="./assets/images/profile/user-1.jpg"
       class="rounded-circle object-cover icon-35 profile-dd"
       width="35"
     />
@@ -113,15 +116,22 @@
 
         <div class="d-flex align-items-center p-b-24 b-b-1 m-t-16">
           <img
-            src="/assets/images/profile/user-1.jpg"
+            src="./assets/images/profile/user-1.jpg"
             class="rounded-circle"
             width="95"
           />
           <div class="m-l-16">
+            <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
+             {{ authService.nombresApellidos() }}
+            </h6>
+            <span class="f-s-14 d-block m-b-4">{{
+              authService.userRole()
+            }}</span>
             <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1"></h6>
             <span class="f-s-14 d-block m-b-4"> </span>
             <span class="d-flex align-items-center">
               <i-tabler name="mail" class="icon-15 m-r-4"></i-tabler>
+              {{ authService.userEmail() }}
             </span>
           </div>
         </div>
@@ -136,7 +146,7 @@
               mat-mini-fab
               class="text-primary bg-light-primary shadow-none rounded"
             >
-              <img src="/assets/images/svgs/icon-account.svg" width="20" />
+              <img src="./assets/images/svgs/icon-account.svg" width="20" />
             </button>
 
             <div class="m-l-16">
@@ -156,6 +166,7 @@
       <div class="p-y-12 p-x-32">
         <a
           [routerLink]="['/login']"
+          (click)="authService.logout()"
           mat-stroked-button
           color="primary"
           class="w-100"
