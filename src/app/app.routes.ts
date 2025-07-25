@@ -36,7 +36,7 @@ export const routes: Routes = [
       {
         path: 'pages/tipo-documento',
 
-       // canActivate: [authGuard],
+        // canActivate: [authGuard],
 
         component: TipoDocumentoComponent,
         data: {
@@ -49,17 +49,15 @@ export const routes: Routes = [
       },
 
       {
-
         path: 'pages',
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
-
       },
 
       {
         path: 'pages/menu',
 
-       // canActivate: [authGuard],
+        // canActivate: [authGuard],
 
         component: MenuComponent,
         data: {
@@ -73,7 +71,7 @@ export const routes: Routes = [
       {
         path: 'pages/rol',
 
-       // canActivate: [authGuard],
+        // canActivate: [authGuard],
 
         component: RolComponent,
         data: {
@@ -81,18 +79,6 @@ export const routes: Routes = [
           urls: [
             // { title: 'Dashboard', url: '/dashboards/dashboard1' },
             { title: 'Rol' },
-          ],
-        },
-      },
-      {
-        path: 'pages/user',
-       // canActivate: [authGuard],
-        component: UserComponent,
-        data: {
-          title: 'Usuario',
-          urls: [
-           // { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Usuario' },
           ],
         },
       },

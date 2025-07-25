@@ -2,11 +2,23 @@ import { Routes } from '@angular/router';
 import { EntidadComponent } from './entidad/entidad.component';
 import { AplicacionComponent } from './aplicacion/aplicacion.component';
 import { UnidadorganicaComponent } from './unidadorganica/unidadorganica.component';
+import { UserComponent } from './user/user.component';
 
 export const PagesRoutes: Routes = [
   {
     path: '',
     children: [
+      {
+        path: 'user',
+        component: UserComponent,
+        data: {
+          title: 'Usuario',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Usuario' },
+          ],
+        },
+      },
       {
         path: 'entidad',
         component: EntidadComponent,

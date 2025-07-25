@@ -2,17 +2,26 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 
+import { catchError, map, Observable, of } from 'rxjs';
+import {
+  ChangePasswordRequestBody,
+  ForgotPasswordApiResponse,
+  LoginApiResponse,
+  LoginRequestBody,
+  RegisterApiResponse,
+  RegisterRequestBody,
+  ResetPasswordRequestBody,
+  Usuario,
+} from '../model/usuario';
+import { RegisterRequestDto } from '../pages/user/Models/RegisterRequestDto';
+import { ApiResponse } from '../model/ApiResponse';
+import { UsuarioPaginatedResponseDto } from '../pages/user/Models/UsuarioPaginatedResponseDto';
 
-import { catchError, map, of } from 'rxjs';
-import { ChangePasswordRequestBody, ForgotPasswordApiResponse, LoginApiResponse, LoginRequestBody, RegisterApiResponse, RegisterRequestBody, ResetPasswordRequestBody, Usuario } from '../model/usuario';
-
-interface GetUsuario{
-  data:Usuario[];
-  success:string;
-  errorMessage:string;
+interface GetUsuario {
+  data: Usuario[];
+  success: string;
+  errorMessage: string;
 }
-
-
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +32,7 @@ export class UserService {
 
   constructor() {}
 
-  registerUser(user: RegisterRequestBody) {
+  registerUser(user: RegisterRequestDto) {
     return this.http
       .post<RegisterApiResponse>(`${this.baseUrl}/api/users/Register`, user)
       .pipe(
@@ -151,11 +160,51 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/api/users/role/revoke`, id);
   }
 
-////////////////////////////////////////////////////////////////////////
-  getAll(){
-    return this.http.get<GetUsuario>(`${this.baseUrl}/api/users/userNames`)
-    .pipe(map((response)=>response.data));
+  getPaginadoUsuario(
+    search: string = '',
+    page: number = 1,
+    pageSize: number = 10
+  ) {
+    let params: any = {
+      search,
+      Page: page,
+      RecordsPerPage: pageSize,
+    };
+
+    return this.http
+      .get<ApiResponse<UsuarioPaginatedResponseDto[]>>(
+        `${this.baseUrl}/api/users/descripcion`,
+        {
+          params,
+          observe: 'response',
+        }
+      )
+      .pipe(
+        map((response) => {
+          const items = response.body?.data ?? [];
+          const total = parseInt(
+            response.headers.get('totalrecordsquantity') ?? '0',
+            10
+          );
+          return {
+            items,
+            meta: { total, page, pageSize },
+          };
+        })
+      );
   }
 
+  deshabilitarUsuario(id: string): Observable<ApiResponse<null>> {
+    return this.http.patch<ApiResponse<null>>(
+      `${this.baseUrl}/api/users/${id}/finalize`,
+      null
+    );
+  }
 
+  habilitarUsuario(id: string): Observable<ApiResponse<null>> {
+    return this.http.patch<ApiResponse<null>>(
+      `${this.baseUrl}/api/users/${id}/initialize`,
+      null
+    );
+  }
 }

@@ -9,6 +9,8 @@ export interface Personas {
   idTipoDoc: number;
   nroDoc: string;
   estado: string;
+
+  nombreCompleto?: string; // opcional, lo calculamos en tiempo de ejecución
 }
 
 export interface Persona {
@@ -22,6 +24,8 @@ export interface Persona {
   idTipoDoc: number;
   nroDoc: string;
   estado: string;
+
+  nombreCompleto?: string; // opcional, lo calculamos en tiempo de ejecución
 }
 export interface PersonaNew {
   nombres: string;

@@ -3,6 +3,7 @@ import { Persona, PersonaNew, Personas } from '../model/persona';
 import { HttpClient } from '@angular/common/http';
 import { map, Subject, finalize } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
+import { ApiResponse } from '../model/ApiResponse';
 
 interface GetPersonsApiResponse {
   data: Personas[];
@@ -49,6 +50,46 @@ export class PersonaServiceService {
       )
       .pipe(map((response) => response.data));
   }
+
+  getPaginadoPersona(search = '', page = 1, pageSize = 10) {
+    const params = {
+      search,
+      Page: page,
+      RecordsPerPage: pageSize,
+    };
+
+    console.log('(getPaginadoPersona) search', search);
+
+    return this.http
+      .get<ApiResponse<Personas[]>>(`${this.baseUrl}/api/personas/nombre`, {
+        params,
+        observe: 'response',
+      })
+      .pipe(
+        map((response) => {
+          const items = (response.body?.data ?? []).map((persona) => ({
+            ...persona,
+            nombreCompleto:
+              `${persona.apellidoPat} ${persona.apellidoMat}, ${persona.nombres}`.trim(),
+          }));
+
+          const total = parseInt(
+            response.headers.get('totalrecordsquantity') ?? '0',
+            10
+          );
+
+          return {
+            items,
+            meta: {
+              total,
+              page,
+              pageSize,
+            },
+          };
+        })
+      );
+  }
+
   getDataByEmail(email: string) {
     return this.http
       .get<GetPersonsApiResponse>(
