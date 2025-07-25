@@ -18,6 +18,8 @@ import { RouterModule } from '@angular/router';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { AuthService } from 'src/app/service/auth.service';
+import { ChangePasswordComponent } from 'src/app/pages/Authentication/change-Password/change-Password.component';
 // import { AuthService } from 'src/app/service/auth.service';
 
 // import { ChangePasswordComponent } from 'src/app/pages/Authentication/change-Password/change-Password.component';
@@ -71,6 +73,7 @@ export class HeaderComponent {
   @Output() toggleMobileNav = new EventEmitter<void>();
   @Output() toggleMobileFilterNav = new EventEmitter<void>();
   @Output() toggleCollapsed = new EventEmitter<void>();
+   authService = inject(AuthService);
   // authService = inject(AuthService);
 
   showFiller = false;
@@ -121,7 +124,7 @@ export class HeaderComponent {
   }
 
   openDialog() {
-    // this.dialog.open(ChangePasswordComponent);
+    this.dialog.open(ChangePasswordComponent);
   }
 
   changeLanguage(lang: any): void {
