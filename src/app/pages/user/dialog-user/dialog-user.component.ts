@@ -139,7 +139,9 @@ export class DialogUserComponent implements OnInit {
   }
 
   cargarEntidades() {
-    this.entidadService.getPaginadoEntidad('', 1, 100).subscribe({
+    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+
+    this.entidadService.getPaginadoEntidad(idEntidad, '', 1, 100).subscribe({
       next: (res) => {
         this.entidades = res.items;
 
@@ -161,7 +163,7 @@ export class DialogUserComponent implements OnInit {
 
         const valorActual = this.usuarioForm.get('idRol')?.value;
 
-        if (!valorActual && this.entidades.length > 0) {
+        if (!valorActual && this.rols.length > 0) {
           this.usuarioForm.get('rol')?.setValue(this.rols[0].name);
         }
       },

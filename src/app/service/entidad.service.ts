@@ -15,8 +15,14 @@ export class EntidadService {
 
   constructor() {}
 
-  getPaginadoEntidad(search = '', page = 1, pageSize = 10) {
+  getPaginadoEntidad(
+    idEntidad: number = 0,
+    search = '',
+    page = 1,
+    pageSize = 10
+  ) {
     const params = {
+      idEntidad,
       search,
       Page: page,
       RecordsPerPage: pageSize,

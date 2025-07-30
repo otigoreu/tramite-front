@@ -112,7 +112,9 @@ export class AppUnidadorganicaEditComponent implements OnInit {
   }
 
   cargarEntidades() {
-    this.entidadService.getPaginadoEntidad('', 1, 100).subscribe({
+    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+
+    this.entidadService.getPaginadoEntidad(idEntidad, '', 1, 100).subscribe({
       next: (res) => {
         this.entidades = res.items;
 

@@ -104,6 +104,8 @@ export class UnidadorganicaComponent implements OnInit {
 
   /** Método de inicialización */
   ngOnInit(): void {
+    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+
     this.loadUnidadorganicaes();
 
     // Configuración del autocomplete con debounce y búsqueda
@@ -111,7 +113,7 @@ export class UnidadorganicaComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value) =>
-        this.entidadService.getPaginadoEntidad(value!, 1, 10).pipe(
+        this.entidadService.getPaginadoEntidad(idEntidad, value!, 1, 10).pipe(
           map((response) => response.items) // Retorna solo los items
         )
       )
@@ -156,16 +158,20 @@ export class UnidadorganicaComponent implements OnInit {
 
   /** Filtrar por entidad seleccionada */
   onEntidadSelected(entidadNombre: string): void {
-    this.entidadService.getPaginadoEntidad(entidadNombre, 1, 10).subscribe({
-      next: (res) => {
-        this.selectedEntidad =
-          res.items.find((e) => e.descripcion === entidadNombre) ?? null;
+    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
 
-        if (this.selectedEntidad) {
-          this.loadUnidadorganicaes('', 1, 10, this.selectedEntidad.id);
-        }
-      },
-    });
+    this.entidadService
+      .getPaginadoEntidad(idEntidad, entidadNombre, 1, 10)
+      .subscribe({
+        next: (res) => {
+          this.selectedEntidad =
+            res.items.find((e) => e.descripcion === entidadNombre) ?? null;
+
+          if (this.selectedEntidad) {
+            this.loadUnidadorganicaes('', 1, 10, this.selectedEntidad.id);
+          }
+        },
+      });
   }
 
   /** Abrir diálogo de edición o creación de Unidad Orgánica */
