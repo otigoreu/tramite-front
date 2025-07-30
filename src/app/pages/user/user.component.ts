@@ -31,6 +31,7 @@ export class UserComponent implements OnInit {
     'Usuario',
     'Email',
     'DescripcionPersona',
+    'Rol',
     'Unidadorganica',
     'Estado',
     'actions',
@@ -52,23 +53,30 @@ export class UserComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.loadUsuarios();
+    const userRole = localStorage.getItem('userRole');
+    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+
+    this.loadUsuarios(idEntidad, userRole!);
   }
 
   loadUsuarios(
+    idEntidad: number = 0,
+    rol: string = '',
     search: string = '',
     page: number = 1,
     pageSize: number = 10
   ): void {
-    this.userService.getPaginadoUsuario(search, page, pageSize).subscribe({
-      next: (res) => {
-        this.totalRecords = res.meta.total;
-        this.dataSource.data = res.items;
-      },
-      error: (err) => {
-        console.error('Error al obtener unidadorganicaes', err);
-      },
-    });
+    this.userService
+      .getPaginadoUsuario(idEntidad, rol, search, page, pageSize)
+      .subscribe({
+        next: (res) => {
+          this.totalRecords = res.meta.total;
+          this.dataSource.data = res.items;
+        },
+        error: (err) => {
+          console.error('Error al obtener unidadorganicaes', err);
+        },
+      });
   }
 
   applyFilter(filterValue: any) {
@@ -85,6 +93,20 @@ export class UserComponent implements OnInit {
 
   /** (Método comentado) Abrir diálogo de aplicación a Unidad Orgánica */
   openDialogUnidadorganica(usuarioDialog?: Usuario) {
+    // Puedes implementar este método si es necesario
+    // this.dialog
+    //   .open(UnidadorganicaUsuarioComponent, {
+    //     data: unidadorganicaDialog,
+    //   })
+    //   .afterClosed()
+    //   .subscribe(() => {
+    //     const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
+    //     const pageSize = this.paginator.pageSize;
+    //     this.loadUnidadorganicaes(this.searchTerm, pageIndex, pageSize);
+    //   });
+  }
+
+  openDialogRol(usuarioDialog?: Usuario) {
     // Puedes implementar este método si es necesario
     // this.dialog
     //   .open(UnidadorganicaUsuarioComponent, {

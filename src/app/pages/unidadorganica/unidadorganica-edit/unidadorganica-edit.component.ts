@@ -81,6 +81,8 @@ export class AppUnidadorganicaEditComponent implements OnInit {
     this.cargarEntidades();
 
     this.uoForm.get('idEntidad')?.valueChanges.subscribe((idEntidad) => {
+      console.log('idEntidad', idEntidad);
+
       if (idEntidad) {
         this.cargarUnidadOrganica(idEntidad);
       } else {

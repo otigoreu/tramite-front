@@ -19,7 +19,7 @@ export class UnidadorganicaService {
     search: string = '',
     page: number = 1,
     pageSize: number = 10,
-    idUnidadorganica?: number // 👈 Parámetro opcional
+    idEntidad?: number // 👈 Parámetro opcional
   ) {
     let params: any = {
       search,
@@ -27,8 +27,8 @@ export class UnidadorganicaService {
       RecordsPerPage: pageSize,
     };
 
-    if (idUnidadorganica) {
-      params.idUnidadorganica = idUnidadorganica; // 👈 Solo se agrega si existe
+    if (idEntidad) {
+      params.idEntidad = idEntidad; // 👈 Solo se agrega si existe
     }
 
     return this.http

@@ -5,4 +5,5 @@ export interface UsuarioPaginatedResponseDto {
   estado: boolean;
   descripcionPersona: string;
   cantidadunidadorganicas: number;
+  cantidadrols: number;
 }

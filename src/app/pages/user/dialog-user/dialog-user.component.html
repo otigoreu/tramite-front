@@ -55,6 +55,18 @@
       >
     </mat-form-field>
 
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Rol</mat-label>
+      <mat-select formControlName="rol">
+        <mat-option *ngFor="let e of rols" [value]="e.name">
+          {{ e.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="usuarioForm.get('idRol')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+
     <div class="row m-t-20">
       <div class="col-lg-6">
         <mat-label class="mat-subtitle-2 f-w-600 m-b-8 d-block"

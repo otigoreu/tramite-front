@@ -45,7 +45,7 @@ import { UnidadorganicaUsuarioRequestDto } from './Models/UnidadorganicaUsuarioR
   templateUrl: './unidadorganica-usuario.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UnidadorganicaUsuarioComponent {
+export class UnidadorganicaUsuarioComponent implements OnInit {
   // 👉 Inyecciones usando inject()
   uousuarioService = inject(UnidadorganicausuarioService);
   notificationsService = inject(NotificationsService);
@@ -76,6 +76,8 @@ export class UnidadorganicaUsuarioComponent {
 
   ngOnInit(): void {
     this.unidadorganicaDescripcion = this.data?.descripcion;
+
+    console.log();
     this.loadUnidadorganicaUsuarios(this.data?.id);
   }
 
@@ -92,7 +94,7 @@ export class UnidadorganicaUsuarioComponent {
    * @param pageSize - Tamaño de página
    */
   loadUnidadorganicaUsuarios(
-    idEntidad: number,
+    idUnidadorganica: number,
     search: string = '',
     page: number = 1,
     pageSize: number = 10
@@ -101,7 +103,7 @@ export class UnidadorganicaUsuarioComponent {
     this.isLoading = true;
 
     this.uousuarioService
-      .getPaginadoUnidadorgnicaUsuario(idEntidad, search, page, pageSize)
+      .getPaginadoUnidadorgnicaUsuario(idUnidadorganica, search, page, pageSize)
       .subscribe({
         next: (res) => {
           this.totalRecords = res.meta.total;

@@ -128,6 +128,7 @@ export class LoginComponent {
         this.notifications.set(notify1, true);
 
         localStorage.setItem('idAplicacion', this.authService.idAplicacion());
+        localStorage.setItem('idAEntidad', response.data.entidad.id.toString());
 
         //tarer menu por aplicacion
         this.menuService

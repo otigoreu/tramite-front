@@ -41,6 +41,7 @@ export class AuthService {
   nombresApellidos = signal('');
   aplicacion = signal('');
   idAplicacion = signal('');
+  idEntidad = signal('');
   unidadOrganicas = signal('');
   entidad = signal('');
 

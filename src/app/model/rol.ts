@@ -1,7 +1,6 @@
-export interface Rol{
-
-  id:string;
-  name:string;
-  normalizedName:string;
+export interface Rol {
+  id: string;
+  name: string;
+  normalizedName: string;
   estado: string;
 }

@@ -56,6 +56,22 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="Rol">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            Rol(s)
+          </th>
+          <td mat-cell *matCellDef="let row" class="f-s-14">
+            <button
+              mat-stroked-button
+              color="primary"
+              class="m-l-auto"
+              (click)="openDialogRol(row)"
+            >
+              {{ row.cantidadRols }} + Rol(s)
+            </button>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="Unidadorganica">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             UO(s)

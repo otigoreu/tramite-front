@@ -39,6 +39,8 @@ import { UnidadorganicaPaginatedResponseDto } from '../../unidadorganica/Models/
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { ApiResponse } from 'src/app/model/ApiResponse';
 import { RegisterRequestDto } from '../Models/RegisterRequestDto';
+import { RolService } from 'src/app/service/rol.service';
+import { Rol } from 'src/app/model/rol';
 
 @Component({
   selector: 'app-dialog-user',
@@ -64,17 +66,20 @@ export class DialogUserComponent implements OnInit {
   usuario: Usuario;
   persona: Persona;
   entidades: Entidad[] = [];
+  rols: Rol[] = [];
   unidadorganicas: UnidadorganicaPaginatedResponseDto[] = [];
 
   usuarioService = inject(UserService);
   personaService = inject(PersonaServiceService);
   entidadService = inject(EntidadService);
   unidadorganicaService = inject(UnidadorganicaService);
+  rolService = inject(RolService);
 
   usuarioForm = this.fb.group({
     idPersona: [null as number | null, Validators.required],
     idEntidad: [null as number | null, Validators.required],
     idDependencia: [null as number | null, Validators.required],
+    rol: [null as string | null, Validators.required],
 
     username: [{ value: '', disabled: true }, Validators.required],
     password: [
@@ -107,6 +112,7 @@ export class DialogUserComponent implements OnInit {
     }
 
     this.cargarEntidades();
+    this.cargarRols();
 
     this.usuarioForm.get('idEntidad')?.valueChanges.subscribe((idEntidad) => {
       if (idEntidad) {
@@ -142,6 +148,21 @@ export class DialogUserComponent implements OnInit {
         if (!valorActual && this.entidades.length > 0) {
           // Solo seteas la primera entidad si es registro nuevo
           this.usuarioForm.get('idEntidad')?.setValue(this.entidades[0].id);
+        }
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  cargarRols() {
+    this.rolService.getData().subscribe({
+      next: (res) => {
+        this.rols = res; // <-- CORREGIDO
+
+        const valorActual = this.usuarioForm.get('idRol')?.value;
+
+        if (!valorActual && this.entidades.length > 0) {
+          this.usuarioForm.get('rol')?.setValue(this.rols[0].name);
         }
       },
       error: (err) => console.error(err),
@@ -216,6 +237,7 @@ export class DialogUserComponent implements OnInit {
         email: raw.email!,
         idPersona: raw.idPersona!,
         idUnidadOrganica: raw.idDependencia!,
+        rol: raw.rol!,
         password,
         confirmPassword: password,
       };

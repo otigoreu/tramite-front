@@ -161,11 +161,15 @@ export class UserService {
   }
 
   getPaginadoUsuario(
+    idEntidad: number = 0,
+    rol: string = '',
     search: string = '',
     page: number = 1,
     pageSize: number = 10
   ) {
     let params: any = {
+      idEntidad,
+      rol,
       search,
       Page: page,
       RecordsPerPage: pageSize,
