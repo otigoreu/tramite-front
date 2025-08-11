@@ -5,30 +5,54 @@
   <mat-dialog-content style="max-width: 600px">
     <form [formGroup]="rolForm">
       <div class="row">
-        <div class="col-lg-12">
-          <mat-form-field appearance="outline" class="w-100">
-            <input
-              type="text"
-              matInput
-              required
-              id="name"
-              name="name"
-              [formControl]="rolForm.controls.name"
-              [(ngModel)]="rol.name"
-              placeholder="Nombre"
-            />
-            @if(rolForm.controls.name.touched &&rolForm.controls.name.invalid){
-            <mat-hint class="m-b-16 error-msg">
-              @if (rolForm.controls.name.hasError('required')) {
-              <div class="text-error">Nombre <strong>requerido</strong></div>
-              }
-            </mat-hint>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Entidad</mat-label>
+          <mat-select
+            formControlName="idEntidad"
+            (selectionChange)="onEntidadChange($event.value)"
+          >
+            <mat-option *ngFor="let e of entidades" [value]="e.id">
+              {{ e.descripcion }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="rolForm.get('idEntidad')?.hasError('required')">
+            Campo requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Aplicación</mat-label>
+          <mat-select formControlName="idAplicacion">
+            <mat-option *ngFor="let e of aplicaciones" [value]="e.id">
+              {{ e.descripcion }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="rolForm.get('idAplicacion')?.hasError('required')"
+            >Campo requerido</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="name"
+            name="name"
+            [formControl]="rolForm.controls.name"
+            [(ngModel)]="rol.name"
+            placeholder="Nombre"
+          />
+          @if(rolForm.controls.name.touched &&rolForm.controls.name.invalid){
+          <mat-hint class="m-b-16 error-msg">
+            @if (rolForm.controls.name.hasError('required')) {
+            <div class="text-error">Nombre <strong>requerido</strong></div>
             }
-          </mat-form-field>
-        </div>
-
-
+          </mat-hint>
+          }
+        </mat-form-field>
       </div>
+
       <mat-action-row>
         <button
           mat-flat-button

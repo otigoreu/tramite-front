@@ -59,6 +59,7 @@ export class UserService {
               expirationDate: '',
               token: '',
               roles: [],
+              idUsuario: '',
               persona: {
                 id: 0,
                 nombres: '',

@@ -37,7 +37,7 @@ export class NotificationMessages {
   }
 
   static info(message = 'Información relevante'): [string, string, any?] {
-    return ['Info', message, { icon: IconsNotify.Info }];
+    return ['Información', message, { icon: IconsNotify.Info }];
   }
 
   static success(

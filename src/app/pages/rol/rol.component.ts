@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, ViewChild, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  ViewChild,
+  OnInit,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -14,111 +20,112 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-rol',
   standalone: true,
-  imports: [MaterialModule,TablerIconsModule,CommonModule,MatPaginatorModule],
+  styleUrl: 'rol.component.scss',
+  imports: [
+    MaterialModule,
+    TablerIconsModule,
+    CommonModule,
+    MatPaginatorModule,
+  ],
   templateUrl: './rol.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RolComponent implements OnInit{
+export class RolComponent implements OnInit {
+  rolService = inject(RolService);
 
-rolService=inject(RolService);
+  displayedColumns: string[] = ['item', 'descripcion', 'estado', 'acciones'];
 
+  dataSource: MatTableDataSource<Rol>;
 
-displayedColumns:string[]=[
-  'item',
-  'descripcion',
-  'estado',
-  'acciones'
-];
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
+    Object.create(null);
+  @ViewChild(MatSort) sort!: MatSort;
 
-dataSource:MatTableDataSource<Rol>;
+  dialog = inject(MatDialog);
 
-@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
-      Object.create(null);
-    @ViewChild(MatSort) sort!: MatSort;
-
-    dialog=inject(MatDialog);
-
-constructor(){
-  const roles:Rol[]=[];
-  this.dataSource=new MatTableDataSource(roles);
-}
+  constructor() {
+    const roles: Rol[] = [];
+    this.dataSource = new MatTableDataSource(roles);
+  }
   ngOnInit(): void {
     this.loadData();
-
   }
 
-loadData(){
-    this.rolService.getData().subscribe((response)=>{
-      this.dataSource=new MatTableDataSource(response);
-      this.dataSource.paginator=this.paginator;
+  loadData() {
+    this.rolService.getData().subscribe((response) => {
+      this.dataSource = new MatTableDataSource(response);
+      this.dataSource.paginator = this.paginator;
     });
   }
   applyFilter(filterValue: any): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  delete(id:string){
-     Swal.fire({
-               title: '¿Estás seguro?',
-               text: '¡No podrás revertir esto!',
-               icon: 'warning',
-               showCancelButton: true,
-               confirmButtonText: 'Sí, Emilinar',
-               cancelButtonText: 'Cancelar',
-             }).then((result) => {
-               if (result.isConfirmed) {
-                 // lógica de confirmación
-                 this.rolService.delete(id).subscribe((response) => {
-                   if (response.success) {
-                       this.loadData();
-                   }
-                 });
-               }
-             });
+  delete(id: string) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Emilinar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.rolService.delete(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
+          }
+        });
+      }
+    });
   }
 
-  openDialog(rol?:Rol){
-    this.dialog.open(DialogoRolComponent,{data:rol}).afterClosed().subscribe(()=>{this.loadData();});
-
+  openDialog(rol?: Rol) {
+    this.dialog
+      .open(DialogoRolComponent, { data: rol })
+      .afterClosed()
+      .subscribe(() => {
+        this.loadData();
+      });
   }
   finalized(id: string) {
-     Swal.fire({
-        title: '¿Estás seguro?',
-        // text: '¡No podrás revertir esto!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, Desactivar',
-        cancelButtonText: 'Cancelar',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // lógica de confirmación
-          this.rolService.finalized(id).subscribe((response) => {
-            if (response.success) {
-                this.loadData();
-            }
-          });
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      // text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Desactivar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.rolService.finalized(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
+          }
+        });
+      }
+    });
+  }
 
-    initialized(id: string) {
-      Swal.fire({
-        title: '¿Estás seguro?',
-        // text: '¡No podrás revertir esto!',
-        icon: 'success',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, Activar',
-        cancelButtonText: 'Cancelar',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // lógica de confirmación
-          this.rolService.initialized(id).subscribe((response) => {
-            if (response.success) {
-                this.loadData();
-            }
-          });
-        }
-      });
-    }
-
+  initialized(id: string) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      // text: '¡No podrás revertir esto!',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Activar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // lógica de confirmación
+        this.rolService.initialized(id).subscribe((response) => {
+          if (response.success) {
+            this.loadData();
+          }
+        });
+      }
+    });
+  }
 }

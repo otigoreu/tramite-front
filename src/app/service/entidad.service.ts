@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { map, Observable } from 'rxjs';
@@ -15,6 +15,42 @@ export class EntidadService {
 
   constructor() {}
 
+  getEntidades(userId: string, search = '', page?: number, pageSize?: number) {
+    let params: any = { userId, search };
+
+    // 👇 Solo agregamos paginación si se envían valores
+    if (page !== undefined && pageSize !== undefined) {
+      params = {
+        ...params,
+        Page: page,
+        RecordsPerPage: pageSize,
+      };
+    }
+
+    return this.http
+      .get<ApiResponse<Entidad[]>>(`${this.baseUrl}/api/entidades`, {
+        params,
+        observe: 'response', // Necesario para leer headers
+      })
+      .pipe(
+        map((response) => {
+          const items = response.body?.data ?? [];
+          const total = parseInt(
+            response.headers.get('totalrecordsquantity') ?? '0',
+            10
+          );
+          return {
+            items,
+            meta: {
+              total,
+              page: page ?? null,
+              pageSize: pageSize ?? null,
+            },
+          };
+        })
+      );
+  }
+
   getPaginadoEntidad(
     idEntidad: number = 0,
     search = '',
@@ -29,13 +65,10 @@ export class EntidadService {
     };
 
     return this.http
-      .get<ApiResponse<Entidad[]>>(
-        `${this.baseUrl}/api/entidades/descripcion`,
-        {
-          params,
-          observe: 'response', // 👈 Esto es CLAVE para acceder a headers
-        }
-      )
+      .get<ApiResponse<Entidad[]>>(`${this.baseUrl}/api/entidades`, {
+        params,
+        observe: 'response', // 👈 Esto es CLAVE para acceder a headers
+      })
       .pipe(
         map((response) => {
           const items = response.body?.data ?? [];

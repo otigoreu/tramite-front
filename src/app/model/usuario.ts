@@ -12,6 +12,7 @@ export interface LoginApiResponse {
 export interface Data {
   token: string;
   expirationDate: string;
+  idUsuario: string;
   roles: string[];
   entidad: Entidad;
   persona: Persona;
@@ -76,14 +77,12 @@ export interface ChangePasswordRequestBody {
 
 ///--------------------------------------------------------
 
-export interface Usuario{
-
-      id: string,
-      email: string,
-      userName: string,
-      idPersona: number,
-      nombres: string,
-      apellidoPat: string,
-      apellidoMat: string,
-
+export interface Usuario {
+  id: string;
+  email: string;
+  userName: string;
+  idPersona: number;
+  nombres: string;
+  apellidoPat: string;
+  apellidoMat: string;
 }

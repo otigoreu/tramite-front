@@ -24,6 +24,7 @@ import { UserService } from 'src/app/service/user.service';
 import { CoreService } from 'src/app/services/core.service';
 import { SimpleCaptchaComponent } from '../simple-captcha/simple-captcha.component';
 import { notify1, notify6 } from 'src/app/data/mensajes.data';
+import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 
 @Component({
   selector: 'app-login',
@@ -80,6 +81,9 @@ export class LoginComponent {
     // this.usuarioService.loginUser(dni, password).subscribe((response) => {
     this.authService.login(dni, password).subscribe((response) => {
       if (response && response.success) {
+        console.log('llego');
+        console.log(response);
+
         //para el localstorage
         localStorage.setItem('token', response.data.token);
 
@@ -94,6 +98,7 @@ export class LoginComponent {
         this.authService.userEmail.set(response.data.persona.email),
           this.authService.userName.set(dni);
         this.authService.userRole.set(response.data.roles[0]);
+
         this.authService.aplicacion.set(
           response.data.aplicaciones[0].descripcion
         );
@@ -121,53 +126,59 @@ export class LoginComponent {
 
         //signals
         this.authService.loggedIn.set(true);
-        // this.notifications.success(
-        //   'Inicio de sesion Exitoso',
-        //   'Bienvenido a Tramite Goreu'
-        // );
-        this.notifications.set(notify1, true);
 
         localStorage.setItem('idAplicacion', this.authService.idAplicacion());
         localStorage.setItem('idAEntidad', response.data.entidad.id.toString());
+        localStorage.setItem('idUsuario', response.data.idUsuario);
 
         //tarer menu por aplicacion
+        console.log('menuService');
+
         this.menuService
           .GetByAplicationAsync(response.data.aplicaciones[0].id)
-          .subscribe((data: any[]) => {
-            // console.log('menu', data);
-            data.forEach((nav) => {
-              // console.log('nav', nav);
-              if (!nav.idMenuPadre) {
-                const navItem: NavItem = {
-                  id: nav.id,
-                  displayName: nav.descripcion,
-                  iconName: nav.icono,
-                  route: nav.ruta,
-                  children: [],
-                };
-                navItems.push(navItem);
-                this.firstOptionMenu.set(navItems[0].route!);
-              }
-            });
+          .subscribe({
+            next: (data: any[]) => {
+              console.log('menu', data);
 
-            this.router.navigate([this.firstOptionMenu()]),
-              navItems.forEach((parentNav: NavItem) => {
-                parentNav.children = data.filter(
-                  (nav) => nav.idMenuPadre === parentNav.id
-                );
+              data.forEach((nav) => {
+                // console.log('nav', nav);
+                if (!nav.idMenuPadre) {
+                  const navItem: NavItem = {
+                    id: nav.id,
+                    displayName: nav.descripcion,
+                    iconName: nav.icono,
+                    route: nav.ruta,
+                    children: [],
+                  };
+                  navItems.push(navItem);
+                  this.firstOptionMenu.set(navItems[0].route!);
+                }
               });
+
+              this.router.navigate([this.firstOptionMenu()]),
+                navItems.forEach((parentNav: NavItem) => {
+                  parentNav.children = data.filter(
+                    (nav) => nav.idMenuPadre === parentNav.id
+                  );
+                });
+
+              this.notifications.set(notify1, true);
+            },
+            error: (err) => {
+              console.error('Error al obtener menú:', err);
+              this.notifications.info(
+                ...NotificationMessages.info(
+                  'El usuario no tiene permisos asignados.'
+                )
+              );
+            },
           });
-
-        // console.log('primera opcion menu despues 2 ->', this.firstOptionMenu());
-
-        // this.router.navigate(['pages/persona']);
-
-        // this.router.navigate([this.menu1]);
       } else {
         this.notifications.set(notify6, true);
       }
     });
   }
+
   onCaptchaVerified(isValid: boolean) {
     this.captchaValid = isValid;
   }

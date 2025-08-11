@@ -42,6 +42,7 @@ export class AuthService {
   aplicacion = signal('');
   idAplicacion = signal('');
   idEntidad = signal('');
+  idUsuario = signal('');
   unidadOrganicas = signal('');
   entidad = signal('');
 
@@ -55,6 +56,7 @@ export class AuthService {
           data: {
             expirationDate: '',
             token: '',
+            idUsuario: '',
             roles: [],
             persona: {
               id: 0,
