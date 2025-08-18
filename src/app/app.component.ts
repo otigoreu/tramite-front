@@ -31,6 +31,7 @@ export class AppComponent {
 
   constructor() {
     const userRole = localStorage.getItem('userRole');
+    const userIdRol = localStorage.getItem('userIdRol');
     const userName = localStorage.getItem('userName');
     const unidadOrganicas = localStorage.getItem('unidadOrganica');
     const aplicacion = localStorage.getItem('Aplicacion');
@@ -50,6 +51,7 @@ export class AppComponent {
     if (
       unidadOrganicas &&
       userRole &&
+      userIdRol&&
       userName &&
       aplicacion &&
       userEmail &&
@@ -59,6 +61,7 @@ export class AppComponent {
       this.authService.aplicacion.set(aplicacion);
       this.authService.unidadOrganicas.set(unidadOrganicas);
       this.authService.userRole.set(userRole);
+      this.authService.userIdRol.set(userIdRol);
       this.authService.userName.set(userName);
       this.authService.userEmail.set(userEmail);
       this.authService.nombresApellidos.set(nombreApellido);

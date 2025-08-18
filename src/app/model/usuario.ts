@@ -2,6 +2,7 @@ import { Persona } from './persona';
 import { Entidad } from './entidad';
 import { UnidadOrganica } from './unidadOrganica';
 import { Aplicacion } from '../pages/aplicacion/Modals/Aplicacion';
+import { RolLogin } from './rol';
 
 export interface LoginApiResponse {
   data: Data;
@@ -13,7 +14,7 @@ export interface Data {
   token: string;
   expirationDate: string;
   idUsuario: string;
-  roles: string[];
+  roles: RolLogin[];
   entidad: Entidad;
   persona: Persona;
   unidadOrganicas: UnidadOrganica[];

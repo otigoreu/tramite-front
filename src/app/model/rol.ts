@@ -4,3 +4,9 @@ export interface Rol {
   normalizedName: string;
   estado: string;
 }
+
+export interface RolLogin {
+  id: string;
+  name: string;
+
+}
