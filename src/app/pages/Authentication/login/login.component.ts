@@ -99,6 +99,7 @@ export class LoginComponent {
         this.authService.userName.set(dni);
         this.authService.userRole.set(response.data.roles[0].name);
         this.authService.userIdRol.set(response.data.roles[0].id);
+        this.authService.nivelRol.set(response.data.roles[0].nivel);
 
         this.authService.aplicacion.set(
           response.data.aplicaciones[0].descripcion
@@ -113,6 +114,7 @@ export class LoginComponent {
         //agregar al localStorage userEmail y el userRole
         localStorage.setItem('userRole', this.authService.userRole());
         localStorage.setItem('userIdRole', this.authService.userIdRol());
+        localStorage.setItem('nivelRol', this.authService.nivelRol());
         localStorage.setItem('Aplicacion', this.authService.aplicacion());
 
         localStorage.setItem(

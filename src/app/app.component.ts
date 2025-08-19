@@ -32,6 +32,7 @@ export class AppComponent {
   constructor() {
     const userRole = localStorage.getItem('userRole');
     const userIdRol = localStorage.getItem('userIdRol');
+    const nivelRol = localStorage.getItem('nivelRol');
     const userName = localStorage.getItem('userName');
     const unidadOrganicas = localStorage.getItem('unidadOrganica');
     const aplicacion = localStorage.getItem('Aplicacion');
@@ -52,6 +53,7 @@ export class AppComponent {
       unidadOrganicas &&
       userRole &&
       userIdRol&&
+      nivelRol&&
       userName &&
       aplicacion &&
       userEmail &&
@@ -62,6 +64,7 @@ export class AppComponent {
       this.authService.unidadOrganicas.set(unidadOrganicas);
       this.authService.userRole.set(userRole);
       this.authService.userIdRol.set(userIdRol);
+      this.authService.nivelRol.set(nivelRol);
       this.authService.userName.set(userName);
       this.authService.userEmail.set(userEmail);
       this.authService.nombresApellidos.set(nombreApellido);

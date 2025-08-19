@@ -7,6 +7,7 @@ export interface Rol {
 
 export interface RolLogin {
   id: string;
+  nivel:string
   name: string;
 
 }

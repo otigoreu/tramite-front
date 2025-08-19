@@ -37,6 +37,7 @@ export class AuthService {
   isAdministrator = signal(false);
   userRole = signal('');
   userIdRol=signal('');
+  nivelRol=signal('');
   userName = signal('');
   userEmail = signal('');
   nombresApellidos = signal('');
