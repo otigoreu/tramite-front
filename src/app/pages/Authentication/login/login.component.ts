@@ -100,6 +100,7 @@ export class LoginComponent {
         this.authService.userRole.set(response.data.roles[0].name);
         this.authService.userIdRol.set(response.data.roles[0].id);
         this.authService.nivelRol.set(response.data.roles[0].nivel);
+        this.authService.entidad.set(response.data.entidad.descripcion);
 
         this.authService.aplicacion.set(
           response.data.aplicaciones[0].descripcion
@@ -116,6 +117,7 @@ export class LoginComponent {
         localStorage.setItem('userIdRol', this.authService.userIdRol());
         localStorage.setItem('nivelRol', this.authService.nivelRol());
         localStorage.setItem('Aplicacion', this.authService.aplicacion());
+        localStorage.setItem('entidad', this.authService.entidad());
 
         localStorage.setItem(
           'unidadOrganica',

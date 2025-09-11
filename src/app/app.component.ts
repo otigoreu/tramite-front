@@ -39,12 +39,17 @@ export class AppComponent {
     const userEmail = localStorage.getItem('userEmail');
     const nombreApellido = localStorage.getItem('nombreApellido');
     const idAplicacion = localStorage.getItem('idAplicacion');
+    const entidad = localStorage.getItem('entidad');
     // console.log('---------------------------------------');
 
-    // console.log('localStorage rol =' + userRole);
-    // console.log('localStorage Name =' + userName);
     // console.log('localStorage Sede =' + unidadOrganicas);
+    // console.log('localStorage rol =' + userRole);
+    // console.log('localStorage userIdRole=' + userIdRol);
+    // console.log('localStorage nivelRole=' + nivelRol);
+    // console.log('localStorage Name =' + userName);
     // console.log('localStorage Aplicacion =' + aplicacion);
+    // console.log('localStorage email=' + userEmail);
+    // console.log('localStorage nombreApellido=' + nombreApellido);
     // console.log('localStorage idAplicacion =' + idAplicacion);
 
     // console.log('---------------------------------------');
@@ -54,6 +59,7 @@ export class AppComponent {
       userRole &&
       userIdRol&&
       nivelRol&&
+      entidad &&
       userName &&
       aplicacion &&
       userEmail &&
@@ -69,7 +75,7 @@ export class AppComponent {
       this.authService.userEmail.set(userEmail);
       this.authService.nombresApellidos.set(nombreApellido);
       this.authService.idAplicacion.set(idAplicacion);
-
+      this.authService.entidad.set(entidad);
       // console.log('signal rol =' + this.authService.userRole());
       // console.log('signal Name =' + this.authService.userName());
       // console.log('signal sede =' + this.authService.unidadOrganicas());
@@ -93,11 +99,11 @@ export class AppComponent {
 
     //traer menu por aplicacion
     if (idAplicacion) {
-      // console.log('idAplicacion: '+idAplicacion);
+      console.log('idAplicacion: '+idAplicacion);
       this.menuService
         .GetByAplicationAsync(parseInt(idAplicacion))
         .subscribe((data: any[]) => {
-          // console.log('menu', data);
+          console.log('menu', data);
           data.forEach((nav) => {
             //  console.log('nav', nav);
             if (!nav.idMenuPadre) {

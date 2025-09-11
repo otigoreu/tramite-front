@@ -109,7 +109,9 @@ export class HeaderComponent {
     },
   ];
 
-  appHeader: string;
+  aplicacionHeader: string;
+  entidadHeader:string;
+
 
   constructor(
     private vsidenav: CoreService,
@@ -118,8 +120,11 @@ export class HeaderComponent {
   ) {
     translate.setDefaultLang('es');
     const aplicacion = localStorage.getItem('Aplicacion');
-    if (aplicacion) {
-      this.appHeader = aplicacion;
+    const entidad=localStorage.getItem('entidad');
+
+    if (aplicacion && entidad) {
+      this.aplicacionHeader= aplicacion;
+      this.entidadHeader=entidad;
     }
   }
 
