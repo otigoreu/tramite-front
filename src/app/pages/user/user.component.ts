@@ -13,12 +13,13 @@ import { ConfirmationService } from 'src/app/service/confirmation.service';
 import { NotificationsService } from 'angular2-notifications';
 import { UsuarioPaginatedResponseDto } from './Models/UsuarioPaginatedResponseDto';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-user',
   standalone: true,
   styleUrl: 'user.component.scss',
-  imports: [MaterialModule, NgIf, TablerIconsModule],
+  imports: [MaterialModule, NgIf, TablerIconsModule, RouterOutlet],
   templateUrl: './user.component.html',
 })
 export class UserComponent implements OnInit {
@@ -28,8 +29,9 @@ export class UserComponent implements OnInit {
 
   displayedColumns: string[] = [
     'item',
+    'Entidad_Descripcion',
+    'Aplicacion_Descripcion',
     'Usuario',
-    'Email',
     'DescripcionPersona',
     'Rol',
     'Unidadorganica',
@@ -50,24 +52,22 @@ export class UserComponent implements OnInit {
   totalElements: number;
   dialog = inject(MatDialog);
 
-  constructor() {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    const userRole = localStorage.getItem('userRole');
-    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+    const rolId = localStorage.getItem('userIdRol')!;
 
-    this.loadUsuarios(idEntidad, userRole!);
+    this.loadUsuarios(rolId!);
   }
 
   loadUsuarios(
-    idEntidad: number = 0,
-    rol: string = '',
+    rolId: string = '',
     search: string = '',
     page: number = 1,
     pageSize: number = 10
   ): void {
     this.userService
-      .getPaginadoUsuario(idEntidad, rol, search, page, pageSize)
+      .getPaginadoUsuario(rolId, search, page, pageSize)
       .subscribe({
         next: (res) => {
           this.totalRecords = res.meta.total;
@@ -84,26 +84,33 @@ export class UserComponent implements OnInit {
   }
 
   openDialog(userDialog?: Usuario) {
-    this.dialog.open(DialogUserComponent, {
-      width: '600px',
-      height: '675px',
-      data: userDialog,
-    });
+    this.dialog
+      .open(DialogUserComponent, {
+        width: '600px',
+        height: '675px',
+        data: userDialog,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
+        const pageSize = this.paginator.pageSize;
+
+        //this.loadEntidades(this.searchTerm, pageIndex, pageSize);
+      });
   }
 
   /** (Método comentado) Abrir diálogo de aplicación a Unidad Orgánica */
-  openDialogUnidadorganica(usuarioDialog?: Usuario) {
-    // Puedes implementar este método si es necesario
-    // this.dialog
-    //   .open(UnidadorganicaUsuarioComponent, {
-    //     data: unidadorganicaDialog,
-    //   })
-    //   .afterClosed()
-    //   .subscribe(() => {
-    //     const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
-    //     const pageSize = this.paginator.pageSize;
-    //     this.loadUnidadorganicaes(this.searchTerm, pageIndex, pageSize);
-    //   });
+  openDialog_UsuarioAsociadoUnidadorganica(
+    userDialog?: UsuarioPaginatedResponseDto
+  ) {
+    console.log('openDialog_UsuarioAsociadoUnidadorganica');
+    console.log(userDialog);
+
+    // navegación absoluta
+    this.router.navigate(['/pages/user/unidadorganica-user', userDialog?.id]);
+
+    // o si quieres relativa:
+    // this.router.navigate(['unidadorganica-user', userDialog.id], { relativeTo: this.route });
   }
 
   openDialogRol(usuarioDialog?: Usuario) {

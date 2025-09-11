@@ -33,16 +33,19 @@ export class PersonaServiceService {
   private personaChange: Subject<Persona[]> = new Subject<Persona[]>();
 
   constructor() {}
+
   getData() {
     return this.http
       .get<GetPersonsApiResponse>(this.baseUrl + '/api/personas/nombre')
       .pipe(map((response) => response.data));
   }
+
   getDatafilter() {
     return this.http
-      .get<GetPersonsApiResponse>(this.baseUrl + '/api/personas/nombrefilter')
+      .get<GetPersonsApiResponse>(this.baseUrl + '/api/personas')
       .pipe(map((response) => response.data));
   }
+
   getDataPageable(p: number, s: number) {
     return this.http
       .get<GetPersonsApiResponse>(
@@ -58,28 +61,21 @@ export class PersonaServiceService {
       RecordsPerPage: pageSize,
     };
 
-    console.log('(getPaginadoPersona) search', search);
-
     return this.http
-      .get<ApiResponse<Personas[]>>(`${this.baseUrl}/api/personas/nombre`, {
+      .get<ApiResponse<Personas[]>>(`${this.baseUrl}/api/personas`, {
         params,
         observe: 'response',
       })
       .pipe(
         map((response) => {
-          const items = (response.body?.data ?? []).map((persona) => ({
-            ...persona,
-            nombreCompleto:
-              `${persona.apellidoPat} ${persona.apellidoMat}, ${persona.nombres}`.trim(),
-          }));
-
+          const data = response.body?.data ?? [];
           const total = parseInt(
             response.headers.get('totalrecordsquantity') ?? '0',
             10
           );
 
           return {
-            items,
+            data,
             meta: {
               total,
               page,

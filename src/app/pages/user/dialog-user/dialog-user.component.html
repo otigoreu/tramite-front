@@ -4,6 +4,63 @@
 <mat-dialog-content class="mat-typography" style="max-width: 600px">
   <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Entidad</mat-label>
+      <mat-select
+        formControlName="idEntidad"
+        (selectionChange)="selectionChangeEntidad($event.value)"
+      >
+        <mat-option *ngFor="let e of entidads" [value]="e.id">
+          {{ e.descripcion }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="usuarioForm.get('idEntidad')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Unidad Orgánica</mat-label>
+      <mat-select formControlName="idDependencia">
+        <mat-option *ngFor="let u of unidadorganicas" [value]="u.id">
+          {{ u.descripcion }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="usuarioForm.get('idDependencia')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Aplicación</mat-label>
+      <mat-select
+        formControlName="idAplicacion"
+        (selectionChange)="selectionChangeAplicacion($event.value)"
+      >
+        <mat-option *ngFor="let u of aplicacions" [value]="u.id">
+          {{ u.descripcion }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="usuarioForm.get('idAplicacion')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Rol</mat-label>
+      <mat-select
+        formControlName="idRol"
+        (selectionChange)="selectionChangeRol($event.value)"
+      >
+        <mat-option *ngFor="let e of rols" [value]="e.id">
+          {{ e.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="usuarioForm.get('idRol')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
       <mat-label>Persona</mat-label>
       <input
         type="text"
@@ -29,42 +86,6 @@
           {{ persona.nombreCompleto }}
         </mat-option>
       </mat-autocomplete>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="w-100">
-      <mat-label>Entidad</mat-label>
-      <mat-select formControlName="idEntidad">
-        <mat-option *ngFor="let e of entidades" [value]="e.id">
-          {{ e.descripcion }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="usuarioForm.get('idEntidad')?.hasError('required')"
-        >Campo requerido</mat-error
-      >
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="w-100">
-      <mat-label>Unidad Orgánica</mat-label>
-      <mat-select formControlName="idDependencia">
-        <mat-option *ngFor="let u of unidadorganicas" [value]="u.id">
-          {{ u.descripcion }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="usuarioForm.get('idDependencia')?.hasError('required')"
-        >Campo requerido</mat-error
-      >
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="w-100">
-      <mat-label>Rol</mat-label>
-      <mat-select formControlName="rol">
-        <mat-option *ngFor="let e of rols" [value]="e.name">
-          {{ e.name }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="usuarioForm.get('idRol')?.hasError('required')"
-        >Campo requerido</mat-error
-      >
     </mat-form-field>
 
     <div class="row m-t-20">

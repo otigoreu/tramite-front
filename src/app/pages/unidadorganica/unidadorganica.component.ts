@@ -108,14 +108,19 @@ export class UnidadorganicaComponent implements OnInit {
 
     this.loadUnidadorganicaes();
 
+    const userId = localStorage.getItem('userId')!;
+    const rolId = localStorage.getItem('rolId')!;
+
     // Configuración del autocomplete con debounce y búsqueda
     this.filteredOptions = this.firstControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value) =>
-        this.entidadService.getPaginadoEntidad(idEntidad, value!, 1, 10).pipe(
-          map((response) => response.items) // Retorna solo los items
-        )
+        this.entidadService
+          .getPaginadoEntidad(userId, rolId, value!, 1, 10)
+          .pipe(
+            map((response) => response.items) // Retorna solo los items
+          )
       )
     );
   }
@@ -158,10 +163,11 @@ export class UnidadorganicaComponent implements OnInit {
 
   /** Filtrar por entidad seleccionada */
   onEntidadSelected(entidadNombre: string): void {
-    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+    const userId = localStorage.getItem('userId')!;
+    const rolId = localStorage.getItem('rolId')!;
 
     this.entidadService
-      .getPaginadoEntidad(idEntidad, entidadNombre, 1, 10)
+      .getPaginadoEntidad(userId, rolId, entidadNombre, 1, 10)
       .subscribe({
         next: (res) => {
           this.selectedEntidad =

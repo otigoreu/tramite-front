@@ -52,22 +52,30 @@ export class EntidadService {
   }
 
   getPaginadoEntidad(
-    idEntidad: number = 0,
-    search = '',
-    page = 1,
-    pageSize = 10
-  ) {
-    const params = {
-      idEntidad,
-      search,
-      Page: page,
-      RecordsPerPage: pageSize,
-    };
+    userId: string = '',
+    rolId: string = '',
+    search: string = '',
+    page?: number,
+    pageSize?: number
+  ): Observable<{
+    items: Entidad[];
+    meta: { total: number; page?: number; pageSize?: number };
+  }> {
+    let params = new HttpParams()
+      .set('userId', userId)
+      .set('rolId', rolId)
+      .set('search', search);
+
+    if (page !== undefined && pageSize !== undefined) {
+      params = params
+        .set('Page', page.toString())
+        .set('RecordsPerPage', pageSize.toString());
+    }
 
     return this.http
       .get<ApiResponse<Entidad[]>>(`${this.baseUrl}/api/entidades`, {
         params,
-        observe: 'response', // 👈 Esto es CLAVE para acceder a headers
+        observe: 'response',
       })
       .pipe(
         map((response) => {
@@ -87,6 +95,45 @@ export class EntidadService {
         })
       );
   }
+
+  // getPaginadoEntidad(
+  //   userId: string = '',
+  //   rolId: string = '',
+  //   search = '',
+  //   page = 1,
+  //   pageSize = 10
+  // ) {
+  //   const params = {
+  //     userId,
+  //     rolId,
+  //     search,
+  //     Page: page,
+  //     RecordsPerPage: pageSize,
+  //   };
+
+  //   return this.http
+  //     .get<ApiResponse<Entidad[]>>(`${this.baseUrl}/api/entidades`, {
+  //       params,
+  //       observe: 'response', // 👈 Esto es CLAVE para acceder a headers
+  //     })
+  //     .pipe(
+  //       map((response) => {
+  //         const items = response.body?.data ?? [];
+  //         const total = parseInt(
+  //           response.headers.get('totalrecordsquantity') ?? '0',
+  //           10
+  //         );
+  //         return {
+  //           items,
+  //           meta: {
+  //             total,
+  //             page,
+  //             pageSize,
+  //           },
+  //         };
+  //       })
+  //     );
+  // }
 
   agregarEntidad(dto: EntidadRequestDto): Observable<ApiResponse<number>> {
     return this.http.post<ApiResponse<number>>(

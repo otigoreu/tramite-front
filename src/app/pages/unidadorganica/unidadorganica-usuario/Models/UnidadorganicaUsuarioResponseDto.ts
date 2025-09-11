@@ -1,6 +1,6 @@
 export interface UnidadorganicaUsuarioResponseDto {
   id: number;
-  idUnidadorganica: number;
+  idUnidadOrganica: number;
   idUsuario: number;
   numdoc: string;
   descripcionPersona: string;

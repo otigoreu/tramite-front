@@ -3,7 +3,7 @@ export interface RegisterRequestDto {
   email: string;
   idPersona: number;
   idUnidadOrganica: number;
-  rol: string;
+  idRol: string;
   password: string;
   confirmPassword?: string;
 }

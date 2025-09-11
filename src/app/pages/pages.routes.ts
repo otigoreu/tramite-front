@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { EntidadComponent } from './entidad/entidad.component';
 import { AplicacionComponent } from './aplicacion/aplicacion.component';
-import { UnidadorganicaComponent } from './unidadorganica/unidadorganica.component';
+
 import { UserComponent } from './user/user.component';
+import { UnidadorganicaUserComponent } from './user/unidadorganica-user/unidadorganica-user.component';
+import { UnidadorganicaComponent } from './unidadorganica/unidadorganica.component';
 
 export const PagesRoutes: Routes = [
   {
@@ -10,57 +12,44 @@ export const PagesRoutes: Routes = [
     children: [
       {
         path: 'user',
-        component: UserComponent,
-        data: {
-          title: 'Usuario',
-          urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Usuario' },
-          ],
-        },
+        children: [
+          {
+            path: '',
+            component: UserComponent, // página principal de usuario
+            data: {
+              title: 'Usuario',
+              urls: [
+                { title: 'Dashboard', url: '/dashboards/dashboard1' },
+                { title: 'Usuario' },
+              ],
+            },
+          },
+          {
+            path: 'unidadorganica-user/:userId',
+            component: UnidadorganicaUserComponent, // página completa
+            data: {
+              title: 'Unidad Orgánica (User)',
+              urls: [
+                { title: 'Dashboard', url: '/dashboards/dashboard1' },
+                { title: 'Usuario', url: '/pages/user' },
+                { title: 'Unidad Orgánica (User)' },
+              ],
+            },
+          },
+        ],
       },
       {
         path: 'entidad',
         component: EntidadComponent,
-        data: {
-          title: 'Entidad',
-          urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Entidad' },
-          ],
-        },
       },
       {
         path: 'aplicacion',
         component: AplicacionComponent,
-        data: {
-          title: 'Aplicacion',
-          urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'Aplicacion' },
-          ],
-        },
       },
       {
         path: 'unidadOrganica',
         component: UnidadorganicaComponent,
-        data: {
-          title: 'UnidadOrganica',
-          urls: [
-            { title: 'Dashboard', url: '/dashboards/dashboard1' },
-            { title: 'UnidadOrganica' },
-          ],
-        },
       },
     ],
   },
 ];
-
-//   {
-//     path: 'pages/persona',
-//     component: StarterComponent,
-//     data: {
-//       title: 'Starter Page',
-//     },
-//   },
-// ];

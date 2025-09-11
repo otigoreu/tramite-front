@@ -4,6 +4,7 @@ import {
   Inject,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { Usuario } from '../../../model/usuario';
 import { Persona } from 'src/app/model/persona';
@@ -36,11 +37,13 @@ import { EntidadService } from 'src/app/service/entidad.service';
 import { UnidadorganicaService } from 'src/app/service/unidadorganica.service';
 import { Entidad } from '../../entidad/Models/Entidad';
 import { UnidadorganicaPaginatedResponseDto } from '../../unidadorganica/Models/UnidadorganicaPaginatedResponseDto';
-import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
-import { ApiResponse } from 'src/app/model/ApiResponse';
-import { RegisterRequestDto } from '../Models/RegisterRequestDto';
 import { RolService } from 'src/app/service/rol.service';
 import { Rol } from 'src/app/model/rol';
+import { EntidadaplicacionService } from 'src/app/service/entidadaplicacion.service';
+import { Aplicacion } from '../../aplicacion/Modals/Aplicacion';
+import { RegisterRequestDto } from '../Models/RegisterRequestDto';
+import { ApiResponse } from 'src/app/model/ApiResponse';
+import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 
 @Component({
   selector: 'app-dialog-user',
@@ -65,21 +68,24 @@ export class DialogUserComponent implements OnInit {
 
   usuario: Usuario;
   persona: Persona;
-  entidades: Entidad[] = [];
+  entidads: Entidad[] = [];
   rols: Rol[] = [];
   unidadorganicas: UnidadorganicaPaginatedResponseDto[] = [];
+  aplicacions: Aplicacion[] = [];
 
   usuarioService = inject(UserService);
   personaService = inject(PersonaServiceService);
   entidadService = inject(EntidadService);
   unidadorganicaService = inject(UnidadorganicaService);
+  entidadaplicacionService = inject(EntidadaplicacionService);
   rolService = inject(RolService);
 
   usuarioForm = this.fb.group({
     idPersona: [null as number | null, Validators.required],
     idEntidad: [null as number | null, Validators.required],
     idDependencia: [null as number | null, Validators.required],
-    rol: [null as string | null, Validators.required],
+    idAplicacion: [null as number | null, Validators.required],
+    idRol: [null as string | null, Validators.required],
 
     username: [{ value: '', disabled: true }, Validators.required],
     password: [
@@ -93,8 +99,8 @@ export class DialogUserComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: Usuario,
-    private _snackBar: MatSnackBar,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private _snackBar: MatSnackBar
   ) {}
 
   // Autocomplete de Personas (Formulario reactivo)
@@ -107,21 +113,11 @@ export class DialogUserComponent implements OnInit {
 
     this.titulo = esEdicion ? 'Actualizar USUARIO' : 'Agregar nuevo USUARIO';
 
+    this.cargarEntidades(esEdicion);
+
     if (esEdicion) {
       this.setFormValues(this.data);
     }
-
-    this.cargarEntidades();
-    this.cargarRols();
-
-    this.usuarioForm.get('idEntidad')?.valueChanges.subscribe((idEntidad) => {
-      if (idEntidad) {
-        this.cargarUnidadOrganica(idEntidad);
-      } else {
-        this.unidadorganicas = [];
-        this.usuarioForm.get('idDependencia')?.setValue(null);
-      }
-    });
 
     // Configuración del autocomplete con debounce y búsqueda
     this.filteredOptions = this.firstControl.valueChanges.pipe(
@@ -129,75 +125,102 @@ export class DialogUserComponent implements OnInit {
       distinctUntilChanged(),
       switchMap((value) =>
         this.personaService.getPaginadoPersona(value!, 1, 10).pipe(
-          map((response) => response.items) // Retorna solo los items
+          map((response) => response.data) // Retorna solo los items
         )
       )
     );
 
-    this.usuario = { ...this.data };
-    console.log('data', this.usuario);
+    // this.usuario = { ...this.data };
+    // console.log('data', this.usuario);
   }
 
-  cargarEntidades() {
-    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+  cargarEntidades(esEdicion: boolean) {
+    const userId = localStorage.getItem('idUsuario')!;
 
-    this.entidadService.getPaginadoEntidad(idEntidad, '', 1, 100).subscribe({
-      next: (res) => {
-        this.entidades = res.items;
+    console.log('this.rolId', localStorage.getItem('userIdRol')!);
 
-        const valorActual = this.usuarioForm.get('idEntidad')?.value;
-
-        if (!valorActual && this.entidades.length > 0) {
-          // Solo seteas la primera entidad si es registro nuevo
-          this.usuarioForm.get('idEntidad')?.setValue(this.entidades[0].id);
-        }
-      },
-      error: (err) => console.error(err),
-    });
-  }
-
-  cargarRols() {
-    this.rolService.getData().subscribe({
-      next: (res) => {
-        this.rols = res; // <-- CORREGIDO
-
-        const valorActual = this.usuarioForm.get('idRol')?.value;
-
-        if (!valorActual && this.rols.length > 0) {
-          this.usuarioForm.get('rol')?.setValue(this.rols[0].name);
-        }
-      },
-      error: (err) => console.error(err),
-    });
-  }
-
-  cargarUnidadOrganica(idEntidad: number, dependenciaSeleccionada?: number) {
-    this.unidadorganicaService
-      .getPaginadoUnidadorganica('', 1, 100, idEntidad)
+    this.entidadService
+      .getPaginadoEntidad(userId, localStorage.getItem('userIdRol')!)
       .subscribe({
         next: (res) => {
-          this.unidadorganicas = res.items;
-
-          if (this.unidadorganicas.length > 0) {
-            if (dependenciaSeleccionada) {
-              this.usuarioForm
-                .get('idDependencia')
-                ?.setValue(dependenciaSeleccionada);
-            } else {
-              // No selecciona nada por defecto si no se especifica
-              this.usuarioForm.get('idDependencia')?.setValue(null);
-            }
-          } else {
-            this.usuarioForm.get('idDependencia')?.setValue(null);
-          }
+          this.entidads = res.items;
         },
         error: (err) => console.error(err),
       });
   }
 
+  cargarAplicacions(idEntidad: number) {
+    this.entidadaplicacionService
+      .getsAplicacion(idEntidad, localStorage.getItem('userIdRol')!)
+      .subscribe({
+        next: (data) => {
+          this.aplicacions = data;
+        },
+        error: (err) => console.error(err),
+      });
+  }
+
+  cargarRols(idEntidad: number, idAplicacion: number) {
+    this.rolService
+      .gets(idEntidad, idAplicacion, localStorage.getItem('userIdRol')!)
+      .subscribe({
+        next: (data) => {
+          // 👇 transformamos DTO -> Rol[]
+          this.rols = data.map((dto) => ({
+            id: dto.id,
+            name: dto.descripcion,
+            normalizedName: dto.descripcion.toUpperCase(),
+            estado: dto.estado ? 'Activo' : 'Inactivo',
+          }));
+        },
+        error: (err) => console.error(err),
+      });
+  }
+
+  cargarUnidadOrganicas(idEntidad: number, dependenciaSeleccionada?: number) {
+    this.unidadorganicaService
+      .getPaginadoUnidadorganica('', 1, 100, idEntidad)
+      .subscribe({
+        next: (res) => {
+          this.unidadorganicas = res.items;
+        },
+        error: (err) => console.error(err),
+      });
+  }
+
+  selectionChangeEntidad(idEntidad: number) {
+    // Limpia dependientes
+    this.aplicacions = [];
+    this.usuarioForm.get('idAplicacion')?.reset();
+    this.unidadorganicas = [];
+    this.usuarioForm.get('idDependencia')?.reset();
+    this.rols = [];
+    this.usuarioForm.get('idRol')?.reset();
+
+    this.usuarioForm.get('idEntidad')?.setValue(idEntidad);
+
+    this.cargarAplicacions(idEntidad);
+    this.cargarUnidadOrganicas(idEntidad);
+  }
+
+  selectionChangeAplicacion(idAplicacion: number) {
+    // Limpia dependientes
+    this.rols = [];
+    this.usuarioForm.get('idRol')?.reset();
+
+    this.usuarioForm.get('idAplicacion')?.setValue(idAplicacion);
+    const idEntidad = Number(this.usuarioForm.get('idEntidad')?.value);
+
+    this.cargarRols(idEntidad, idAplicacion);
+  }
+
+  selectionChangeRol(idRol: string) {
+    this.usuarioForm.get('idRol')?.setValue(idRol);
+  }
+
   private setFormValues(usuario: Usuario): void {
-    // this.uoForm.patchValue({
-    //   idEntidad: uo.idEntidad,
+    // this.usuarioForm.patchValue({
+    //   idEntidad: usuario.idEntidad,
     //   descripcion: uo.descripcion,
     //   idDependencia: uo.idDependencia,
     // });
@@ -231,27 +254,18 @@ export class DialogUserComponent implements OnInit {
       //   console.log('Formulario válido:', this.usuarioForm.value);
       //   const { idEntidad, idDependencia, descripcion } = this.uoForm.value;
       const raw = this.usuarioForm.getRawValue();
-
       const password = raw.username! + 'Aa*';
-
       const dto: RegisterRequestDto = {
         userName: raw.username!,
         email: raw.email!,
         idPersona: raw.idPersona!,
         idUnidadOrganica: raw.idDependencia!,
-        rol: raw.rol!,
+        idRol: raw.idRol!,
         password,
         confirmPassword: password,
       };
-
       console.log('dto', dto);
-
       const esEdicion = !!this.data?.id;
-      //   console.log('esEdicion', esEdicion);
-      //   console.log('dto', dto);
-      // const peticion: Observable<ApiResponse<any>> = esEdicion
-      //   ? this.usuarioService.actualizarUnidadorganica(this.data.id, dto)
-      //   : this.usuarioService.registerUser(dto);
 
       const peticion: Observable<ApiResponse<any>> =
         this.usuarioService.registerUser(dto);

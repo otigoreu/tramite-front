@@ -162,15 +162,13 @@ export class UserService {
   }
 
   getPaginadoUsuario(
-    idEntidad: number = 0,
-    rol: string = '',
+    rolId: string = '',
     search: string = '',
     page: number = 1,
     pageSize: number = 10
   ) {
     let params: any = {
-      idEntidad,
-      rol,
+      rolId,
       search,
       Page: page,
       RecordsPerPage: pageSize,
@@ -178,7 +176,7 @@ export class UserService {
 
     return this.http
       .get<ApiResponse<UsuarioPaginatedResponseDto[]>>(
-        `${this.baseUrl}/api/users/descripcion`,
+        `${this.baseUrl}/api/users`,
         {
           params,
           observe: 'response',

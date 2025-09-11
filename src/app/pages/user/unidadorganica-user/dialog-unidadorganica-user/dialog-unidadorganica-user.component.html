@@ -1,0 +1,69 @@
+<h2 mat-dialog-title class="m-b-24">{{ titulo }}</h2>
+
+<mat-divider></mat-divider>
+<mat-dialog-content class="mat-typography" style="max-width: 600px">
+  <form [formGroup]="uo_usuarioForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Unidad Orgánica</mat-label>
+      <mat-select formControlName="idUnidadOrganica">
+        <mat-option *ngFor="let u of unidadorganicas" [value]="u.id">
+          {{ u.descripcion }}
+        </mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="uo_usuarioForm.get('idUnidadOrganica')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Desde</mat-label>
+      <input
+        matInput
+        [matDatepicker]="pickerDesde"
+        placeholder="Desde"
+        [formControl]="uo_usuarioForm.controls.desde"
+        appEnterKeyFocus
+        required
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="pickerDesde"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #pickerDesde></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Hasta</mat-label>
+      <input
+        matInput
+        [matDatepicker]="pickerHasta"
+        placeholder="Hasta"
+        [formControl]="uo_usuarioForm.controls.hasta"
+        appEnterKeyFocus
+      />
+      <mat-hint
+        >*Si no selecciona una fecha, el acceso seguirá vigente
+        indefinidamente.</mat-hint
+      >
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="pickerHasta"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #pickerHasta></mat-datepicker>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+<mat-dialog-actions class="p-24">
+  <button
+    mat-flat-button
+    [disabled]="uo_usuarioForm.invalid"
+    color="primary"
+    (click)="onSubmit()"
+  >
+    Guardar
+  </button>
+  <button mat-stroked-button color="warn" mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>

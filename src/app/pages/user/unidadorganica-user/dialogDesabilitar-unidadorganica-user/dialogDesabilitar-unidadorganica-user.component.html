@@ -1,0 +1,30 @@
+<h2 mat-dialog-title class="m-b-24">REGISTRAR OBSERVACION PARA DESHABILITAR</h2>
+
+<mat-divider></mat-divider>
+<mat-dialog-content class="mat-typography" style="max-width: 600px">
+  <form [formGroup]="uo_usuarioForm" (ngSubmit)="onSubmit()">
+    <mat-label class="mat-subtitle-2 f-w-600 m-b-8 d-block"
+      >Observación</mat-label
+    >
+    <mat-form-field appearance="outline" class="w-100" color="primary">
+      <input
+        matInput
+        placeholder="Observación"
+        formControlName="obserbacionAnulacion"
+      />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+<mat-dialog-actions class="p-24">
+  <button
+    mat-flat-button
+    [disabled]="uo_usuarioForm.invalid"
+    color="primary"
+    (click)="onSubmit()"
+  >
+    Guardar
+  </button>
+  <button mat-stroked-button color="warn" mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>

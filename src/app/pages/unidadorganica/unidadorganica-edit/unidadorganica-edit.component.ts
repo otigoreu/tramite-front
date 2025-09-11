@@ -112,21 +112,24 @@ export class AppUnidadorganicaEditComponent implements OnInit {
   }
 
   cargarEntidades() {
-    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+    const userId = localStorage.getItem('userId')!;
+    const rolId = localStorage.getItem('rolId')!;
 
-    this.entidadService.getPaginadoEntidad(idEntidad, '', 1, 100).subscribe({
-      next: (res) => {
-        this.entidades = res.items;
+    this.entidadService
+      .getPaginadoEntidad(userId, rolId, '', 1, 100)
+      .subscribe({
+        next: (res) => {
+          this.entidades = res.items;
 
-        const valorActual = this.uoForm.get('idEntidad')?.value;
+          const valorActual = this.uoForm.get('idEntidad')?.value;
 
-        if (!valorActual && this.entidades.length > 0) {
-          // Solo seteas la primera entidad si es registro nuevo
-          this.uoForm.get('idEntidad')?.setValue(this.entidades[0].id);
-        }
-      },
-      error: (err) => console.error(err),
-    });
+          if (!valorActual && this.entidades.length > 0) {
+            // Solo seteas la primera entidad si es registro nuevo
+            this.uoForm.get('idEntidad')?.setValue(this.entidades[0].id);
+          }
+        },
+        error: (err) => console.error(err),
+      });
   }
 
   cargarUnidadOrganica(idEntidad: number, dependenciaSeleccionada?: number) {

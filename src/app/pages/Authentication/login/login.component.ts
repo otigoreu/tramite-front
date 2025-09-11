@@ -113,7 +113,7 @@ export class LoginComponent {
 
         //agregar al localStorage userEmail y el userRole
         localStorage.setItem('userRole', this.authService.userRole());
-        localStorage.setItem('userIdRole', this.authService.userIdRol());
+        localStorage.setItem('userIdRol', this.authService.userIdRol());
         localStorage.setItem('nivelRol', this.authService.nivelRol());
         localStorage.setItem('Aplicacion', this.authService.aplicacion());
 
@@ -132,7 +132,7 @@ export class LoginComponent {
         this.authService.loggedIn.set(true);
 
         localStorage.setItem('idAplicacion', this.authService.idAplicacion());
-        localStorage.setItem('idAEntidad', response.data.entidad.id.toString());
+        localStorage.setItem('idEntidad', response.data.entidad.id.toString());
         localStorage.setItem('idUsuario', response.data.idUsuario);
 
         //tarer menu por aplicacion

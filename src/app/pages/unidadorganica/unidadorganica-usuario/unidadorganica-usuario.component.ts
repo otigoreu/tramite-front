@@ -145,67 +145,67 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
   ): void {
     if (this.isLoading) return; // ⚠️ Evita acciones mientras carga
 
-    const dto: UnidadorganicaUsuarioRequestDto = {
-      idUnidadorganica: this.data?.id,
-      idUsuario: row.idUsuario,
-      estado: selected,
-    };
+    // const dto: UnidadorganicaUsuarioRequestDto = {
+    //   idUnidadorganica: this.data?.id,
+    //   idUsuario: row.idUsuario,
+    //   estado: selected,
+    // };
 
     // Verifica si ya existe una relación
-    this.uousuarioService
-      .getUnidadorganicaUsuario(dto.idUnidadorganica, dto.idUsuario)
-      .subscribe({
-        next: (res) => {
-          const esEdicion = res.success && res.data?.id != null;
+    // this.uousuarioService
+    //   .getUnidadorganicaUsuario(dto.idUnidadorganica, dto.idUsuario)
+    //   .subscribe({
+    //     next: (res) => {
+    //       const esEdicion = res.success && res.data?.id != null;
 
-          // Decide si crear o actualizar
-          const peticion: Observable<ApiResponse<any>> = esEdicion
-            ? this.uousuarioService.actualizarUnidadorganicaUsuario(
-                res.data.id,
-                dto
-              )
-            : this.uousuarioService.agregarUnidadorganicaUsuario(dto);
+    //       // Decide si crear o actualizar
+    //       const peticion: Observable<ApiResponse<any>> = esEdicion
+    //         ? this.uousuarioService.actualizarUnidadorganicaUsuario(
+    //             res.data.id,
+    //             dto
+    //           )
+    //         : this.uousuarioService.agregarUnidadorganicaUsuario(dto);
 
-          peticion.subscribe({
-            next: (res) => {
-              if (res.success) {
-                const [titulo, mensajeTexto] = esEdicion
-                  ? NotificationMessages.successActualizar('ENTIDAD-APLICACION')
-                  : NotificationMessages.successCrear('ENTIDAD-APLICACION');
+    //       peticion.subscribe({
+    //         next: (res) => {
+    //           if (res.success) {
+    //             const [titulo, mensajeTexto] = esEdicion
+    //               ? NotificationMessages.successActualizar('ENTIDAD-APLICACION')
+    //               : NotificationMessages.successCrear('ENTIDAD-APLICACION');
 
-                // ✅ Actualiza el estado en el signal
-                this.usuarios.update((apps) =>
-                  apps.map((a) =>
-                    a.idUsuario === row.idUsuario
-                      ? { ...a, estado: selected }
-                      : a
-                  )
-                );
+    //             // ✅ Actualiza el estado en el signal
+    //             this.usuarios.update((apps) =>
+    //               apps.map((a) =>
+    //                 a.idUsuario === row.idUsuario
+    //                   ? { ...a, estado: selected }
+    //                   : a
+    //               )
+    //             );
 
-                this.snackBar.open(mensajeTexto, 'Cerrar', { duration: 3000 });
-              } else {
-                this.snackBar.open(
-                  res.errorMessage || 'Error desconocido',
-                  'Cerrar',
-                  { duration: 3000 }
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.open('Error del servidor', 'Cerrar', {
-                duration: 3000,
-              });
-              console.error(err);
-            },
-          });
-        },
-        error: (err) => {
-          this.snackBar.open('Error al consultar aplicación', 'Cerrar', {
-            duration: 3000,
-          });
-          console.error(err);
-        },
-      });
+    //             this.snackBar.open(mensajeTexto, 'Cerrar', { duration: 3000 });
+    //           } else {
+    //             this.snackBar.open(
+    //               res.errorMessage || 'Error desconocido',
+    //               'Cerrar',
+    //               { duration: 3000 }
+    //             );
+    //           }
+    //         },
+    //         error: (err) => {
+    //           this.snackBar.open('Error del servidor', 'Cerrar', {
+    //             duration: 3000,
+    //           });
+    //           console.error(err);
+    //         },
+    //       });
+    //     },
+    //     error: (err) => {
+    //       this.snackBar.open('Error al consultar aplicación', 'Cerrar', {
+    //         duration: 3000,
+    //       });
+    //       console.error(err);
+    //     },
+    //   });
   }
 
   /**

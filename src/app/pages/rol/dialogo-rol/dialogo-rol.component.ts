@@ -54,6 +54,8 @@ export class DialogoRolComponent implements OnInit {
   entidadService = inject(EntidadService);
   entidadaplicacionService = inject(EntidadaplicacionService);
 
+  rolId: string = '';
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: Rol,
     private _dialogRef: MatDialogRef<DialogoRolComponent>
@@ -67,6 +69,9 @@ export class DialogoRolComponent implements OnInit {
 
   ngOnInit(): void {
     this.rol = { ...this.data };
+
+    this.rolId = localStorage.getItem('userIdRol')!;
+
     this.cargarEntidades();
   }
 
@@ -115,14 +120,16 @@ export class DialogoRolComponent implements OnInit {
   }
 
   cargarAplicaciones(idEntidad: number) {
-    this.entidadaplicacionService.getsAplicacion(idEntidad).subscribe({
-      next: (aplicaciones) => {
-        // Ordenar por descripción
-        this.aplicaciones = aplicaciones.sort((a, b) =>
-          a.descripcion.localeCompare(b.descripcion)
-        );
-      },
-      error: (err) => console.error(err),
-    });
+    this.entidadaplicacionService
+      .getsAplicacion(idEntidad, this.rolId)
+      .subscribe({
+        next: (aplicaciones) => {
+          // Ordenar por descripción
+          this.aplicaciones = aplicaciones.sort((a, b) =>
+            a.descripcion.localeCompare(b.descripcion)
+          );
+        },
+        error: (err) => console.error(err),
+      });
   }
 }

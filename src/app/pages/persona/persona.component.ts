@@ -89,22 +89,15 @@ export class PersonaComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadDataFilter();
-    //this.loadData();
-    // this.loadDataPAgeable(1,5);
   }
 
-  loadData() {
-    this.appService.getData().subscribe((response) => {
-      this.dataSource = new MatTableDataSource(response);
-      this.dataSource.paginator = this.paginator;
-    });
-  }
   loadDataFilter() {
     this.appService.getDatafilter().subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
       this.dataSource.paginator = this.paginator;
     });
   }
+
   loadDataPAgeable(p: number, s: number) {
     this.appService.getDataPageable(p, s).subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);

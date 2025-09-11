@@ -42,6 +42,8 @@ import { EntidadAplicacionComponent } from './entidad-aplicacion/entidad-aplicac
 export class EntidadComponent implements OnInit, AfterViewInit {
   entidadService = inject(EntidadService);
 
+  rolId: string = 'ee423341-d4de-4c25-b3ba-da769f81d3d7';
+
   displayedColumns: string[] = [
     'descripcion',
     'aplicacion',
@@ -80,10 +82,11 @@ export class EntidadComponent implements OnInit, AfterViewInit {
     page: number = 1,
     pageSize: number = 10
   ): void {
-    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
+    const userId = localStorage.getItem('idUsuario')!;
+    const rolId = 'ee423341-d4de-4c25-b3ba-da769f81d3d7'; //localStorage.getItem('rolId')!;
 
     this.entidadService
-      .getPaginadoEntidad(idEntidad, search, page, pageSize)
+      .getPaginadoEntidad(userId, rolId, search, page, pageSize)
       .subscribe({
         next: (res) => {
           this.totalRecords = res.meta.total;

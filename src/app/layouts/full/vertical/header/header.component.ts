@@ -73,7 +73,7 @@ export class HeaderComponent {
   @Output() toggleMobileNav = new EventEmitter<void>();
   @Output() toggleMobileFilterNav = new EventEmitter<void>();
   @Output() toggleCollapsed = new EventEmitter<void>();
-   authService = inject(AuthService);
+  authService = inject(AuthService);
   // authService = inject(AuthService);
 
   showFiller = false;

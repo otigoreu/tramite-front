@@ -5,7 +5,6 @@ import { ApiResponse } from '../model/ApiResponse';
 import { EntidadAplicacionResponseDto } from '../pages/entidad/entidad-aplicacion/Models/EntidadAplicacionResponseDto';
 import { map, Observable } from 'rxjs';
 import { EntidadAplicacionRequestDto } from '../pages/entidad/entidad-aplicacion/Models/EntidadAplicacionRequestDto';
-import { AplicacionResponseDto } from '../pages/aplicacion/Modals/AplicacionResponseDto';
 import { Aplicacion } from '../pages/aplicacion/Modals/Aplicacion';
 
 @Injectable({
@@ -17,10 +16,13 @@ export class EntidadaplicacionService {
 
   constructor() {}
 
-  getsAplicacion(idEntidad: number) {
+  getsAplicacion(idEntidad: number, rolId: string) {
     return this.http
       .get<ApiResponse<Aplicacion[]>>(
-        `${this.baseUrl}/api/EntidadAplicacion/entidades/${idEntidad}/aplicaciones/activos`
+        `${this.baseUrl}/api/EntidadAplicacion/entidades/${idEntidad}/aplicaciones/activos`,
+        {
+          params: { rolId }, // ✅ se envía como ?rolId=valor
+        }
       )
       .pipe(map((response) => response.data ?? []));
   }
