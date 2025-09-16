@@ -82,9 +82,6 @@ export class DialogUserComponent implements OnInit {
 
   usuarioForm = this.fb.group({
     idPersona: [null as number | null, Validators.required],
-    idEntidad: [null as number | null, Validators.required],
-    idDependencia: [null as number | null, Validators.required],
-    idAplicacion: [null as number | null, Validators.required],
     idRol: [null as string | null, Validators.required],
 
     username: [{ value: '', disabled: true }, Validators.required],
@@ -110,14 +107,16 @@ export class DialogUserComponent implements OnInit {
 
   ngOnInit(): void {
     const esEdicion = !!this.data?.id;
+    const idEntidad = Number(localStorage.getItem('idEntidad'));
+    const idAplicacion = Number(localStorage.getItem('idAplicacion'));
 
     this.titulo = esEdicion ? 'Actualizar USUARIO' : 'Agregar nuevo USUARIO';
-
-    this.cargarEntidades(esEdicion);
 
     if (esEdicion) {
       this.setFormValues(this.data);
     }
+
+    this.cargarRols(idEntidad, idAplicacion);
 
     // Configuración del autocomplete con debounce y búsqueda
     this.filteredOptions = this.firstControl.valueChanges.pipe(
@@ -134,47 +133,17 @@ export class DialogUserComponent implements OnInit {
     // console.log('data', this.usuario);
   }
 
-  cargarEntidades(esEdicion: boolean) {
-    const userId = localStorage.getItem('idUsuario')!;
-
-    console.log('this.rolId', localStorage.getItem('userIdRol')!);
-
-    this.entidadService
-      .getPaginadoEntidad(userId, localStorage.getItem('userIdRol')!)
-      .subscribe({
-        next: (res) => {
-          this.entidads = res.items;
-        },
-        error: (err) => console.error(err),
-      });
-  }
-
-  cargarAplicacions(idEntidad: number) {
-    this.entidadaplicacionService
-      .getsAplicacion(idEntidad, localStorage.getItem('userIdRol')!)
-      .subscribe({
-        next: (data) => {
-          this.aplicacions = data;
-        },
-        error: (err) => console.error(err),
-      });
-  }
-
   cargarRols(idEntidad: number, idAplicacion: number) {
-    this.rolService
-      .gets(idEntidad, idAplicacion, localStorage.getItem('userIdRol')!)
-      .subscribe({
-        next: (data) => {
-          // 👇 transformamos DTO -> Rol[]
-          this.rols = data.map((dto) => ({
-            id: dto.id,
-            name: dto.descripcion,
-            normalizedName: dto.descripcion.toUpperCase(),
-            estado: dto.estado ? 'Activo' : 'Inactivo',
-          }));
-        },
-        error: (err) => console.error(err),
-      });
+    this.rolService.getPaginado(idEntidad, idAplicacion!).subscribe({
+      next: (res) => {
+        // 👇 transformamos DTO -> Rol[]
+        this.rols = res.data.map((dto) => ({
+          id: dto.id,
+          descripcion: dto.descripcion,
+        }));
+      },
+      error: (err) => console.error(err),
+    });
   }
 
   cargarUnidadOrganicas(idEntidad: number, dependenciaSeleccionada?: number) {
@@ -190,28 +159,8 @@ export class DialogUserComponent implements OnInit {
 
   selectionChangeEntidad(idEntidad: number) {
     // Limpia dependientes
-    this.aplicacions = [];
-    this.usuarioForm.get('idAplicacion')?.reset();
-    this.unidadorganicas = [];
-    this.usuarioForm.get('idDependencia')?.reset();
     this.rols = [];
     this.usuarioForm.get('idRol')?.reset();
-
-    this.usuarioForm.get('idEntidad')?.setValue(idEntidad);
-
-    this.cargarAplicacions(idEntidad);
-    this.cargarUnidadOrganicas(idEntidad);
-  }
-
-  selectionChangeAplicacion(idAplicacion: number) {
-    // Limpia dependientes
-    this.rols = [];
-    this.usuarioForm.get('idRol')?.reset();
-
-    this.usuarioForm.get('idAplicacion')?.setValue(idAplicacion);
-    const idEntidad = Number(this.usuarioForm.get('idEntidad')?.value);
-
-    this.cargarRols(idEntidad, idAplicacion);
   }
 
   selectionChangeRol(idRol: string) {
@@ -255,12 +204,12 @@ export class DialogUserComponent implements OnInit {
       //   const { idEntidad, idDependencia, descripcion } = this.uoForm.value;
       const raw = this.usuarioForm.getRawValue();
       const password = raw.username! + 'Aa*';
+
       const dto: RegisterRequestDto = {
         userName: raw.username!,
         email: raw.email!,
         idPersona: raw.idPersona!,
-        idUnidadOrganica: raw.idDependencia!,
-        idRol: raw.idRol!,
+        rolId: raw.idRol!,
         password,
         confirmPassword: password,
       };

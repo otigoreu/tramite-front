@@ -162,17 +162,24 @@ export class UserService {
   }
 
   getPaginadoUsuario(
-    rolId: string = '',
+    idEntidad: number,
+    idAplicacion: number,
+    rolId?: string | null, // 👈 acepta ambos
     search: string = '',
     page: number = 1,
     pageSize: number = 10
   ) {
     let params: any = {
-      rolId,
+      idEntidad,
+      idAplicacion,
       search,
       Page: page,
       RecordsPerPage: pageSize,
     };
+
+    if (rolId) {
+      params.rolId = rolId;
+    }
 
     return this.http
       .get<ApiResponse<UsuarioPaginatedResponseDto[]>>(

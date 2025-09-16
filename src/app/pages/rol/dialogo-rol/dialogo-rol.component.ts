@@ -80,7 +80,7 @@ export class DialogoRolComponent implements OnInit {
   }
 
   operate() {
-    this.rol.normalizedName = this.rol.name;
+    this.rol.normalizedName = this.rol.descripcion;
 
     if (this.rol?.id != null) {
       // Editar rol

@@ -25,6 +25,7 @@ interface EndApp {
   success: string;
   errorMessage: string;
 }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -39,7 +40,7 @@ export class RolService {
     idAplicacion: number,
     rolId?: string,
     search?: string,
-    pagination?: { page: number; perPage: number }
+    pagination?: { page: number; recordsPerPage: number }
   ) {
     let params = new HttpParams();
 
@@ -50,7 +51,7 @@ export class RolService {
     if (pagination) {
       params = params
         .set('page', pagination.page.toString())
-        .set('perPage', pagination.perPage.toString());
+        .set('recordsPerPage', pagination.recordsPerPage.toString());
     }
 
     if (rolId) {
@@ -63,6 +64,47 @@ export class RolService {
         { params }
       )
       .pipe(map((response) => response.data ?? []));
+  }
+
+  getPaginado(
+    idEntidad: number,
+    idAplicacion: number,
+    search?: string,
+    pagination?: { page: number; recordsPerPage: number }
+  ) {
+    let params = new HttpParams();
+
+    if (search?.trim()) {
+      params = params.set('search', search.trim());
+    }
+
+    if (pagination) {
+      params = params
+        .set('page', pagination.page.toString())
+        .set('recordsPerPage', pagination.recordsPerPage.toString());
+    }
+
+    return this.http
+      .get<ApiResponse<Rol[]>>(
+        `${this.baseUrl}/api/roles/entidad/${idEntidad}/aplicacion/${idAplicacion}`,
+        {
+          params,
+          observe: 'response',
+        }
+      )
+      .pipe(
+        map((response) => {
+          const data = response.body?.data ?? [];
+          const totalrecords = parseInt(
+            response.headers.get('totalrecordsquantity') ?? '0',
+            10
+          );
+          return {
+            data,
+            totalrecords,
+          };
+        })
+      );
   }
 
   getData() {

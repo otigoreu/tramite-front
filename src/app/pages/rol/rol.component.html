@@ -25,84 +25,92 @@
   <mat-card-content>
     <div class="table-responsive">
       <table mat-table [dataSource]="dataSource" class="w-100" matSort>
-
         <ng-container matColumnDef="item">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Item
-          </th>
-          <td mat-cell *matCellDef="let row ; let i = index;" class="f-s-14">{{i+1}}</td>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">Item</th>
+          <td mat-cell *matCellDef="let row; let i = index" class="f-s-14">
+            {{ i + 1 }}
+          </td>
         </ng-container>
 
-
-        <ng-container matColumnDef="descripcion" >
+        <ng-container matColumnDef="descripcion">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Descripcion
           </th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">{{row.name}}</td>
+          <td mat-cell *matCellDef="let row" class="f-s-14">
+            {{ row.descripcion }}
+          </td>
         </ng-container>
         <ng-container matColumnDef="estado">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Estado
           </th>
           <td mat-cell *matCellDef="let row" class="f-s-14">
-            <div class="d-flex align-items-center gap-12 p-y-14" *ngIf="row.estado;then activo;  else inactivo">
+            <div
+              class="d-flex align-items-center gap-12 p-y-14"
+              *ngIf="row.estado; then activo; else inactivo"
+            >
               <!--<span class="f-s-16 f-w-600">{{ row.state }}</span>-->
             </div>
             <ng-template #activo>
-              <span class="bg-light-success text-success rounded f-w-600 p-6 p-y-4 f-s-14">Activo</span>
+              <span
+                class="bg-light-success text-success rounded f-w-600 p-6 p-y-4 f-s-14"
+                >Activo</span
+              >
             </ng-template>
             <ng-template #inactivo>
-              <span class="bg-light-error text-error rounded f-w-600 p-6 p-y-4 f-s-14">Inactivo</span>
+              <span
+                class="bg-light-error text-error rounded f-w-600 p-6 p-y-4 f-s-14"
+                >Inactivo</span
+              >
             </ng-template>
-
           </td>
         </ng-container>
 
-
-
-        <ng-container matColumnDef="acciones" >
-          <th mat-header-cell *matHeaderCellDef >
-            Acciones
-          </th>
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
           <td mat-cell *matCellDef="let row" class="action-link">
             <a
               (click)="openDialog(row)"
-              class="m-r-10 cursor-pointer" matTooltip="Editar" matTooltipPosition="above"
+              class="m-r-10 cursor-pointer"
+              matTooltip="Editar"
+              matTooltipPosition="above"
               ><i-tabler name="edit" class="icon-18"></i-tabler
             ></a>
             <a
               (click)="delete(row.id)"
-              class="m-r-10 cursor-pointer" matTooltip="Eliminar" matTooltipPosition="below"
+              class="m-r-10 cursor-pointer"
+              matTooltip="Eliminar"
+              matTooltipPosition="below"
             >
               <i-tabler name="trash" class="icon-18"></i-tabler>
             </a>
-             @if(!row.estado){
-              <a
-                (click)="initialized(row.id)"
-                class="m-r-10 cursor-pointer" matTooltip="Habilitar" matTooltipPosition="above"
-              >
-                <i-tabler name="circle-arrow-up" class="icon-18"></i-tabler>
-              </a>
+            @if(!row.estado){
+            <a
+              (click)="initialized(row.id)"
+              class="m-r-10 cursor-pointer"
+              matTooltip="Habilitar"
+              matTooltipPosition="above"
+            >
+              <i-tabler name="circle-arrow-up" class="icon-18"></i-tabler>
+            </a>
+            } @else{
+            <a
+              (click)="finalized(row.id)"
+              class="m-r-10 cursor-pointer"
+              matTooltip="Deshabilitar"
+              matTooltipPosition="right"
+            >
+              <i-tabler name="circle-arrow-down" class="icon-18"></i-tabler>
+            </a>
             }
-            @else{
-              <a
-                (click)="finalized(row.id)"
-                class="m-r-10 cursor-pointer" matTooltip="Deshabilitar" matTooltipPosition="right"
-              >
-                <i-tabler name="circle-arrow-down" class="icon-18"></i-tabler>
-              </a>
-            }
-
           </td>
         </ng-container>
-
-
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
       <mat-paginator
-        [pageSizeOptions]="[ 10,15, 20]"
+        [pageSizeOptions]="[10, 15, 20]"
         showFirstLastButtons
       ></mat-paginator>
     </div>

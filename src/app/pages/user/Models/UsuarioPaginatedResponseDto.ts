@@ -6,6 +6,7 @@ export interface UsuarioPaginatedResponseDto {
   descripcionPersona: string;
   entidad_Descripcion: string;
   aplicacion_Descripcion: string;
+  rol_Descripcion: string;
   cantidadUnidadOrganica: number;
   cantidadrols: number;
 }

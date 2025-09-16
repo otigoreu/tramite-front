@@ -5,6 +5,7 @@ import {
   inject,
   ViewChild,
   OnInit,
+  AfterViewInit,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -30,12 +31,17 @@ import Swal from 'sweetalert2';
   templateUrl: './rol.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RolComponent implements OnInit {
+export class RolComponent implements OnInit, AfterViewInit {
   rolService = inject(RolService);
 
   displayedColumns: string[] = ['item', 'descripcion', 'estado', 'acciones'];
 
-  dataSource: MatTableDataSource<Rol>;
+  dataSource: Rol[] = [];
+  totalRecords: number = 0;
+
+  search: string = '';
+  pageIndex: number = 0; // MatPaginator usa base 0
+  pageSize: number = 10;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
     Object.create(null);
@@ -45,21 +51,66 @@ export class RolComponent implements OnInit {
 
   constructor() {
     const roles: Rol[] = [];
-    this.dataSource = new MatTableDataSource(roles);
-  }
-  ngOnInit(): void {
-    this.loadData();
+    //this.dataSource = new MatTableDataSource(roles);
   }
 
-  loadData() {
-    this.rolService.getData().subscribe((response) => {
-      this.dataSource = new MatTableDataSource(response);
-      this.dataSource.paginator = this.paginator;
+  ngOnInit(): void {
+    this.load_Rol();
+  }
+
+  ngAfterViewInit() {
+    // 📌 Paginación desde el backend
+    this.paginator.page.subscribe(() => {
+      this.pageIndex = this.paginator.pageIndex;
+      this.pageSize = this.paginator.pageSize;
+      this.load_Rol();
+    });
+
+    // 📌 Ordenamiento (solo si tu API soporta ordenamiento)
+    this.sort.sortChange.subscribe(() => {
+      this.pageIndex = 0; // cuando cambie orden reiniciamos a la primera página
+      this.load_Rol();
     });
   }
-  applyFilter(filterValue: any): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+  load_Rol() {
+    const idEntidad = Number(localStorage.getItem('idEntidad'));
+    const idAplicacion = Number(localStorage.getItem('idAplicacion'));
+    const rolId = localStorage.getItem('userIdRol')!;
+
+    this.rolService
+      .getPaginado(idEntidad, idAplicacion, this.search, {
+        page: this.pageIndex + 1, // ⚠️ ojo: si tu backend espera base 1
+        recordsPerPage: this.pageSize,
+      })
+      .subscribe({
+        next: (response) => {
+          // ✅ llenar el dataSource con los datos
+          this.dataSource = response.data;
+
+          // ✅ actualizar total para el paginator
+          this.totalRecords = response.totalrecords;
+
+          // 🔹 Actualizar MatPaginator explícitamente
+          if (this.paginator) {
+            this.paginator.length = this.totalRecords;
+          }
+        },
+        error: (err) => {
+          console.error('❌ Error al cargar roles:', err);
+        },
+      });
   }
+
+  applyFilter(value: string) {
+    this.search = value.trim().toLowerCase();
+    this.pageIndex = 0;
+    this.load_Rol();
+  }
+
+  // applyFilter(filterValue: any): void {
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
+  // }
 
   delete(id: string) {
     Swal.fire({
@@ -74,7 +125,7 @@ export class RolComponent implements OnInit {
         // lógica de confirmación
         this.rolService.delete(id).subscribe((response) => {
           if (response.success) {
-            this.loadData();
+            this.load_Rol();
           }
         });
       }
@@ -86,9 +137,10 @@ export class RolComponent implements OnInit {
       .open(DialogoRolComponent, { data: rol })
       .afterClosed()
       .subscribe(() => {
-        this.loadData();
+        this.load_Rol();
       });
   }
+
   finalized(id: string) {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -102,7 +154,7 @@ export class RolComponent implements OnInit {
         // lógica de confirmación
         this.rolService.finalized(id).subscribe((response) => {
           if (response.success) {
-            this.loadData();
+            this.load_Rol();
           }
         });
       }
@@ -122,7 +174,7 @@ export class RolComponent implements OnInit {
         // lógica de confirmación
         this.rolService.initialized(id).subscribe((response) => {
           if (response.success) {
-            this.loadData();
+            this.load_Rol();
           }
         });
       }

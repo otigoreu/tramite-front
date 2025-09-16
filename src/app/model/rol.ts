@@ -1,13 +1,12 @@
 export interface Rol {
   id: string;
-  name: string;
-  normalizedName: string;
-  estado: string;
+  descripcion: string;
+  normalizedName?: string;
+  estado?: string;
 }
 
 export interface RolLogin {
   id: string;
-  nivel:string
+  nivel: string;
   name: string;
-
 }

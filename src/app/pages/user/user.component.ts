@@ -6,7 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { DialogUserComponent } from './dialog-user/dialog-user.component';
 import { ConfirmationService } from 'src/app/service/confirmation.service';
@@ -14,30 +14,50 @@ import { NotificationsService } from 'angular2-notifications';
 import { UsuarioPaginatedResponseDto } from './Models/UsuarioPaginatedResponseDto';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RolService } from 'src/app/service/rol.service';
+import { Rol } from 'src/app/model/rol';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user',
   standalone: true,
   styleUrl: 'user.component.scss',
-  imports: [MaterialModule, NgIf, TablerIconsModule, RouterOutlet],
+  imports: [
+    MaterialModule,
+    NgIf,
+    TablerIconsModule,
+    RouterOutlet,
+
+    FormsModule,
+    CommonModule, // ✅ habilita *ngFor y *ngIf
+    MatSelectModule, // ✅ habilita <mat-select>
+    MatOptionModule, // ✅ habilita <mat-option>
+  ],
   templateUrl: './user.component.html',
 })
 export class UserComponent implements OnInit {
   userService = inject(UserService);
+  rolService = inject(RolService);
   confirmationService = inject(ConfirmationService);
   notificationsService = inject(NotificationsService);
 
   displayedColumns: string[] = [
     'item',
-    'Entidad_Descripcion',
-    'Aplicacion_Descripcion',
     'Usuario',
-    'DescripcionPersona',
     'Rol',
+    'DescripcionPersona',
     'Unidadorganica',
     'Estado',
     'actions',
   ];
+
+  rols: Rol[] = [];
+
+  idEntidad: number;
+  idAplicacion: number;
+  rolId_select: string | null = null;
 
   // DataSource de la tabla y total de registros
   dataSource: MatTableDataSource<UsuarioPaginatedResponseDto> =
@@ -57,17 +77,45 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     const rolId = localStorage.getItem('userIdRol')!;
 
-    this.loadUsuarios(rolId!);
+    this.idEntidad = Number(localStorage.getItem('idEntidad'));
+    this.idAplicacion = Number(localStorage.getItem('idAplicacion'));
+
+    this.cargarRols();
+
+    this.load_Usuarios();
   }
 
-  loadUsuarios(
-    rolId: string = '',
+  cargarRols() {
+    this.rolService.getPaginado(this.idEntidad, this.idAplicacion!).subscribe({
+      next: (res) => {
+        // 👇 transformamos DTO -> Rol[]
+
+        console.log('cargar Rols', res);
+        this.rols = res.data.map((dto) => ({
+          id: dto.id,
+          descripcion: dto.descripcion,
+        }));
+
+        console.log(this.rols);
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  load_Usuarios(
     search: string = '',
     page: number = 1,
     pageSize: number = 10
   ): void {
     this.userService
-      .getPaginadoUsuario(rolId, search, page, pageSize)
+      .getPaginadoUsuario(
+        this.idEntidad,
+        this.idAplicacion,
+        this.rolId_select, // 👈 transforma null → undefined
+        search,
+        page,
+        pageSize
+      )
       .subscribe({
         next: (res) => {
           this.totalRecords = res.meta.total;
@@ -83,6 +131,14 @@ export class UserComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  onRolSelected(event: any): void {
+    const selectedRolId = event.value;
+    // console.log('Rol seleccionado:', selectedRolId);
+
+    // 👇 aquí puedes llamar directamente a tu método de carga de usuarios
+    this.load_Usuarios();
+  }
+
   openDialog(userDialog?: Usuario) {
     this.dialog
       .open(DialogUserComponent, {
@@ -95,7 +151,7 @@ export class UserComponent implements OnInit {
         const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
         const pageSize = this.paginator.pageSize;
 
-        //this.loadEntidades(this.searchTerm, pageIndex, pageSize);
+        this.load_Usuarios();
       });
   }
 
@@ -137,7 +193,7 @@ export class UserComponent implements OnInit {
           this.notificationsService.success(
             ...NotificationMessages.success('Usuario Deshabilitado')
           );
-          this.loadUsuarios();
+          this.load_Usuarios();
         }
       }
     );
@@ -153,7 +209,7 @@ export class UserComponent implements OnInit {
           this.notificationsService.success(
             ...NotificationMessages.success('Usuario Habilitado')
           );
-          this.loadUsuarios();
+          this.load_Usuarios();
         }
       }
     );
