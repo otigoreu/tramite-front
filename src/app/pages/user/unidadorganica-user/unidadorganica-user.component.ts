@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatCard, MatCardContent, MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { MatInputModule } from '@angular/material/input';
@@ -46,6 +46,8 @@ import { DialogDesabilitarUnidadorganicaUserComponent } from './dialogDesabilita
     MatCard,
     MatCardContent,
     TablerIconsModule,
+
+    MatCardModule,
   ],
   templateUrl: './unidadorganica-user.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -118,8 +118,11 @@ export class UserComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          this.totalRecords = res.meta.total;
-          this.dataSource.data = res.items;
+          this.dataSource.data = res.data;
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+
+          // this.totalRecords = res.meta.total;
         },
         error: (err) => {
           console.error('Error al obtener unidadorganicaes', err);
@@ -169,20 +172,6 @@ export class UserComponent implements OnInit {
     // this.router.navigate(['unidadorganica-user', userDialog.id], { relativeTo: this.route });
   }
 
-  openDialogRol(usuarioDialog?: Usuario) {
-    // Puedes implementar este método si es necesario
-    // this.dialog
-    //   .open(UnidadorganicaUsuarioComponent, {
-    //     data: unidadorganicaDialog,
-    //   })
-    //   .afterClosed()
-    //   .subscribe(() => {
-    //     const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
-    //     const pageSize = this.paginator.pageSize;
-    //     this.loadUnidadorganicaes(this.searchTerm, pageIndex, pageSize);
-    //   });
-  }
-
   /** Deshabilitar una Usuario */
   deshabilitarUsuario(id: string) {
     this.confirmationService.confirmAndExecute(
@@ -214,6 +203,4 @@ export class UserComponent implements OnInit {
       }
     );
   }
-
-  delete(id: number) {}
 }

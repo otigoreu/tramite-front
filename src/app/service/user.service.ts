@@ -191,13 +191,13 @@ export class UserService {
       )
       .pipe(
         map((response) => {
-          const items = response.body?.data ?? [];
+          const data = response.body?.data ?? [];
           const total = parseInt(
             response.headers.get('totalrecordsquantity') ?? '0',
             10
           );
           return {
-            items,
+            data,
             meta: { total, page, pageSize },
           };
         })
