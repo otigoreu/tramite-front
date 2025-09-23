@@ -3,8 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { map, Observable } from 'rxjs';
 import { ApiResponse, PaginatedResponse } from '../model/ApiResponse';
-import { Entidad } from '../pages/entidad/Models/Entidad';
+import { Entidad, EntidadSingle } from '../pages/entidad/Models/Entidad';
 import { EntidadRequestDto } from '../pages/entidad/Models/EntidadRequestDto';
+
+interface GetEntidadApiResponse {
+  data: EntidadSingle;
+  success: string;
+  errorMessage: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -171,4 +177,9 @@ export class EntidadService {
       null
     );
   }
+
+   GetByEntidadPerRol(idRol: string) {
+      return this.http.get<GetEntidadApiResponse>(`${this.baseUrl}/api/entidades/perrol?idRol=${idRol}`)
+        .pipe(map((response) => response.data));
+    }
 }

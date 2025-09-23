@@ -3,7 +3,7 @@
 import { HttpClient} from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { Menu, MenuInfo, MenuWithRol, MenuWithRoles } from '../model/menu';
+import { Menu, MenuInfo,  Menus, MenuWithRol, MenuWithRoles } from '../model/menu';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 
@@ -40,6 +40,10 @@ export class MenuService {
     return this.http.get<GetMenu>(this.baseUrl + '/api/menus/' + idAplicacion)
       .pipe(map((response) => response.data));
   }
+  GetByAplicationAsyncSingle(idAplicacion: number) {
+    return this.http.get<GetMenu>(this.baseUrl + '/api/menus/single/' + idAplicacion)
+      .pipe(map((response) => response.data));
+  }
 
   getDataIgnoreQuery(){
     return this.http.get<GetMenu>(`${this.baseUrl}/api/menus/displayName`)
@@ -51,13 +55,13 @@ export class MenuService {
     .pipe(map((response)=>response.data));
   }
 
-  save(menu:Menu){
+  save(menu:Menus){
     return this.http.post(`${this.baseUrl}/api/menus/single`,menu);
   }
   saveWithRol(menu:MenuWithRoles){
     return this.http.post(`${this.baseUrl}/api/menus`,menu);
   }
-  update(id:number, menu:Menu){
+  update(id:number, menu:Menus){
     return this.http.put(`${this.baseUrl}/api/menus/single/?id=${id}`,menu)
   }
   updateWithRol(id:number, menu:MenuWithRoles){

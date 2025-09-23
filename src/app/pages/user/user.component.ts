@@ -29,7 +29,6 @@ import { FormsModule } from '@angular/forms';
     NgIf,
     TablerIconsModule,
     RouterOutlet,
-
     FormsModule,
     CommonModule, // ✅ habilita *ngFor y *ngIf
     MatSelectModule, // ✅ habilita <mat-select>

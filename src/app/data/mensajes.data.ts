@@ -85,6 +85,13 @@ export const menssageNoti:Notification[]=[
     title:'contraseña actual Incorrecta',
     content: 'Intenta otra vez',
 
+  },
+  {
+    type:NotificationType.Info,
+    icon: IconsNotify.Info,
+    title:'Usted ha cambiado de Rol',
+    content: 'El menu principal presentará cambios',
+
   }
 
 
@@ -101,6 +108,7 @@ export const[
   notify8,
   notify9,
   notify10,
-  notify11
+  notify11,
+  notify12,
 
 ] =menssageNoti

@@ -8,6 +8,13 @@ export interface Menu {
   idAplicacion:number;
   idMenuPadre: number | null;
 }
+export interface Menus {
+  descripcion: string;
+  icono: string;
+  ruta: string;
+  idAplicacion:number;
+  idMenuPadre: number| null;
+}
 export interface MenuRol {
   id: number;
   descripcion: string;
@@ -27,6 +34,7 @@ export interface MenuInfo {
   aplicacion: string;
   idMenuPadre: number| null;
 }
+
 
 export interface MenuWithRoles {
   descripcion: string;

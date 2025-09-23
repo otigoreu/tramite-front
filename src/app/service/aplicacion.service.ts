@@ -7,9 +7,17 @@ import { ApiResponse } from '../model/ApiResponse';
 import { AplicacionRequestDto } from '../pages/aplicacion/Modals/AplicacionRequestDto';
 import { Aplicacion } from '../pages/aplicacion/Modals/Aplicacion';
 
+interface GetAplicacionApiResponse {
+  data: Aplicacion;
+  success: string;
+  errorMessage: string;
+}
 @Injectable({
   providedIn: 'root',
 })
+
+
+
 export class AplicacionService {
   baseUrl = environment.baseUrl;
   http = inject(HttpClient);
@@ -90,11 +98,19 @@ export class AplicacionService {
   }
 
   getDataIgnoreQuery() {
-    return this.http
-      .get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones/descripcion`)
+    return this.http.get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones/descripcion`)
       .pipe(map((response) => response.data));
   }
+
+ GetByAplicationPerRol(idRol: string) {
+    return this.http.get<GetAplicacionApiResponse>(`${this.baseUrl}/api/aplicaciones/perrol?idRol=${idRol}`)
+      .pipe(map((response) => response.data));
+  }
+
+
 }
+
+
 
 interface GetAplicacion {
   data: Aplicacion[];

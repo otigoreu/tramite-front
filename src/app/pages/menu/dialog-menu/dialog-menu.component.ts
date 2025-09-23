@@ -10,7 +10,7 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { Menu, MenuRol, MenuWithRoles } from 'src/app/model/menu';
+import { Menu, MenuInfo, MenuRol, Menus, MenuWithRoles } from 'src/app/model/menu';
 import { MenuService } from 'src/app/service/menu.service';
 import { DialogSedeComponent } from '../../sede/dialog-sede/dialog-sede.component';
 import { MaterialModule } from 'src/app/material.module';
@@ -42,23 +42,21 @@ import { Aplicacion } from '../../aplicacion/Modals/Aplicacion';
 })
 export class DialogMenuComponent implements OnInit {
   disableSelect = new FormControl(false);
-  menu: MenuRol;
+  menu: MenuInfo;
   aplicaciones: Aplicacion[] = [];
   menus: Menu[] = [];
-  roles: Rol[] = [];
   appService = inject(AplicacionService);
   menuService = inject(MenuService);
   rolService = inject(RolService);
   _dialogRef = inject(MatDialogRef);
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: MenuRol) {}
+  constructor(@Inject(MAT_DIALOG_DATA) private data: MenuInfo) {}
 
   appForm = new FormGroup({
     descripcion: new FormControl('', [Validators.required]),
     icono: new FormControl('', [Validators.required]),
     ruta: new FormControl('', [Validators.required]),
     idAplicacion: new FormControl('', [Validators.required]),
-    idRol: new FormControl('', [Validators.required]),
     idMenuPadre: new FormControl('', [Validators.nullValidator]),
   });
   ngOnInit(): void {
@@ -67,7 +65,6 @@ export class DialogMenuComponent implements OnInit {
     console.log('menu obtenido', this.menu);
     this.loadApp();
     this.loadMenus();
-    this.loadRoles();
     if (this.menu.id > 0) {
       this.disableSelect.setValue(true);
     }
@@ -83,22 +80,17 @@ export class DialogMenuComponent implements OnInit {
       this.menus = response;
     });
   }
-  loadRoles() {
-    this.rolService.getData().subscribe((response) => {
-      this.roles = response;
-    });
-  }
+
 
   close() {
     this._dialogRef.close();
   }
   operate() {
-    const body: MenuWithRoles = {
+    const body: Menus = {
       descripcion: this.appForm.controls.descripcion.value!,
       icono: this.appForm.controls.icono.value!,
       ruta: this.appForm.controls.ruta.value!,
       idAplicacion: Number.parseInt(this.appForm.controls.idAplicacion.value!),
-      idRoles: [this.appForm.controls.idRol.value!],
       idMenuPadre:
         this.appForm.controls.idMenuPadre.value == undefined
           ? null
@@ -106,13 +98,13 @@ export class DialogMenuComponent implements OnInit {
     };
 
     if (this.menu != null && this.menu.id > 0) {
-      this.menuService.updateWithRol(this.menu.id, body).subscribe(() => {
+      this.menuService.update(this.menu.id, body).subscribe(() => {
         this._dialogRef.close();
       });
     } else {
       // console.log('menu new', body);
 
-      this.menuService.saveWithRol(body).subscribe(() => {
+      this.menuService.save(body).subscribe(() => {
         this._dialogRef.close();
       });
     }

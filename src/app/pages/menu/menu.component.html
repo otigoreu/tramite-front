@@ -1,7 +1,30 @@
 <mat-card class="cardWithShadow">
   <mat-card-content>
     <div class="row justify-content-between">
-      <div class="col-lg-4">
+      <div class="col-lg-6">
+
+        <div class="row">
+        <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+              <mat-label >Aplicacion</mat-label>
+              <mat-select
+              [(ngModel)]="appId_select"
+              (selectionChange)="onAppSelected($event)"
+              >
+
+                <!-- 🔹 Opción para no seleccionar ningún rol -->
+                <mat-option [value]="null">-- Todos --</mat-option>
+
+                @for(app of aplicaciones; track $index){
+                  <mat-option [value]="app.id">
+                    {{app.descripcion}}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            </div>
+
+        <div class="col-md-6">
         <mat-form-field appearance="outline" class="w-100 hide-hint">
           <input
             matInput
@@ -12,6 +35,10 @@
             <i-tabler name="search" class="icon-20"></i-tabler>
           </mat-icon>
         </mat-form-field>
+        </div>
+</div>
+
+
       </div>
       <div class="col-lg-4 d-flex align-items-center justify-content-end">
         <button mat-flat-button (click)="openDialog()" color="primary">
@@ -68,13 +95,6 @@
           </th>
           <td mat-cell *matCellDef="let row" class="f-s-14">
             {{ row.aplicacion | uppercase }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Rol">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">Rol</th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">
-            {{ row.rol | uppercase }}
           </td>
         </ng-container>
 

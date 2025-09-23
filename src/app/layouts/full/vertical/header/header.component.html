@@ -26,8 +26,20 @@
   <!-- --------------------------------------------------------------- -->
   <!--  Search -->
   <!-- --------------------------------------------------------------- -->
-  <div class="text-center"><mat-icon><i-tabler name="building-factory" class="icon-20 m-r-8"></i-tabler></mat-icon>{{ entidadHeader| uppercase }}   -
-                          <mat-icon><i-tabler name="brand-google-play" class="icon-20 m-r-8"></i-tabler></mat-icon>{{ aplicacionHeader| titlecase}}</div>
+  <div class="text-center">
+    <mat-icon
+      ><i-tabler
+        name="building-factory"
+        class="icon-20 m-r-8"
+      ></i-tabler></mat-icon
+    >{{ entidadHeader | uppercase }} -
+    <mat-icon
+      ><i-tabler
+        name="brand-google-play"
+        class="icon-20 m-r-8"
+      ></i-tabler></mat-icon
+    >{{ aplicacionHeader | titlecase }}
+  </div>
 
   <span class="flex-1-auto"></span>
 
@@ -47,9 +59,9 @@
   <!-- --------------------------------------------------------------- -->
   <!-- Notification Dropdown -->
   <!-- --------------------------------------------------------------- -->
-    <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
-             {{ authService.nombresApellidos() }}
-            </h6>
+  <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
+    {{ authService.nombresApellidos() }}
+  </h6>
   <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1"></h6>
 
   <button
@@ -123,7 +135,7 @@
           />
           <div class="m-l-16">
             <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">
-             {{ authService.nombresApellidos() }}
+              {{ authService.nombresApellidos() }}
             </h6>
             <span class="f-s-14 d-block m-b-4">{{
               authService.userRole()
@@ -133,6 +145,14 @@
             <span class="d-flex align-items-center">
               <i-tabler name="mail" class="icon-15 m-r-4"></i-tabler>
               {{ authService.userEmail() }}
+            </span>
+            <span>
+              <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1">Roles :</h6>
+              <ul>
+                @for( item of rolesHeader;track item){
+                  <li><button (click)="cambiarRol(item.id,item.name)" mat-button color="accent">{{item.name}}</button></li>
+                }
+              </ul>
             </span>
           </div>
         </div>
@@ -155,8 +175,9 @@
                 class="f-s-14 f-w-600 m-0 textprimary mat-subtitle-1 hover-text"
               >
                 Cambiar Contraseña
+
               </h5>
-              <span class="mat-body-1">Cambia tu Contraseña</span>
+
             </div>
           </div>
         </a>

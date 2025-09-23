@@ -5,8 +5,7 @@ export interface Rol {
   estado?: string;
 }
 
-export interface RolLogin {
+export interface RolSignal{
   id: string;
-  nivel: string;
   name: string;
 }
