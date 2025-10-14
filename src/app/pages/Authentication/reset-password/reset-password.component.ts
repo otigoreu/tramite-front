@@ -36,7 +36,7 @@ export class ResetPasswordComponent implements OnInit {
   notifications = inject(NotificationsService);
 
   loginForm = new FormGroup({
-    //email: new FormControl('', [Validators.required, Validators.email]),
+    nombreCompleto: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     token: new FormControl('', [Validators.required]),
     newPassword: new FormControl('', [
@@ -51,6 +51,7 @@ export class ResetPasswordComponent implements OnInit {
 
   token: string = '';
   correo: string = '';
+  nombreCompleto: string = '';
 
   isLoading = false;
 
@@ -58,15 +59,21 @@ export class ResetPasswordComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.token = params['token'];
       this.correo = params['correo'];
+      this.nombreCompleto = params['nombreCompleto'];
 
       console.log('Token recibido:', this.token);
       console.log('Correo recibido:', this.correo);
+      console.log('Nombre Completo recibido:', this.nombreCompleto);
 
       // 👇 Rellenar los inputs automáticamente
       this.loginForm.patchValue({
         email: this.correo,
         token: this.token,
+        nombreCompleto: this.nombreCompleto,
       });
+
+      this.loginForm.get('nombreCompleto')?.disable();
+      this.loginForm.get('email')?.disable();
     });
   }
 
