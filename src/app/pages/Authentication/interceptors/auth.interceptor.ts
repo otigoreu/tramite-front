@@ -8,16 +8,35 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log('jwtInterceptor');
+  const excludedUrls = ['/reset-password', '/auth/login', '/auth/register'];
+
+  if (excludedUrls.some((url) => req.url.includes(url))) {
+    // No inyectar token para rutas públicas
+    return next(req);
+  }
+
   const token = localStorage.getItem('token');
-  let clonedRequest = req;
   if (token) {
-    clonedRequest = req.clone({
+    const cloned = req.clone({
       headers: req.headers.set('Authorization', `Bearer ${token}`),
     });
+    return next(cloned);
   }
-  return next(clonedRequest);
+
+  return next(req);
 };
+
+// export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
+//   console.log('jwtInterceptor');
+//   const token = localStorage.getItem('token');
+//   let clonedRequest = req;
+//   if (token) {
+//     clonedRequest = req.clone({
+//       headers: req.headers.set('Authorization', `Bearer ${token}`),
+//     });
+//   }
+//   return next(clonedRequest);
+// };
 
 export const loadingScreenInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);

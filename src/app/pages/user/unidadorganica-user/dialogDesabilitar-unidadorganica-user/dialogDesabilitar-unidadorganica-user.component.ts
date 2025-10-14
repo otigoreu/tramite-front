@@ -93,19 +93,15 @@ export class DialogDesabilitarUnidadorganicaUserComponent implements OnInit {
       const raw = this.uo_usuarioForm.getRawValue();
 
       this.confirmationService.confirmAndExecute(
-        '¡No podrás revertir esto!',
+        'El usuario será deshabilitado dentro de esta unidad orgánica. Mantendrá acceso al sistema, pero no podrá operar en esta unidad hasta que se habilite nuevamente. ¿Deseas continuar?',
         this.uo_usuarioService.deshabilitar(raw.id!, raw.obserbacionAnulacion!),
         (response) => {
           if (response.success) {
-            this.notificationsService.success(
-              ...NotificationMessages.success(
-                'UnidadOrganica-Usuario Deshabilitado'
-              )
-            );
-
             this.dialogRef.close(true);
           }
-        }
+        },
+        'El usuario fue deshabilitado correctamente en la unidad orgánica.',
+        'Confirmar deshabilitación en unidad orgánica'
       );
     }
   }

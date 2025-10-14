@@ -48,10 +48,10 @@ export interface ChangePasswordApiResponse {
 
 //FORGOT PASSWORD
 export interface ForgotPasswordRequestBody {
-  email: string;
+  numeroDocumento: string;
 }
 
 export interface ChangePasswordRequestBody {
   oldPassword: string;
-  newPassword:string;
+  newPassword: string;
 }

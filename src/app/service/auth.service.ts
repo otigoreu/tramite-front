@@ -18,6 +18,7 @@ import {
   ResetPasswordApiResponse,
   ResetPasswordRequestBody,
 } from '../model/usuario';
+import { ApiResponse } from '../model/ApiResponse';
 
 interface GetRol {
   data: Rol[];
@@ -36,7 +37,7 @@ export class AuthService {
   loggedIn = signal(false);
   isAdministrator = signal(false);
   userRole = signal('');
-  userIdRol=signal('');
+  userIdRol = signal('');
   userName = signal('');
   userEmail = signal('');
   nombresApellidos = signal('');
@@ -46,11 +47,12 @@ export class AuthService {
   idUsuario = signal('');
   unidadOrganicas = signal('');
   entidad = signal('');
-  roles=signal<RolSignal[]>([]);
+  roles = signal<RolSignal[]>([]);
 
   login(dni: string, password: string): Observable<LoginApiResponse> {
     const apiUrl = this.baseUrl + '/api/users/Login';
     const body: LoginRequestBody = { username: dni, password };
+
     return this.http.post<LoginApiResponse>(apiUrl, body).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => {
         const errorResponse: LoginApiResponse = {
@@ -75,6 +77,7 @@ export class AuthService {
             entidad: { id: 0, descripcion: '', ruc: '', estado: '' },
             unidadOrganicas: [],
             aplicaciones: [],
+            mustChangePassword: false,
           },
           errorMessage: httpErrorResponse.error.errorMessage || 'Unknown error',
         };
@@ -97,20 +100,32 @@ export class AuthService {
       })
     );
   }
-  forgotPassword(email: string): Observable<ForgotPasswordApiResponse> {
+
+  forgotPassword(numeroDocumento: string): Observable<ApiResponse<string>> {
     const apiUrl = this.baseUrl + '/api/users/RequestTokenToResetPassword';
-    const body: ForgotPasswordRequestBody = { email };
-    return this.http.post<ForgotPasswordApiResponse>(apiUrl, body).pipe(
+    const body: ForgotPasswordRequestBody = { numeroDocumento };
+
+    return this.http.post<ApiResponse<string>>(apiUrl, body).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => {
-        const errorResponse: ForgotPasswordApiResponse = {
+        const errorResponse: ApiResponse<string> = {
           success: false,
           errorMessage:
             httpErrorResponse.error?.errorMessage || 'Unknown error',
         };
         return of(errorResponse);
       })
+
+      // catchError((httpErrorResponse: HttpErrorResponse) => {
+      //   const errorResponse: ApiResponse<string> = {
+      //     success: false,
+      //     errorMessage:
+      //       httpErrorResponse.error?.errorMessage || 'Unknown error',
+      //   };
+      //   return of(errorResponse);
+      // })
     );
   }
+
   logout() {
     localStorage.clear();
     this.loggedIn.set(false);
@@ -121,6 +136,7 @@ export class AuthService {
       navItems.pop();
     }
   }
+
   getDataRoles() {
     return this.http
       .get<GetRol>('${this.baseUrl}/users/roles')
@@ -155,12 +171,14 @@ export class AuthService {
         })
       );
   }
+
   changePassword(
     oldPassword: string,
     newPassword: string
   ): Observable<ChangePasswordApiResponse> {
     const apiUrl = this.baseUrl + '/api/users/ChangePassword';
     const body: ChangePasswordRequestBody = { oldPassword, newPassword };
+
     return this.http.post<ChangePasswordApiResponse>(apiUrl, body).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => {
         const errorResponse: ChangePasswordApiResponse = {

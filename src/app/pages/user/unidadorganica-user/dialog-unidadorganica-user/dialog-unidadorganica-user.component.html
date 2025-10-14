@@ -1,7 +1,15 @@
+<app-notification
+  *ngIf="notificacion()"
+  [title]="notificacion()?.title ?? ''"
+  [description]="notificacion()?.description ?? ''"
+  [type]="notificacion()?.type ?? 'info'"
+/>
+
 <h2 mat-dialog-title class="m-b-24">{{ titulo }}</h2>
 
 <mat-divider></mat-divider>
-<mat-dialog-content class="mat-typography" style="max-width: 600px">
+
+<mat-dialog-content class="mat-typography w-100">
   <form [formGroup]="uo_usuarioForm" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>Unidad Orgánica</mat-label>

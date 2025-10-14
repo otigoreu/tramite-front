@@ -15,10 +15,11 @@ import { UsuarioPaginatedResponseDto } from './Models/UsuarioPaginatedResponseDt
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { RolService } from 'src/app/service/rol.service';
-import { Rol } from 'src/app/model/rol';
+import { Rol, RolSingleResponse } from 'src/app/model/rol';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user',
@@ -52,7 +53,7 @@ export class UserComponent implements OnInit {
     'actions',
   ];
 
-  rols: Rol[] = [];
+  rols: RolSingleResponse[] = [];
 
   idEntidad: number;
   idAplicacion: number;
@@ -71,7 +72,11 @@ export class UserComponent implements OnInit {
   totalElements: number;
   dialog = inject(MatDialog);
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     const rolId = localStorage.getItem('userIdRol')!;
@@ -81,7 +86,7 @@ export class UserComponent implements OnInit {
 
     this.cargarRols();
 
-    this.load_Usuarios();
+    //this.load_Usuarios();
   }
 
   cargarRols() {
@@ -165,7 +170,14 @@ export class UserComponent implements OnInit {
     console.log(userDialog);
 
     // navegación absoluta
-    this.router.navigate(['/pages/user/unidadorganica-user', userDialog?.id]);
+    this.router.navigate(['/pages/user/unidadorganica-user', userDialog?.id], {
+      queryParams: {
+        userName: userDialog?.userName,
+        descripcionPersona: userDialog?.descripcionPersona,
+      },
+    });
+
+    // this.router.navigate(['/pages/user/unidadorganica-user', userDialog?.id]);
 
     // o si quieres relativa:
     // this.router.navigate(['unidadorganica-user', userDialog.id], { relativeTo: this.route });
@@ -174,7 +186,7 @@ export class UserComponent implements OnInit {
   /** Deshabilitar una Usuario */
   deshabilitarUsuario(id: string) {
     this.confirmationService.confirmAndExecute(
-      '¡No podrás revertir esto!',
+      'El usuario será deshabilitado y no podrá acceder al sistema hasta que se habilite nuevamente. ¿Deseas continuar?',
       this.userService.deshabilitarUsuario(id),
       (response) => {
         if (response.success) {
@@ -183,14 +195,16 @@ export class UserComponent implements OnInit {
           );
           this.load_Usuarios();
         }
-      }
+      },
+      'El usuario fue deshabilitado correctamente.',
+      'Confirmar deshabilitación de usuario'
     );
   }
 
   /** Habilitar una Usuario */
   habilitarUsuario(id: string) {
     this.confirmationService.confirmAndExecute(
-      '¡No podrás revertir esto!',
+      'El usuario será habilitado y podrá acceder nuevamente al sistema. ¿Deseas continuar?',
       this.userService.habilitarUsuario(id),
       (response) => {
         if (response.success) {
@@ -199,7 +213,24 @@ export class UserComponent implements OnInit {
           );
           this.load_Usuarios();
         }
-      }
+      },
+      'El usuario fue habilitado correctamente.',
+      'Confirmar habilitación de usuario'
+    );
+  }
+
+  onResetearPassword(id: string) {
+    this.confirmationService.confirmAndExecute(
+      '¡Se restablecerá la contraseña de este usuario a una contraseña por defecto. El usuario deberá cambiarla obligatoriamente en su próximo inicio de sesión!',
+      this.userService.forcePasswordChange(id),
+      (res) => {
+        if (res.success) {
+          this.load_Usuarios();
+        } else {
+        }
+      },
+      'La contraseña fue reiniciada correctamente.',
+      'Confirmar reinicio de contraseña'
     );
   }
 }

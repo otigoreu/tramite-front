@@ -10,6 +10,44 @@ import { RolComponent } from './pages/rol/rol.component';
 import { UserComponent } from './pages/user/user.component';
 
 export const routes: Routes = [
+  // 🔓 RUTAS PÚBLICAS primero
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('../app/pages/Authentication/login/login.component').then(
+        (m) => m.LoginComponent
+      ),
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./pages/Authentication/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import(
+        '../app/pages/Authentication/forgot-password/forgot-password.component'
+      ).then((m) => m.ForgotPasswordComponent),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import(
+        './pages/Authentication/reset-password/reset-password.component'
+      ).then((m) => m.ResetPasswordComponent),
+  },
+  {
+    path: 'change-password',
+    loadComponent: () =>
+      import(
+        './pages/Authentication/change-Password/change-Password.component'
+      ).then((m) => m.ChangePasswordComponent),
+  },
+
+  // 🔒 LUEGO tu layout principal protegido
   {
     path: '',
     component: FullComponent,
@@ -63,7 +101,7 @@ export const routes: Routes = [
         data: {
           title: 'Menu',
           urls: [
-            // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
             { title: 'Menus' },
           ],
         },
@@ -77,7 +115,7 @@ export const routes: Routes = [
         data: {
           title: 'Rol',
           urls: [
-            // { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
             { title: 'Rol' },
           ],
         },
@@ -90,49 +128,137 @@ export const routes: Routes = [
     ],
   },
 
-  {
-    path: 'login',
-    pathMatch: 'full',
-    loadComponent: () =>
-      import('../app/pages/Authentication/login/login.component').then(
-        (m) => m.LoginComponent
-      ),
-  },
-
-  {
-    path: 'register',
-    pathMatch: 'full',
-    loadComponent: () =>
-      import('./pages/Authentication/register/register.component').then(
-        (m) => m.RegisterComponent
-      ),
-  },
-  {
-    path: 'forgot-password',
-    pathMatch: 'full',
-    loadComponent: () =>
-      import(
-        '../app/pages/Authentication/forgot-password/forgot-password.component'
-      ).then((m) => m.ForgotPasswordComponent),
-  },
-  {
-    path: 'reset-password',
-    pathMatch: 'full',
-    loadComponent: () =>
-      import(
-        './pages/Authentication/reset-password/reset-password.component'
-      ).then((m) => m.ResetPasswordComponent),
-  },
-  {
-    path: 'change-password',
-    pathMatch: 'full',
-    loadComponent: () =>
-      import(
-        './pages/Authentication/change-Password/change-Password.component'
-      ).then((m) => m.ChangePasswordComponent),
-  },
+  // 🚨 catch-all
   {
     path: '**',
-    redirectTo: 'authentication/error',
+    redirectTo: '/login',
   },
 ];
+
+// export const routes: Routes = [
+//   {
+//     path: '',
+//     component: FullComponent,
+//     children: [
+//       {
+//         path: '',
+//         //redirectTo: '/dashboards/dashboard1',
+//         redirectTo: '/login',
+//         pathMatch: 'full',
+//       },
+
+//       {
+//         path: 'pages/persona',
+//         canActivate: [authGuard],
+//         component: PersonaComponent,
+//         data: {
+//           title: 'Personas',
+//           urls: [
+//             //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
+//             { title: 'Personas' },
+//           ],
+//         },
+//       },
+//       {
+//         path: 'pages/tipo-documento',
+
+//         // canActivate: [authGuard],
+
+//         component: TipoDocumentoComponent,
+//         data: {
+//           title: 'Tipo Documento',
+//           urls: [
+//             //{ title: 'Dashboard', url: '/dashboards/dashboard1' },
+//             { title: 'Tipo Documento' },
+//           ],
+//         },
+//       },
+
+//       {
+//         path: 'pages',
+//         loadChildren: () =>
+//           import('./pages/pages.routes').then((m) => m.PagesRoutes),
+//       },
+
+//       {
+//         path: 'pages/menu',
+
+//         // canActivate: [authGuard],
+
+//         component: MenuComponent,
+//         data: {
+//           title: 'Menu',
+//           urls: [
+//             { title: 'Inicio', url: '/dashboards/dashboard1' },
+//             { title: 'Menus' },
+//           ],
+//         },
+//       },
+//       {
+//         path: 'pages/rol',
+
+//         // canActivate: [authGuard],
+
+//         component: RolComponent,
+//         data: {
+//           title: 'Rol',
+//           urls: [
+//             { title: 'Inicio', url: '/dashboards/dashboard1' },
+//             { title: 'Rol' },
+//           ],
+//         },
+//       },
+//       {
+//         path: 'starter',
+//         loadChildren: () =>
+//           import('./pages/pages.routes').then((m) => m.PagesRoutes),
+//       },
+//     ],
+//   },
+
+//   {
+//     path: 'login',
+//     pathMatch: 'full',
+//     loadComponent: () =>
+//       import('../app/pages/Authentication/login/login.component').then(
+//         (m) => m.LoginComponent
+//       ),
+//   },
+
+//   {
+//     path: 'register',
+//     pathMatch: 'full',
+//     loadComponent: () =>
+//       import('./pages/Authentication/register/register.component').then(
+//         (m) => m.RegisterComponent
+//       ),
+//   },
+//   {
+//     path: 'forgot-password',
+//     pathMatch: 'full',
+//     loadComponent: () =>
+//       import(
+//         '../app/pages/Authentication/forgot-password/forgot-password.component'
+//       ).then((m) => m.ForgotPasswordComponent),
+//   },
+//   {
+//     path: 'reset-password',
+//     pathMatch: 'full',
+//     loadComponent: () =>
+//       import(
+//         '../app/pages/Authentication/reset-password/reset-password.component'
+//       ).then((m) => m.ResetPasswordComponent),
+//   },
+//   {
+//     path: 'change-password',
+//     pathMatch: 'full',
+//     loadComponent: () =>
+//       import(
+//         './pages/Authentication/change-Password/change-Password.component'
+//       ).then((m) => m.ChangePasswordComponent),
+//   },
+//   {
+//     path: '**',
+//     redirectTo: 'authentication/error',
+//   },
+// ];

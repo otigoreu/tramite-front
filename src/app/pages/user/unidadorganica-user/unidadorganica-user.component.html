@@ -29,11 +29,12 @@
 </mat-card>
 <mat-card class="cardWithShadow">
   <mat-card-header>
-    <mat-card-title>Table with multiple header and footer rows</mat-card-title>
-    <mat-card-subtitle class="mat-body-1"
-      >Pagination and search is avail</mat-card-subtitle
-    >
+    <!-- <div class="p-24 rounded bg-light-primary m-t-16"> -->
+    <mat-card-title>{{ descripcionPersona }}</mat-card-title>
+    <mat-card-subtitle class="mat-body-1">{{ userName }}</mat-card-subtitle>
+    <!-- </div> -->
   </mat-card-header>
+
   <mat-card-content>
     <div class="table-responsive">
       @if (!isLoading) {
@@ -110,7 +111,7 @@
             @if(row.estado){
             <a
               class="m-r-10 cursor-pointer"
-              matTooltip="Editar"
+              matTooltip="Editar la unidad orgánica asignada al usuario (área o dependencia)."
               matTooltipPosition="above"
               (click)="openDialog(row.id)"
             >
@@ -119,7 +120,7 @@
             <a
               (click)="openDialogDeshabilitar(row.id)"
               class="m-r-10 cursor-pointer"
-              matTooltip="Deshabilitar"
+              matTooltip="Deshabilitar al usuario dentro de esta unidad orgánica. Mantendrá acceso al sistema, pero no a esta unidad."
               matTooltipPosition="right"
             >
               <i-tabler name="circle-arrow-down" class="icon-18"></i-tabler>

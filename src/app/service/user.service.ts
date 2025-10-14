@@ -16,6 +16,7 @@ import {
 import { RegisterRequestDto } from '../pages/user/Models/RegisterRequestDto';
 import { ApiResponse } from '../model/ApiResponse';
 import { UsuarioPaginatedResponseDto } from '../pages/user/Models/UsuarioPaginatedResponseDto';
+import { BaseResponse } from '../model/BaseResponse';
 
 interface GetUsuario {
   data: Usuario[];
@@ -75,6 +76,7 @@ export class UserService {
               entidad: { id: 0, descripcion: '', ruc: '', estado: '' },
               unidadOrganicas: [],
               aplicaciones: [],
+              mustChangePassword: false,
             },
             errorMessage:
               httpErrorResponse.error.errorMessage || 'Unknown error',
@@ -215,6 +217,13 @@ export class UserService {
     return this.http.patch<ApiResponse<null>>(
       `${this.baseUrl}/api/users/${id}/initialize`,
       null
+    );
+  }
+
+  forcePasswordChange(id: string): Observable<BaseResponse> {
+    return this.http.patch<BaseResponse>(
+      `${this.baseUrl}/api/users/${id}/force-password`,
+      {} // PATCH requiere body, aunque sea vacío
     );
   }
 }

@@ -28,6 +28,8 @@ import { NotificationsService } from 'angular2-notifications';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import Swal from 'sweetalert2';
 import { DialogDesabilitarUnidadorganicaUserComponent } from './dialogDesabilitar-unidadorganica-user/dialogDesabilitar-unidadorganica-user.component';
+import { MatOptionModule } from '@angular/material/core';
+import { MaterialModule } from 'src/app/material.module';
 
 @Component({
   selector: 'app-unidadorganica-user',
@@ -48,6 +50,9 @@ import { DialogDesabilitarUnidadorganicaUserComponent } from './dialogDesabilita
     TablerIconsModule,
 
     MatCardModule,
+
+    MaterialModule,
+    MatOptionModule, // ✅ habilita <mat-option>
   ],
   templateUrl: './unidadorganica-user.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -83,6 +88,9 @@ export class UnidadorganicaUserComponent implements OnInit, AfterViewInit {
 
   // 👇 propiedad para guardar el userId
   private userId!: string;
+  userName!: string;
+  descripcionPersona!: string;
+
   private idEntidad!: number;
 
   constructor(private router: Router, private route: ActivatedRoute) {}
@@ -90,8 +98,14 @@ export class UnidadorganicaUserComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.idEntidad = Number(localStorage.getItem('idEntidad'));
 
+    // this.userId = this.route.snapshot.paramMap.get('userId')!;
+
     // Leer parámetro de la URL
-    this.userId = this.route.snapshot.paramMap.get('userId')!;
+    this.route.queryParamMap.subscribe((params) => {
+      this.userId = this.route.snapshot.paramMap.get('userId')!;
+      this.userName = params.get('userName')!;
+      this.descripcionPersona = params.get('descripcionPersona')!;
+    });
 
     this.load_UsuarioAsociadoUOs();
   }

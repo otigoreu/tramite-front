@@ -20,6 +20,7 @@ export interface Data {
   persona: Persona;
   unidadOrganicas: UnidadOrganica[];
   aplicaciones: Aplicacion[];
+  mustChangePassword: boolean;
 }
 
 export interface LoginRequestBody {
@@ -52,7 +53,7 @@ export interface ForgotPasswordApiResponse {
 }
 
 export interface ForgotPasswordRequestBody {
-  email: string;
+  numeroDocumento: string;
 }
 
 export interface ResetPasswordRequestBody {

@@ -138,20 +138,30 @@
               <a
                 (click)="habilitarUsuario(row.id)"
                 class="m-r-10 cursor-pointer"
-                matTooltip="Habilitar"
+                matTooltip="Habilitar este usuario. Recuperará el acceso al sistema."
                 matTooltipPosition="above"
               >
                 <i-tabler name="circle-arrow-up" class="icon-18"></i-tabler>
               </a>
-              } @else{
+              @if(!row.mustChangePassword){
+              <a
+                (click)="onResetearPassword(row.id)"
+                class="m-r-10 cursor-pointer"
+                matTooltip="Obligar a cambiar la contraseña en el próximo inicio de sesión"
+                matTooltipPosition="right"
+              >
+                <i-tabler name="repeat-once" class="icon-18"></i-tabler>
+              </a>
+              } } @else{
               <a
                 (click)="deshabilitarUsuario(row.id)"
                 class="m-r-10 cursor-pointer"
-                matTooltip="Deshabilitar"
+                matTooltip="Deshabilitar este usuario. No podrá acceder al sistema hasta ser habilitado nuevamente."
                 matTooltipPosition="right"
               >
                 <i-tabler name="circle-arrow-down" class="icon-18"></i-tabler>
               </a>
+
               }
             </td>
           </ng-container>

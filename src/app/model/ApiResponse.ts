@@ -4,7 +4,7 @@
  */
 export interface ApiResponse<T> {
   /** Carga útil devuelta por la API */
-  data: T;
+  data?: T;
 
   /** indica éxito (`true`) o fracaso (`false`) */
   success: boolean;

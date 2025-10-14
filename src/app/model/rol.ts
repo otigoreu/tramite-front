@@ -9,3 +9,8 @@ export interface RolSignal{
   id: string;
   name: string;
 }
+
+export interface RolSingleResponse {
+  id: string;
+  descripcion: string;
+}

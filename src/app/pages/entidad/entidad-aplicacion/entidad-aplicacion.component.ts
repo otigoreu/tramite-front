@@ -155,7 +155,10 @@ export class EntidadAplicacionComponent implements OnInit {
 
           // Decide si crear o actualizar
           const peticion: Observable<ApiResponse<any>> = esEdicion
-            ? this.enaplicaService.actualizarEntidadAplicacion(res.data.id, dto)
+            ? this.enaplicaService.actualizarEntidadAplicacion(
+                res.data!.id,
+                dto
+              )
             : this.enaplicaService.agregarEntidadAplicacion(dto);
 
           peticion.subscribe({

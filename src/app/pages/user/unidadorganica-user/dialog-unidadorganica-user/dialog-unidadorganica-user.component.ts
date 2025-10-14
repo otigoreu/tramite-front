@@ -5,6 +5,7 @@ import {
   Inject,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -42,6 +43,14 @@ import {
 } from 'src/app/service/unidadorganicausuario.service';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { NotificationComponent } from 'src/app/shared/components/notification/notification.component';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
+import { Notificacion } from 'src/app/model/Notificacion';
 
 export interface UnidadOrganica {
   id: number;
@@ -64,13 +73,14 @@ interface UsuarioUoForm {
     ReactiveFormsModule,
     SharedModule,
     TablerIconsModule,
-
     CommonModule,
     MatAutocompleteModule,
-
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
+    NotificationComponent,
+
+    DragDropModule,
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -102,6 +112,9 @@ export class DialogUnidadorganicaUserComponent implements OnInit {
 
   unidadorganicaService = inject(UnidadorganicaService);
   uo_usuarioService = inject(UnidadorganicausuarioService);
+
+  //showNotificacion = signal(false);
+  notificacion = signal<Notificacion | null>(null);
 
   titulo = '';
 
@@ -193,13 +206,33 @@ export class DialogUnidadorganicaUserComponent implements OnInit {
       if (!esEdicion) {
         this.uo_usuarioService.agregar(data).subscribe({
           next: (res) => {
+            console.log('==> res', res);
+
             if (res.success) {
               const [titulo, mensajeTexto] = NotificationMessages.successCrear(
                 'UNIDADORGANICA-USUARIO'
               );
 
               this.snackBar.open(mensajeTexto, 'Cerrar', { duration: 3000 });
+            } else {
+              this.notificacion.set({
+                title: 'Mensaje de Validación',
+                description: res.errorMessage! ?? 'Error desconocido',
+                type: 'error',
+              });
             }
+          },
+          error: (err) => {
+            console.error('==> error', err);
+
+            this.notificacion.set({
+              title: 'Mensaje de Validacion',
+              description: err?.error?.errorMessage! ?? 'Error desconocido',
+              type: 'error',
+            });
+          },
+          complete: () => {
+            console.log('Petición completada');
           },
         });
       } else {
@@ -213,6 +246,18 @@ export class DialogUnidadorganicaUserComponent implements OnInit {
 
               this.snackBar.open(mensajeTexto, 'Cerrar', { duration: 3000 });
             }
+          },
+          error: (err) => {
+            console.error('==> error', err);
+
+            this.notificacion.set({
+              title: 'Mensaje de Validacion',
+              description: err?.error?.errorMessage! ?? 'Error desconocido',
+              type: 'error',
+            });
+          },
+          complete: () => {
+            console.log('Petición completada');
           },
         });
       }

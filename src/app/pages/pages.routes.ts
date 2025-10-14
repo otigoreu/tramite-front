@@ -19,7 +19,7 @@ export const PagesRoutes: Routes = [
             data: {
               title: 'Usuario',
               urls: [
-                { title: 'Dashboard', url: '/dashboards/dashboard1' },
+                { title: 'Inicio', url: '/dashboards/dashboard1' },
                 { title: 'Usuario' },
               ],
             },
@@ -28,9 +28,9 @@ export const PagesRoutes: Routes = [
             path: 'unidadorganica-user/:userId',
             component: UnidadorganicaUserComponent, // página completa
             data: {
-              title: 'Unidad Orgánica (User)',
+              title: 'Unidad Orgánica (Usuario)',
               urls: [
-                { title: 'Dashboard', url: '/dashboards/dashboard1' },
+                { title: 'Inicio', url: '/dashboards/dashboard1' },
                 { title: 'Usuario', url: '/pages/user' },
                 { title: 'Unidad Orgánica (User)' },
               ],
@@ -41,14 +41,35 @@ export const PagesRoutes: Routes = [
       {
         path: 'entidad',
         component: EntidadComponent,
+        data: {
+          title: 'Entidad',
+          urls: [
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Entidad' },
+          ],
+        },
       },
       {
         path: 'aplicacion',
         component: AplicacionComponent,
+        data: {
+          title: 'Aplicacion',
+          urls: [
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Aplicacion' },
+          ],
+        },
       },
       {
         path: 'unidadOrganica',
         component: UnidadorganicaComponent,
+        data: {
+          title: 'Unidad Organica',
+          urls: [
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Unidad Organica' },
+          ],
+        },
       },
     ],
   },

@@ -22,7 +22,7 @@ import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { AuthService } from 'src/app/service/auth.service';
 import { ChangePasswordComponent } from 'src/app/pages/Authentication/change-Password/change-Password.component';
-import { A11yModule } from "@angular/cdk/a11y";
+import { A11yModule } from '@angular/cdk/a11y';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { MenuService } from 'src/app/service/menu.service';
 import { NavItem } from '../sidebar/nav-item/nav-item';
@@ -30,7 +30,6 @@ import { notify1, notify12, notify6 } from 'src/app/data/mensajes.data';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { NotificationsService } from 'angular2-notifications';
 import { EntidadService } from 'src/app/service/entidad.service';
-
 
 // import { AuthService } from 'src/app/service/auth.service';
 
@@ -76,8 +75,8 @@ interface quicklinks {
     MaterialModule,
     UpperCasePipe,
     FormsModule,
-    A11yModule
-],
+    A11yModule,
+  ],
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
 })
@@ -88,13 +87,10 @@ export class HeaderComponent {
   @Output() toggleMobileFilterNav = new EventEmitter<void>();
   @Output() toggleCollapsed = new EventEmitter<void>();
   authService = inject(AuthService);
-  rolId:number| null = null;
-  rolesHeader=this.authService.roles();
-
+  rolId: number | null = null;
+  rolesHeader = this.authService.roles();
 
   // authService = inject(AuthService);
-
-
 
   showFiller = false;
 
@@ -130,102 +126,93 @@ export class HeaderComponent {
   ];
 
   aplicacionHeader: string;
-  entidadHeader:string;
-  appservice=inject(AplicacionService);
-  entidadservice=inject(EntidadService);
+  entidadHeader: string;
+  appservice = inject(AplicacionService);
+  entidadservice = inject(EntidadService);
   menuService = inject(MenuService);
   firstOptionMenu = signal('');
   notificationsHEader = inject(NotificationsService);
   router = inject(Router);
- notificationsHeader = inject(NotificationsService);
-
+  notificationsHeader = inject(NotificationsService);
 
   constructor(
     private vsidenav: CoreService,
     public dialog: MatDialog,
     private translate: TranslateService,
-    private cd:ChangeDetectorRef
+    private cd: ChangeDetectorRef
   ) {
     translate.setDefaultLang('es');
     const aplicacion = localStorage.getItem('Aplicacion');
-    const entidad=localStorage.getItem('entidad');
+    const entidad = localStorage.getItem('entidad');
 
     if (aplicacion && entidad) {
-      this.aplicacionHeader= aplicacion;
-      this.entidadHeader=entidad;
+      this.aplicacionHeader = aplicacion;
+      this.entidadHeader = entidad;
     }
   }
 
- cambiarRol(idRol:string,nameRol:string){
-  console.log('idRol',idRol);
-  console.log('nameRol',nameRol);
+  cambiarRol(idRol: string, nameRol: string) {
+    console.log('idRol', idRol);
+    console.log('nameRol', nameRol);
 
+    this.authService.userRole.set(nameRol);
+    this.authService.userIdRol.set(idRol);
 
-  this.authService.userRole.set(nameRol);
-  this.authService.userIdRol.set(idRol);
+    localStorage.setItem('userRole', this.authService.userRole());
+    localStorage.setItem('userIdRol', this.authService.userIdRol());
 
-  localStorage.setItem('userRole', this.authService.userRole());
-  localStorage.setItem('userIdRol', this.authService.userIdRol());
+    this.entidadservice
+      .GetByEntidadPerRol(this.authService.userIdRol())
+      .subscribe((entidadRol) => {
+        this.authService.entidad.set(entidadRol.descripcion);
+        localStorage.setItem('entidad', this.authService.entidad());
+        this.entidadHeader = this.authService.entidad();
+      });
 
-  this.entidadservice.GetByEntidadPerRol(this.authService.userIdRol()).subscribe((entidadRol)=>{
-            this.authService.entidad.set(entidadRol.descripcion);
-            localStorage.setItem('entidad', this.authService.entidad());
-            this.entidadHeader=this.authService.entidad();
+    this.appservice.GetByAplicationPerRol(idRol).subscribe((appRol) => {
+      console.log('AppRol :', appRol);
+      this.authService.aplicacion.set(appRol.descripcion);
+      this.authService.idAplicacion.set(appRol.id.toString());
+      localStorage.setItem('Aplicacion', this.authService.aplicacion());
+      localStorage.setItem('idAplicacion', this.authService.idAplicacion());
+      this.aplicacionHeader = this.authService.aplicacion();
 
-          });
+      this.menuService
+        .GetByAplicationAsync(parseInt(this.authService.idAplicacion()))
+        .subscribe({
+          next: (data: any[]) => {
+            navItems.length = 0;
+            data.forEach((nav) => {
+              if (!nav.idMenuPadre) {
+                const navItem: NavItem = {
+                  id: nav.id,
+                  displayName: nav.descripcion,
+                  iconName: nav.icono,
+                  route: nav.ruta,
+                  children: [],
+                };
 
-  this.appservice.GetByAplicationPerRol(idRol).subscribe((appRol)=>{
-          console.log('AppRol :',appRol);
-          this.authService.aplicacion.set(appRol.descripcion);
-          this.authService.idAplicacion.set((appRol.id).toString());
-          localStorage.setItem('Aplicacion', this.authService.aplicacion());
-          localStorage.setItem('idAplicacion', this.authService.idAplicacion());
-          this.aplicacionHeader=this.authService.aplicacion();
-
-          this.menuService
-            .GetByAplicationAsync(parseInt(this.authService.idAplicacion()))
-            .subscribe({
-              next: (data: any[]) => {
-                navItems.length=0;
-                data.forEach((nav) => {
-                  if (!nav.idMenuPadre) {
-                    const navItem: NavItem = {
-                      id: nav.id,
-                      displayName: nav.descripcion,
-                      iconName: nav.icono,
-                      route: nav.ruta,
-                      children: [],
-                    };
-
-                    navItems.push(navItem);
-                    this.firstOptionMenu.set(navItems[0].route!);
-                  }
-                });
-
-                this.router.navigate([this.firstOptionMenu()])
-                //   navItems.forEach((parentNav: NavItem) => {
-                //     parentNav.children = data.filter(
-                //       (nav) => nav.idMenuPadre === parentNav.id
-                //     );
-                //   });
-              },
-
-
+                navItems.push(navItem);
+                this.firstOptionMenu.set(navItems[0].route!);
+              }
             });
 
-
-
+            this.router.navigate([this.firstOptionMenu()]);
+            //   navItems.forEach((parentNav: NavItem) => {
+            //     parentNav.children = data.filter(
+            //       (nav) => nav.idMenuPadre === parentNav.id
+            //     );
+            //   });
+          },
         });
-        this.notificationsHEader.set(notify12,true);
-
-
- }
-
+    });
+    this.notificationsHEader.set(notify12, true);
+  }
 
   openDialog() {
     this.dialog.open(ChangePasswordComponent);
-    console.log('roles con authService',this.authService.roles());
-    console.log('Roles con Variable',this.rolesHeader);
+    console.log('roles con authService', this.authService.roles());
+    console.log('Roles con Variable', this.rolesHeader);
   }
 
   changeLanguage(lang: any): void {
@@ -234,6 +221,7 @@ export class HeaderComponent {
   }
 
   notifications: notifications[] = [];
+
   notifications1: notifications[] = [
     {
       id: 1,
@@ -393,7 +381,6 @@ export class HeaderComponent {
     },
   ];
 }
-
 
 @Component({
   selector: 'search-dialog',
