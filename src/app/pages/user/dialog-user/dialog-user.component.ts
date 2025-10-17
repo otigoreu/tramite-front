@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { Usuario } from '../../../model/usuario';
-import { Persona } from 'src/app/model/persona';
+import { Persona, PersonaResponseDto } from 'src/app/model/persona';
 import { UserService } from 'src/app/service/user.service';
 import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -103,7 +103,7 @@ export class DialogUserComponent implements OnInit {
   // Autocomplete de Personas (Formulario reactivo)
   firstControl = new FormControl('');
   firstoption: string[] = ['One', 'Two', 'Three']; // Ejemplo, probablemente puedas eliminar si no lo usas
-  filteredOptions: Observable<Persona[]>;
+  filteredOptions: Observable<PersonaResponseDto[]>;
 
   ngOnInit(): void {
     const esEdicion = !!this.data?.id;
@@ -123,7 +123,7 @@ export class DialogUserComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value) =>
-        this.personaService.getPaginadoPersona(value!, 1, 10).pipe(
+        this.personaService.getPaginado(value!, 1, 10).pipe(
           map((response) => response.data) // Retorna solo los items
         )
       )

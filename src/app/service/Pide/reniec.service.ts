@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 
 export interface ReniecResponse {
-  nombre: string;
-  apepaterno: string;
-  apematerno: string;
+  nombres: string;
+  apellidoPaterno: string;
+  apellidoMaterno: string;
   direccion: string;
   estadoCivil: string;
   restriccion: string;

@@ -19,7 +19,7 @@ export interface Persona {
   apellidoPat: string;
   apellidoMat: string;
   fechaNac: string;
-  edad: number;
+  edad?: number;
   email: string;
   idTipoDoc: number;
   nroDoc: string;
@@ -33,6 +33,33 @@ export interface PersonaNew {
   apellidoMat: string;
   fechaNac: string;
   edad: number;
+  email: string;
+  idTipoDoc: number;
+  nroDoc: string;
+}
+
+export interface PersonaResponseDto {
+  id: number;
+  estado: boolean;
+
+  nombres: string;
+  apellidoPat: string;
+  apellidoMat: string;
+  fechaNac: string;
+  email: string;
+  idTipoDoc: number;
+  nroDoc: string;
+
+  nombreCompleto: string;
+}
+
+export interface PersonaRequestDto {
+  id: number;
+
+  nombres: string;
+  apellidoPat: string;
+  apellidoMat: string;
+  fechaNac: string;
   email: string;
   idTipoDoc: number;
   nroDoc: string;

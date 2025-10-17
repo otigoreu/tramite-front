@@ -1,9 +1,16 @@
 import { inject, Injectable } from '@angular/core';
-import { Persona, PersonaNew, Personas } from '../model/persona';
-import { HttpClient } from '@angular/common/http';
+import {
+  Persona,
+  PersonaNew,
+  PersonaRequestDto,
+  PersonaResponseDto,
+  Personas,
+} from '../model/persona';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Subject, finalize } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { ApiResponse } from '../model/ApiResponse';
+import { BaseResponseGeneric } from '../model/BaseResponse';
 
 interface GetPersonsApiResponse {
   data: Personas[];
@@ -26,7 +33,7 @@ interface DeletePersonResponse {
   providedIn: 'root',
 })
 export class PersonaServiceService {
-  baseUrl = environment.baseUrl;
+  baseUrl = environment.baseUrl + '/api/personas';
 
   http = inject(HttpClient);
 
@@ -36,39 +43,47 @@ export class PersonaServiceService {
 
   getData() {
     return this.http
-      .get<GetPersonsApiResponse>(this.baseUrl + '/api/personas/nombre')
+      .get<GetPersonsApiResponse>(this.baseUrl + '/nombre')
       .pipe(map((response) => response.data));
   }
 
   getDatafilter() {
     return this.http
-      .get<GetPersonsApiResponse>(this.baseUrl + '/api/personas')
+      .get<GetPersonsApiResponse>(this.baseUrl)
       .pipe(map((response) => response.data));
   }
 
   getDataPageable(p: number, s: number) {
     return this.http
       .get<GetPersonsApiResponse>(
-        `${this.baseUrl}/api/personas/nombre?nombres=&Page=${p}&RecordsPerPage=${s}`
+        `${this.baseUrl}/nombre?nombres=&Page=${p}&RecordsPerPage=${s}`
       )
       .pipe(map((response) => response.data));
   }
 
-  getPaginadoPersona(search = '', page = 1, pageSize = 10) {
-    const params = {
-      search,
-      Page: page,
-      RecordsPerPage: pageSize,
-    };
+  getPaginado(search?: string, pageSize?: number, pageIndex?: number) {
+    let params = new HttpParams();
+
+    if (search) {
+      params = params.set('search', search);
+    }
+    if (pageSize != null) {
+      params = params.set('recordsPerPage', pageSize.toString());
+    }
+    if (pageIndex != null) {
+      params = params.set('page', pageIndex.toString());
+    }
 
     return this.http
-      .get<ApiResponse<Personas[]>>(`${this.baseUrl}/api/personas`, {
+      .get<BaseResponseGeneric<PersonaResponseDto[]>>(`${this.baseUrl}`, {
         params,
         observe: 'response',
       })
       .pipe(
         map((response) => {
           const data = response.body?.data ?? [];
+          console.log('data', data);
+
           const total = parseInt(
             response.headers.get('totalrecordsquantity') ?? '0',
             10
@@ -78,7 +93,7 @@ export class PersonaServiceService {
             data,
             meta: {
               total,
-              page,
+              pageIndex,
               pageSize,
             },
           };
@@ -88,62 +103,61 @@ export class PersonaServiceService {
 
   getDataByEmail(email: string) {
     return this.http
-      .get<GetPersonsApiResponse>(
-        this.baseUrl + '/api/personas/email?email=' + email
-      )
+      .get<GetPersonsApiResponse>(this.baseUrl + '/email?email=' + email)
       .pipe(map((response) => response.data));
   }
 
+  getByNumDocumento(numDocumento: string) {
+    const params = new HttpParams().set('numDocumento', numDocumento);
+
+    return this.http
+      .get<BaseResponseGeneric<PersonaResponseDto>>(
+        `${this.baseUrl}/numDocumento`,
+        {
+          params,
+        }
+      )
+      .pipe(map((response) => response));
+  }
+
+  // getByNumDocumento(numDocumento: string) {
+  //   return this.http
+  //     .get<GetPersonsApiResponse>(this.baseUrl + '/email?email=' + numDocumento)
+  //     .pipe(map((response) => response.data));
+  // }
+
   deletePerson(id: number) {
-    return this.http.delete<DeletePersonResponse>(
-      this.baseUrl + '/api/personas/' + id
-    );
+    return this.http.delete<DeletePersonResponse>(this.baseUrl + '/' + id);
   }
 
   getPerson(id: number) {
-    return this.http.get<GetPersonApiResponse>(
-      this.baseUrl + '/api/personas/' + id
-    );
+    return this.http.get<GetPersonApiResponse>(this.baseUrl + '/' + id);
   }
 
   //editar version 2
-  update(id: number, persondialog: Persona) {
-    return this.http.put(`${this.baseUrl}/api/personas/${id}`, persondialog);
+  update(id: number, persondialog: PersonaRequestDto) {
+    return this.http.put(`${this.baseUrl}/${id}`, persondialog);
   }
 
   //nuevo version 2
-  save(personadialog: Persona) {
-    return this.http.post(`${this.baseUrl}/api/personas/`, personadialog);
-  }
-  //nuevo version 3
-  newPerson(persondialog: Persona) {
-    return this.http.post(
-      'https://localhost:7179/api/personal/RegisterPerson',
-      persondialog
-    );
-  }
-
-  updatePerson(id: number, persondialog: Persona) {
-    return this.http.put(
-      `https://localhost:7179/api/personal/UpdatePerson/${id}`,
-      persondialog
-    );
+  add(personadialog: PersonaRequestDto) {
+    return this.http.post(`${this.baseUrl}/`, personadialog);
   }
 
   finalized(id: number) {
     return this.http.delete<DeletePersonResponse>(
-      `${this.baseUrl}/api/personas/finalized/${id}`
+      `${this.baseUrl}/finalized/${id}`
     );
   }
   initialized(id: number) {
     return this.http.get<DeletePersonResponse>(
-      `${this.baseUrl}/api/personas/initialized/${id}`
+      `${this.baseUrl}/initialized/${id}`
     );
   }
 
   //nuevo version 1
   new(user: PersonaNew) {
-    return this.http.post(this.baseUrl + '/api/personas/', {
+    return this.http.post(this.baseUrl + '/', {
       nombres: user.nombres,
       apellidoPat: user.apellidoPat,
       apellidoMat: user.apellidoMat,
@@ -155,7 +169,7 @@ export class PersonaServiceService {
   }
   //editar version 1
   edit(user: Personas) {
-    return this.http.put(this.baseUrl + '/api/personas/' + user.id, {
+    return this.http.put(this.baseUrl + '/' + user.id, {
       nombres: user.nombres,
       apellidoPat: user.apellidoPat,
       apellidoMat: user.apellidoMat,

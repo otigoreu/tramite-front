@@ -1,4 +1,4 @@
-import { Persona } from './../../../model/persona';
+import { Persona, PersonaRequestDto } from './../../../model/persona';
 import {
   Component,
   ElementRef,
@@ -31,6 +31,7 @@ import { ReniecService } from 'src/app/service/Pide/reniec.service';
 import { NotificationsService } from 'angular2-notifications';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-persona',
@@ -52,17 +53,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class DialogPersonaComponent {
   @ViewChild('emailInput') emailInput!: ElementRef<HTMLInputElement>;
 
-  persona: Persona;
   tipoDocus: TipoDocumento[] = [];
+
   tipoDocService = inject(TipoDocumentoService);
   personaService = inject(PersonaServiceService);
-  _dialogRef = inject(MatDialogRef);
   reniecService = inject(ReniecService);
   notificationsService = inject(NotificationsService);
   _snackBar = inject(MatSnackBar);
+  _dialogRef = inject(MatDialogRef);
+
   constructor(@Inject(MAT_DIALOG_DATA) private data: Persona) {}
 
   personaForm = new FormGroup({
+    id: new FormControl<number | null>(null),
+
     nombres: new FormControl('', [Validators.required]),
     apellidoPat: new FormControl('', [Validators.required]),
     apellidoMat: new FormControl('', [Validators.required]),
@@ -72,26 +76,43 @@ export class DialogPersonaComponent {
     ]),
     edad: new FormControl({ value: '', disabled: true }),
     email: new FormControl('', [Validators.required, Validators.email]),
-    idTipoDoc: new FormControl('', [Validators.required]),
+    idTipoDoc: new FormControl<number | null>(null, [Validators.required]),
     nroDoc: new FormControl('', [
       Validators.nullValidator,
       Validators.minLength(8),
     ]),
   });
 
+  private setFormValues(persona: Persona): void {
+    this.personaForm.patchValue({
+      id: persona.id,
+      nombres: persona.nombres,
+      apellidoPat: persona.apellidoPat,
+      apellidoMat: persona.apellidoMat,
+      fechaNac: persona.fechaNac,
+      email: persona.email,
+      idTipoDoc: persona.idTipoDoc,
+      nroDoc: persona.nroDoc,
+    });
+  }
+
   ngOnInit(): void {
-    //this.persona= this.data;
-    this.persona = { ...this.data }; //spred operator
-    console.log('data', this.persona);
+    const esEdicion = !!this.data?.id;
+
     this.loadTipoDoc();
+
     this.personaForm.controls.fechaNac.valueChanges.subscribe((fechaNac) => {
       if (fechaNac) {
         const edad = this.calcularEdad(fechaNac);
         this.personaForm.controls.edad.setValue(edad.toString());
-        this.persona.edad = edad; // si estás usando ngModel también
       }
     });
+
+    if (esEdicion) {
+      this.setFormValues(this.data);
+    }
   }
+
   close() {
     this._dialogRef.close();
   }
@@ -101,10 +122,26 @@ export class DialogPersonaComponent {
       this.tipoDocus = response;
     });
   }
+
   operate() {
-    if (this.persona != null && this.persona.id > 0) {
-      //update
-      this.personaService.update(this.persona.id, this.persona).subscribe({
+    // ✅ 1. Construir el objeto Persona con valores reales
+    const persona: PersonaRequestDto = {
+      id: this.personaForm.controls.id.value ?? 0,
+      nombres: this.personaForm.controls.nombres.value ?? '',
+      apellidoPat: this.personaForm.controls.apellidoPat.value ?? '',
+      apellidoMat: this.personaForm.controls.apellidoMat.value ?? '',
+      fechaNac: this.personaForm.controls.fechaNac.value ?? '',
+      email: this.personaForm.controls.email.value ?? '',
+      idTipoDoc: this.personaForm.controls.idTipoDoc.value ?? 0,
+      nroDoc: this.personaForm.controls.nroDoc.value ?? '',
+    };
+
+    // ✅ 2. Determinar si es edición o creación
+    const esEdicion = persona.id > 0;
+
+    // ✅ 3. Elegir la operación correspondiente
+    if (esEdicion) {
+      this.personaService.update(persona.id, persona).subscribe({
         next: () => {
           this.notificationsService.success(
             ...NotificationMessages.successUpdate('persona')
@@ -118,8 +155,7 @@ export class DialogPersonaComponent {
         },
       });
     } else {
-      //add
-      this.personaService.save(this.persona).subscribe({
+      this.personaService.add(persona).subscribe({
         next: (res: any) => {
           if (res?.success === false && res?.errorMessage) {
             this.notificationsService.warn(
@@ -143,7 +179,6 @@ export class DialogPersonaComponent {
         },
       });
     }
-    //Angular MatDialog -> 22:46
   }
 
   calcularEdad(fechaNac: string | Date): number {
@@ -165,24 +200,66 @@ export class DialogPersonaComponent {
     }, 150); // Pequeño retraso para evitar conflicto con cierre del datepicker
   }
 
-  consultarReniec() {
-    const nuDniUsuario = '42928945'; // Puedes obtenerlo de un input
-    const nuDniConsulta = this.persona.nroDoc; // Puedes obtenerlo de otro input
+  onValidarCliente() {
+    const nuDniUsuario = '42928945';
+    const nuDniConsulta = this.personaForm.get('nroDoc')?.value;
 
-    this.reniecService.consultarDni(nuDniUsuario, nuDniConsulta).subscribe({
-      next: (data) => {
-        console.log('Datos RENIEC:', data);
+    if (!nuDniConsulta) {
+      console.log('Debe ingresar un número de documento');
+      //this.notificationsService.warning('Debe ingresar un número de documento');
+      return;
+    }
 
-        this.persona.nombres = data.nombre;
-        this.persona.apellidoMat = data.apematerno;
-        this.persona.apellidoPat = data.apepaterno;
-        // Puedes mostrarlos en pantalla o guardarlos en propiedades
-      },
-      error: (err) => {
-        this.notificationsService.error(...NotificationMessages.error(err));
+    this.personaService
+      .getByNumDocumento(nuDniConsulta)
+      .pipe(
+        tap((res) => {
+          // ✅ Si el backend responde correctamente (200 OK)
+          console.log('Datos BD:', res);
 
-        console.error('Error al consultar RENIEC', err);
-      },
-    });
+          // Si usas BaseResponseGeneric<T>
+          if (res.success && res.data) {
+            this.personaForm.patchValue({
+              id: res.data.id,
+              nombres: res.data.nombres,
+              apellidoPat: res.data.apellidoPat,
+              apellidoMat: res.data.apellidoMat,
+              fechaNac: res.data.fechaNac,
+              email: res.data.email,
+              idTipoDoc: res.data.idTipoDoc,
+              nroDoc: res.data.nroDoc,
+            });
+          }
+        }),
+        catchError((err) => {
+          // ❌ Si la BD no tiene datos (404 / 400), consultamos RENIEC
+          console.warn('No encontrado en BD, consultando RENIEC...', err);
+
+          return this.reniecService
+            .consultarDni(nuDniUsuario, nuDniConsulta)
+            .pipe(
+              tap((data) => {
+                console.log('Datos RENIEC:', data);
+
+                // this.data = data;
+
+                this.personaForm.patchValue({
+                  nombres: data.nombres,
+                  apellidoPat: data.apellidoPaterno,
+                  apellidoMat: data.apellidoMaterno,
+                });
+              }),
+              catchError((reniecErr) => {
+                // ⚠️ Si RENIEC también falla
+                console.error('Error al consultar RENIEC:', reniecErr);
+                this.notificationsService.error(
+                  ...NotificationMessages.error(reniecErr)
+                );
+                return EMPTY;
+              })
+            );
+        })
+      )
+      .subscribe();
   }
 }

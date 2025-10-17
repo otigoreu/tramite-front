@@ -151,20 +151,22 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
     //   estado: selected,
     // };
 
-    // Verifica si ya existe una relación
+    // const idUnidadOrganica = this.data?.id;
+
+    // // Verifica si ya existe una relación
     // this.uousuarioService
-    //   .getUnidadorganicaUsuario(dto.idUnidadorganica, dto.idUsuario)
+    //   .getUnidadorganicaUsuario(idUnidadOrganica, row.idUsuario)
     //   .subscribe({
     //     next: (res) => {
     //       const esEdicion = res.success && res.data?.id != null;
 
     //       // Decide si crear o actualizar
     //       const peticion: Observable<ApiResponse<any>> = esEdicion
-    //         ? this.uousuarioService.actualizarUnidadorganicaUsuario(
+    //         ? this.uousuarioService.actualizar(
     //             res.data.id,
     //             dto
     //           )
-    //         : this.uousuarioService.agregarUnidadorganicaUsuario(dto);
+    //         : this.uousuarioService.agregar(dto);
 
     //       peticion.subscribe({
     //         next: (res) => {

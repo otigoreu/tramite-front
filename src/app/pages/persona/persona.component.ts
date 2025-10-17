@@ -3,13 +3,14 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Persona, Personas } from 'src/app/model/persona';
+import { Persona, PersonaResponseDto } from 'src/app/model/persona';
 import { PersonaServiceService } from 'src/app/service/persona-service.service';
 import { MaterialModule } from 'src/app/material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
@@ -67,19 +68,23 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     'estado',
     'actions',
   ];
-  dataSource: MatTableDataSource<Personas>;
+  dataSource: MatTableDataSource<PersonaResponseDto>;
 
   // @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
     Object.create(null);
   @ViewChild(MatSort) sort!: MatSort;
 
-  totalElements: number;
+  // Paginación
+  searchText = signal<string>('');
+  pageSize = 10;
+  pageIndex = 0;
+  totalItems = signal(0);
 
   dialog = inject(MatDialog);
 
   constructor() {
-    const persona: Personas[] = [];
+    const persona: PersonaResponseDto[] = [];
     this.dataSource = new MatTableDataSource(persona);
   }
 
@@ -88,32 +93,63 @@ export class PersonaComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.loadDataFilter();
+    this.load_Personas();
   }
 
-  loadDataFilter() {
-    this.appService.getDatafilter().subscribe((response) => {
-      this.dataSource = new MatTableDataSource(response);
-      this.dataSource.paginator = this.paginator;
-    });
+  // loadDataFilter() {
+  //   this.appService.getDatafilter().subscribe((response) => {
+  //     this.dataSource = new MatTableDataSource(response);
+  //     this.dataSource.paginator = this.paginator;
+  //   });
+  // }
+
+  load_Personas(): void {
+    this.appService
+      .getPaginado(this.searchText(), this.pageSize, this.pageIndex)
+      .subscribe({
+        next: (res) => {
+          this.dataSource.data = res.data;
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+
+          // this.totalRecords = res.meta.total;
+        },
+        error: (err) => {
+          console.error('Error al obtener clientes', err);
+        },
+      });
   }
 
-  loadDataPAgeable(p: number, s: number) {
-    this.appService.getDataPageable(p, s).subscribe((response) => {
-      this.dataSource = new MatTableDataSource(response);
-      //this.dataSource.paginator = this.paginator;
-      this.totalElements = Object.keys(response).length;
-    });
-  }
+  // loadDataPAgeable(p: number, s: number) {
+  //   this.appService.getDataPageable(p, s).subscribe((response) => {
+  //     this.dataSource = new MatTableDataSource(response);
+  //     //this.dataSource.paginator = this.paginator;
+  //     this.totalElements = Object.keys(response).length;
+  //   });
+  // }
+
+  // Filtro de búsqueda simple (puedes implementar backend o frontend)
+  // applyFilter(event: Event): void {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.searchText.set(filterValue);
+  //   // Implementar filtrado si es necesario
+  //   this.load_Clientes();
+  // }
 
   applyFilter2(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    this.searchText.set(filterValue);
+
+    this.load_Personas();
+    // const filterValue = (event.target as HTMLInputElement).value;
+    // this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    // if (this.dataSource.paginator) {
+    //   this.dataSource.paginator.firstPage();
+    // }
   }
+
   applyFilter(filterValue: any): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
@@ -131,7 +167,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         // lógica de confirmación
         this.appService.deletePerson(id).subscribe((response) => {
           if (response.success) {
-            this.loadDataFilter();
+            //this.loadDataFilter();
           }
         });
       }
@@ -148,17 +184,20 @@ export class PersonaComponent implements OnInit, AfterViewInit {
       })
       .afterClosed()
       .subscribe(() => {
-        this.loadDataFilter();
+        //this.loadDataFilter();
       });
   }
-  showmore(e: any) {
-    this.appService
-      .getDataPageable(e.pageIndex + 1, e.pageSize)
-      .subscribe((response) => {
-        this.dataSource = new MatTableDataSource(response);
-        this.totalElements = Object.keys(response).length;
-      });
-  }
+
+  // showmore(e: any) {
+  //   this.appService
+  //     .getDataPageable(e.pageIndex + 1, e.pageSize)
+  //     .subscribe((response) => {
+  //       this.dataSource = new MatTableDataSource(response);
+  //       // this.totalElements = Object.keys(response).length;
+  //     });
+
+  // }
+
   finalized(id: number) {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -172,7 +211,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         // lógica de confirmación
         this.appService.finalized(id).subscribe((response) => {
           if (response.success) {
-            this.loadDataFilter();
+            this.load_Personas();
           }
         });
       }
@@ -192,7 +231,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
         // lógica de confirmación
         this.appService.initialized(id).subscribe((response) => {
           if (response.success) {
-            this.loadDataFilter();
+            this.load_Personas();
           }
         });
       }
