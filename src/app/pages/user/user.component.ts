@@ -122,6 +122,7 @@ export class UserComponent implements OnInit {
           this.dataSource.data = res.data;
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
+          console.log('data',res);
 
           // this.totalRecords = res.meta.total;
         },

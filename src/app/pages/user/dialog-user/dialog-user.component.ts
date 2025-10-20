@@ -134,16 +134,16 @@ export class DialogUserComponent implements OnInit {
   }
 
   cargarRols(idEntidad: number, idAplicacion: number) {
-    this.rolService.getPaginado(idEntidad, idAplicacion!).subscribe({
-      next: (res) => {
-        // 👇 transformamos DTO -> Rol[]
-        this.rols = res.data.map((dto) => ({
-          id: dto.id,
-          descripcion: dto.descripcion,
-        }));
-      },
-      error: (err) => console.error(err),
-    });
+    // this.rolService.getPaginado(idEntidad, idAplicacion!).subscribe({
+    //   next: (res) => {
+    //     // 👇 transformamos DTO -> Rol[]
+    //     this.rols = res.data.map((dto) => ({
+    //       id: dto.id,
+    //       descripcion: dto.descripcion,
+    //     }));
+    //   },
+    //   error: (err) => console.error(err),
+    // });
   }
 
   cargarUnidadOrganicas(idEntidad: number, dependenciaSeleccionada?: number) {

@@ -116,11 +116,49 @@ export class LoginComponent {
             this.authService.aplicacion.set(appRol.descripcion);
             this.authService.idAplicacion.set(appRol.id.toString());
             localStorage.setItem('Aplicacion', this.authService.aplicacion());
-            localStorage.setItem(
-              'idAplicacion',
-              this.authService.idAplicacion()
-            );
+            localStorage.setItem('idAplicacion',this.authService.idAplicacion());
+
+            this.menuService
+              .GetByAplicationAsync(parseInt(this.authService.idAplicacion()))
+              .subscribe({
+                next: (data: any[]) => {
+                  //console.log('menu', data);
+
+                  data.forEach((nav) => {
+                    // console.log('nav', nav);
+                    if (!nav.idMenuPadre) {
+                      const navItem: NavItem = {
+                        id: nav.id,
+                        displayName: nav.descripcion,
+                        iconName: nav.icono,
+                        route: nav.ruta,
+                        children: [],
+                      };
+                      navItems.push(navItem);
+                      this.firstOptionMenu.set(navItems[0].route!);
+                    }
+                  });
+
+                  this.router.navigate([this.firstOptionMenu()]),
+                    navItems.forEach((parentNav: NavItem) => {
+                      parentNav.children = data.filter(
+                        (nav) => nav.idMenuPadre === parentNav.id
+                      );
+                    });
+
+                  this.notifications.set(notify1, true);
+                },
+                error: (err) => {
+                  console.error('Error al obtener menú:', err);
+                  this.notifications.info(
+                    ...NotificationMessages.info(
+                      'El usuario no tiene permisos asignados.'
+                    )
+                  );
+                },
+              });
           });
+
         this.authService.roles.update((arr) => []);
         this.authService.roles.update((rolArray) => [
           ...rolArray,
@@ -158,61 +196,13 @@ export class LoginComponent {
         //signals
         this.authService.loggedIn.set(true);
 
-        localStorage.setItem('idEntidad', response.data.entidad.id.toString());
+        this.authService.idEntidad.set(response.data.entidad.id.toString());
+
+        localStorage.setItem('idEntidad', this.authService.idEntidad());
         localStorage.setItem('idUsuario', response.data.idUsuario);
 
         //tarer menu por aplicacion
-        console.log('menuService');
-
-        if (response.data.mustChangePassword) {
-          this.dialog
-            .open(ChangePasswordComponent)
-            .afterClosed()
-            .subscribe(() => {
-              this.loginForm.reset(); // 🔥 limpia todo el formulario
-            });
-          return;
-        }
-
-        this.menuService
-          .GetByAplicationAsync(parseInt(this.authService.idAplicacion()))
-          .subscribe({
-            next: (data: any[]) => {
-              //console.log('menu', data);
-
-              data.forEach((nav) => {
-                // console.log('nav', nav);
-                if (!nav.idMenuPadre) {
-                  const navItem: NavItem = {
-                    id: nav.id,
-                    displayName: nav.descripcion,
-                    iconName: nav.icono,
-                    route: nav.ruta,
-                    children: [],
-                  };
-                  navItems.push(navItem);
-                  this.firstOptionMenu.set(navItems[0].route!);
-                }
-              });
-
-              this.router.navigate([this.firstOptionMenu()]),
-                navItems.forEach((parentNav: NavItem) => {
-                  parentNav.children = data.filter(
-                    (nav) => nav.idMenuPadre === parentNav.id
-                  );
-                });
-
-              this.notifications.set(notify1, true);
-            },
-            error: (err) => {
-              console.error('Error al obtener menú:', err);
-              this.notifications.info(
-                ...NotificationMessages.info(
-                  'El usuario no tiene permisos asignados.'
-                )
-              );
-            },
-          });
+        //console.log('menuService');
       } else {
         this.notifications.set(notify6, true);
       }

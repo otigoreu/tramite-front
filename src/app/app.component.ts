@@ -55,6 +55,7 @@ export class AppComponent {
     const idAplicacion = localStorage.getItem('idAplicacion');
     const entidad = localStorage.getItem('entidad');
     const rolesString = localStorage.getItem('roles');
+    const idEntidad=localStorage.getItem('idEntidad');
     // console.log('---------------------------------------');
 
     // console.log('localStorage Sede =' + unidadOrganicas);
@@ -79,7 +80,8 @@ export class AppComponent {
       aplicacion &&
       userEmail &&
       nombreApellido &&
-      idAplicacion
+      idAplicacion&&
+      idEntidad
     ) {
       const roles = JSON.parse(rolesString);
       //console.log('roles=',roles);
@@ -92,6 +94,7 @@ export class AppComponent {
       this.authService.nombresApellidos.set(nombreApellido);
       this.authService.idAplicacion.set(idAplicacion);
       this.authService.entidad.set(entidad);
+      this.authService.idEntidad.set(idEntidad);
       this.authService.roles.update((rolArray) => [...rolArray, ...roles]);
       // console.log('signal rol =' + this.authService.userRole());
       // console.log('signal Name =' + this.authService.userName());

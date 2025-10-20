@@ -1,13 +1,23 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
-import { Rol } from '../model/rol';
+import { Rol, RolSingleResponse, RolWithEntidadAplicacion, RolWithEntidadAplicacionCounter } from '../model/rol';
 import { map } from 'rxjs';
 import { ApiResponse } from '../model/ApiResponse';
 import { RolPaginationResponseDto } from '../pages/rol/models/RolPaginationResponseDto';
 
 interface GetRol {
   data: Rol[];
+  success: string;
+  errorMessage: string;
+}
+interface GetRolWithEntidadAplicacion {
+  data: RolWithEntidadAplicacion[];
+  success: string;
+  errorMessage: string;
+}
+interface GetRolWithEntidadAplicacionCounter {
+  data: RolWithEntidadAplicacionCounter[];
   success: string;
   errorMessage: string;
 }
@@ -85,7 +95,7 @@ export class RolService {
     }
 
     return this.http
-      .get<ApiResponse<Rol[]>>(
+      .get<ApiResponse<RolSingleResponse[]>>(
         `${this.baseUrl}/api/roles/entidad/${idEntidad}/aplicacion/${idAplicacion}`,
         {
           params,
@@ -110,6 +120,17 @@ export class RolService {
   getData() {
     return this.http
       .get<GetRol>(`${this.baseUrl}/api/roles`)
+      .pipe(map((response) => response.data));
+  }
+
+  getDataWithEntidadAplicacion(idEntidad:number, idAplicacion:number) {
+    return this.http
+      .get<GetRolWithEntidadAplicacion>(`${this.baseUrl}/api/roles/Withentidadaplicacion?idEntidad=${idEntidad}&idAplicacion=${idAplicacion}`)
+      .pipe(map((response) => response.data));
+  }
+ getDataWithEntidadAplicacionCounter(idEntidad:number, idAplicacion:number) {
+    return this.http
+      .get<GetRolWithEntidadAplicacionCounter>(`${this.baseUrl}/api/roles/WithentidadaplicacionCounter?idEntidad=${idEntidad}&idAplicacion=${idAplicacion}`)
       .pipe(map((response) => response.data));
   }
 

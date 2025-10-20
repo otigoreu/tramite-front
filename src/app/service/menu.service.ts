@@ -54,6 +54,15 @@ export class MenuService {
     return this.http.get<GetMenuWithRol>(`${this.baseUrl}/api/menus/displayNameWithRole`)
     .pipe(map((response)=>response.data));
   }
+  getDataAllByEntidadAndAplicacion(idEntidad:number, idAplicacion:number){
+    return this.http.get<GetMenu>(`${this.baseUrl}/api/menus/getAllByEntidadAndAplicacion?idEntidad=${idEntidad}&idAplicacion=${idAplicacion}`)
+    .pipe(map((response)=>response.data));
+  }
+
+  getDataAllByRol(idRol:string){
+    return this.http.get<GetMenu>(`${this.baseUrl}/api/menus/getAllByRol?idRol=${idRol}`)
+    .pipe(map((response)=>response.data));
+  }
 
   save(menu:Menus){
     return this.http.post(`${this.baseUrl}/api/menus/single`,menu);

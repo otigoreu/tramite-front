@@ -26,7 +26,12 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { MenuService } from 'src/app/service/menu.service';
 import { NavItem } from '../sidebar/nav-item/nav-item';
-import { notify1, notify12, notify6 } from 'src/app/data/mensajes.data';
+import {
+  notify1,
+  notify12,
+  notify13,
+  notify6,
+} from 'src/app/data/mensajes.data';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { NotificationsService } from 'angular2-notifications';
 import { EntidadService } from 'src/app/service/entidad.service';
@@ -152,61 +157,70 @@ export class HeaderComponent {
   }
 
   cambiarRol(idRol: string, nameRol: string) {
-    console.log('idRol', idRol);
-    console.log('nameRol', nameRol);
+    // console.log('idRol', idRol);
+    // console.log('nameRol', nameRol);
 
-    this.authService.userRole.set(nameRol);
-    this.authService.userIdRol.set(idRol);
+    if (this.authService.userRole() == nameRol) {
+      this.notificationsHEader.set(notify13, true);
+      // console.log('Rol', this.authService.userRole());
+      // console.log('nameRol', nameRol);
+    } else {
+      this.authService.userRole.set(nameRol);
+      this.authService.userIdRol.set(idRol);
 
-    localStorage.setItem('userRole', this.authService.userRole());
-    localStorage.setItem('userIdRol', this.authService.userIdRol());
+      localStorage.setItem('userRole', this.authService.userRole());
+      localStorage.setItem('userIdRol', this.authService.userIdRol());
 
-    this.entidadservice
-      .GetByEntidadPerRol(this.authService.userIdRol())
-      .subscribe((entidadRol) => {
-        this.authService.entidad.set(entidadRol.descripcion);
-        localStorage.setItem('entidad', this.authService.entidad());
-        this.entidadHeader = this.authService.entidad();
-      });
+      this.entidadservice
+        .GetByEntidadPerRol(this.authService.userIdRol())
+        .subscribe((entidadRol) => {
+          this.authService.entidad.set(entidadRol.descripcion);
+          localStorage.setItem('entidad', this.authService.entidad());
+          this.authService.idEntidad.set(entidadRol.id.toString());
+          localStorage.setItem('idEntidad',this.authService.idEntidad());
 
-    this.appservice.GetByAplicationPerRol(idRol).subscribe((appRol) => {
-      console.log('AppRol :', appRol);
-      this.authService.aplicacion.set(appRol.descripcion);
-      this.authService.idAplicacion.set(appRol.id.toString());
-      localStorage.setItem('Aplicacion', this.authService.aplicacion());
-      localStorage.setItem('idAplicacion', this.authService.idAplicacion());
-      this.aplicacionHeader = this.authService.aplicacion();
-
-      this.menuService
-        .GetByAplicationAsync(parseInt(this.authService.idAplicacion()))
-        .subscribe({
-          next: (data: any[]) => {
-            navItems.length = 0;
-            data.forEach((nav) => {
-              if (!nav.idMenuPadre) {
-                const navItem: NavItem = {
-                  id: nav.id,
-                  displayName: nav.descripcion,
-                  iconName: nav.icono,
-                  route: nav.ruta,
-                  children: [],
-                };
-
-                navItems.push(navItem);
-                this.firstOptionMenu.set(navItems[0].route!);
-              }
-            });
-
-            this.router.navigate([this.firstOptionMenu()]);
-            //   navItems.forEach((parentNav: NavItem) => {
-            //     parentNav.children = data.filter(
-            //       (nav) => nav.idMenuPadre === parentNav.id
-            //     );
-            //   });
-          },
+          this.entidadHeader = this.authService.entidad();
         });
-    });
-    this.notificationsHEader.set(notify12, true);
+
+      this.appservice.GetByAplicationPerRol(idRol).subscribe((appRol) => {
+        console.log('AppRol :', appRol);
+        this.authService.aplicacion.set(appRol.descripcion);
+        this.authService.idAplicacion.set(appRol.id.toString());
+        localStorage.setItem('Aplicacion', this.authService.aplicacion());
+        localStorage.setItem('idAplicacion', this.authService.idAplicacion());
+        this.aplicacionHeader = this.authService.aplicacion();
+
+        this.menuService
+          .GetByAplicationAsync(parseInt(this.authService.idAplicacion()))
+          .subscribe({
+            next: (data: any[]) => {
+              navItems.length = 0;
+              data.forEach((nav) => {
+                if (!nav.idMenuPadre) {
+                  const navItem: NavItem = {
+                    id: nav.id,
+                    displayName: nav.descripcion,
+                    iconName: nav.icono,
+                    route: nav.ruta,
+                    children: [],
+                  };
+
+                  navItems.push(navItem);
+                  this.firstOptionMenu.set(navItems[0].route!);
+                }
+              });
+
+              this.router.navigate([this.firstOptionMenu()]);
+              //   navItems.forEach((parentNav: NavItem) => {
+              //     parentNav.children = data.filter(
+              //       (nav) => nav.idMenuPadre === parentNav.id
+              //     );
+              //   });
+            },
+          });
+      });
+      this.notificationsHEader.set(notify12, true);
+    }
   }
 
   openDialog() {

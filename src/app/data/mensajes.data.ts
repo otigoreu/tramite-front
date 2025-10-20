@@ -92,6 +92,13 @@ export const menssageNoti:Notification[]=[
     title:'Usted ha cambiado de Rol',
     content: 'El menu principal presentará cambios',
 
+  },
+  {
+    type:NotificationType.Info,
+    icon: IconsNotify.Info,
+    title:'Usted ya tiene este Rol Seleccionado',
+    content: 'Asegurese de elegir un Rol diferente',
+
   }
 
 
@@ -110,5 +117,6 @@ export const[
   notify10,
   notify11,
   notify12,
+   notify13,
 
 ] =menssageNoti

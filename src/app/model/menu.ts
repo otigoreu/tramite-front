@@ -31,7 +31,7 @@ export interface MenuInfo {
   icono: string;
   ruta: string;
   idAplicacion:number;
-  aplicacion: string;
+  aplicacion?: string;
   idMenuPadre: number| null;
 }
 

@@ -1,3 +1,4 @@
+import { Rol } from './../../../model/rol';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { Component, inject, Inject, OnInit } from '@angular/core';
 import {
@@ -14,7 +15,7 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
-import { Rol } from 'src/app/model/rol';
+
 import { EntidadService } from 'src/app/service/entidad.service';
 import { RolService } from 'src/app/service/rol.service';
 import { Entidad } from '../../entidad/Models/Entidad';
@@ -22,6 +23,7 @@ import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { EntidadaplicacionService } from 'src/app/service/entidadaplicacion.service';
 import { identity } from 'rxjs';
 import { Aplicacion } from '../../aplicacion/Modals/Aplicacion';
+import { AuthService } from '../../../service/auth.service';
 
 interface Estado {
   valor: boolean;
@@ -50,9 +52,11 @@ export class DialogoRolComponent implements OnInit {
   entidades: Entidad[] = [];
   aplicaciones: Aplicacion[] = [];
 
+
   rolService = inject(RolService);
   entidadService = inject(EntidadService);
   entidadaplicacionService = inject(EntidadaplicacionService);
+  authService = inject(AuthService);
 
   rolId: string = '';
 
@@ -62,17 +66,13 @@ export class DialogoRolComponent implements OnInit {
   ) {}
 
   rolForm = new FormGroup({
-    idEntidad: new FormControl<number | null>(null, Validators.required),
-    idAplicacion: new FormControl<number | null>(null, Validators.required),
+
     name: new FormControl('', [Validators.required]),
   });
 
   ngOnInit(): void {
     this.rol = { ...this.data };
 
-    this.rolId = localStorage.getItem('userIdRol')!;
-
-    this.cargarEntidades();
   }
 
   close() {
@@ -80,7 +80,7 @@ export class DialogoRolComponent implements OnInit {
   }
 
   operate() {
-    this.rol.normalizedName = this.rol.descripcion;
+    this.rol.normalizedName = this.rol.name;
 
     if (this.rol?.id != null) {
       // Editar rol
@@ -89,47 +89,22 @@ export class DialogoRolComponent implements OnInit {
         .subscribe(() => this.close());
     } else {
       // Nuevo rol
-      this.rolService.save(this.rol).subscribe(() => this.close());
+      this.entidadaplicacionService.getEntidadAplicacion(
+        parseInt(this.authService.idEntidad()),
+        parseInt(this.authService.idAplicacion()))
+        .subscribe((response)=>{
+
+          const body:Rol={
+            name:this.rolForm.controls.name.value!,
+            normalizedName:this.rolForm.controls.name.value!,
+            idEntidadAplicacion:response.data?.id!
+          }
+
+          this.rolService.save(body).subscribe(() => this.close());
+
+        })
     }
   }
 
-  cargarEntidades() {
-    const userId = localStorage.getItem('idUsuario')!;
 
-    this.entidadService.getEntidades(userId).subscribe({
-      next: (res) => {
-        this.entidades = res.items;
-
-        if (
-          !this.rolForm.get('idEntidad')?.value &&
-          this.entidades.length > 0
-        ) {
-          const primeraEntidadId = this.entidades[0].id;
-          this.rolForm.get('idEntidad')?.setValue(primeraEntidadId);
-          this.cargarAplicaciones(primeraEntidadId);
-        }
-      },
-      error: (err) => console.error(err),
-    });
-  }
-
-  onEntidadChange(idEntidad: number) {
-    if (idEntidad) {
-      this.cargarAplicaciones(idEntidad);
-    }
-  }
-
-  cargarAplicaciones(idEntidad: number) {
-    this.entidadaplicacionService
-      .getsAplicacion(idEntidad, this.rolId)
-      .subscribe({
-        next: (aplicaciones) => {
-          // Ordenar por descripción
-          this.aplicaciones = aplicaciones.sort((a, b) =>
-            a.descripcion.localeCompare(b.descripcion)
-          );
-        },
-        error: (err) => console.error(err),
-      });
-  }
 }

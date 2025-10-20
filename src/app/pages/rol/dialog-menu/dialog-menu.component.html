@@ -1,0 +1,31 @@
+<h2 mat-dialog-title class="m-b-24">{{rol.name}}</h2>
+<mat-divider></mat-divider>
+
+<mat-dialog-content class="mat-typography" style="max-width: 600px">
+
+
+  <mat-selection-list>
+
+    @for(row of menusRolEstado();; let i = $index; track row.idMenu){
+    <mat-list-option
+      [selected]="row.estado===true"
+      (selectedChange)="onSelectedChange(row, $event)"
+    >
+      <i-tabler name= "{{row.iconoMenu}}" class="icon-18"></i-tabler> - {{row.descripcionMenu}}
+    </mat-list-option>
+    }
+  </mat-selection-list>
+
+  <p class="mat-subtitle-2 f-w-600 p-16 bg-light-primary rounded">
+  Opciones seleccionadas:
+    {{ seleccionadas }}
+  </p>
+
+
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+<mat-dialog-actions class="p-24">
+  <button mat-stroked-button color="warn" mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>
+

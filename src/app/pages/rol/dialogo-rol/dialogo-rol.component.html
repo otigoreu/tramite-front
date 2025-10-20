@@ -5,32 +5,6 @@
   <mat-dialog-content style="max-width: 600px">
     <form [formGroup]="rolForm">
       <div class="row">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Entidad</mat-label>
-          <mat-select
-            formControlName="idEntidad"
-            (selectionChange)="onEntidadChange($event.value)"
-          >
-            <mat-option *ngFor="let e of entidades" [value]="e.id">
-              {{ e.descripcion }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="rolForm.get('idEntidad')?.hasError('required')">
-            Campo requerido
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Aplicación</mat-label>
-          <mat-select formControlName="idAplicacion">
-            <mat-option *ngFor="let e of aplicaciones" [value]="e.id">
-              {{ e.descripcion }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="rolForm.get('idAplicacion')?.hasError('required')"
-            >Campo requerido</mat-error
-          >
-        </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-100">
           <input
@@ -40,7 +14,7 @@
             id="name"
             name="name"
             [formControl]="rolForm.controls.name"
-            [(ngModel)]="rol.descripcion"
+            [(ngModel)]="rol.name"
             placeholder="Nombre"
           />
           @if(rolForm.controls.name.touched &&rolForm.controls.name.invalid){
