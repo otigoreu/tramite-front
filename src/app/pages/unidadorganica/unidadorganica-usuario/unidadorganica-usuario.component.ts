@@ -13,9 +13,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { ApiResponse } from 'src/app/model/ApiResponse';
-import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { NotificationsService } from 'angular2-notifications';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TablerIconsModule } from 'angular-tabler-icons';
@@ -26,7 +23,6 @@ import { MatSort } from '@angular/material/sort';
 import { UnidadorganicaUsuarioResponseDto } from './Models/UnidadorganicaUsuarioResponseDto';
 import { Unidadorganica } from '../Models/Unidadorganica';
 import { UnidadorganicausuarioService } from 'src/app/service/unidadorganicausuario.service';
-import { UnidadorganicaUsuarioRequestDto } from './Models/UnidadorganicaUsuarioRequestDto';
 
 @Component({
   selector: 'app-unidadorganica-usuario',

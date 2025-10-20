@@ -98,8 +98,6 @@ export class UnidadorganicaUserComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.idEntidad = Number(localStorage.getItem('idEntidad'));
 
-    // this.userId = this.route.snapshot.paramMap.get('userId')!;
-
     // Leer parámetro de la URL
     this.route.queryParamMap.subscribe((params) => {
       this.userId = this.route.snapshot.paramMap.get('userId')!;

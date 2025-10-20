@@ -20,6 +20,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserrolService } from 'src/app/service/userrol.service';
+import { UsuarioRol_UsuarioResponseDto } from 'src/app/model/UserRol';
 
 @Component({
   selector: 'app-user',
@@ -39,6 +41,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class UserComponent implements OnInit {
   userService = inject(UserService);
+  userRolService = inject(UserrolService);
   rolService = inject(RolService);
   confirmationService = inject(ConfirmationService);
   notificationsService = inject(NotificationsService);
@@ -60,8 +63,8 @@ export class UserComponent implements OnInit {
   rolId_select: string | null = null;
 
   // DataSource de la tabla y total de registros
-  dataSource: MatTableDataSource<UsuarioPaginatedResponseDto> =
-    new MatTableDataSource<UsuarioPaginatedResponseDto>();
+  dataSource: MatTableDataSource<UsuarioRol_UsuarioResponseDto> =
+    new MatTableDataSource<UsuarioRol_UsuarioResponseDto>();
   totalRecords: number = 0;
 
   // @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -86,21 +89,16 @@ export class UserComponent implements OnInit {
 
     this.cargarRols();
 
-    //this.load_Usuarios();
+    this.load_Usuarios();
   }
 
   cargarRols() {
     this.rolService.getPaginado(this.idEntidad, this.idAplicacion!).subscribe({
       next: (res) => {
-        // 👇 transformamos DTO -> Rol[]
-
-        console.log('cargar Rols', res);
         this.rols = res.data.map((dto) => ({
           id: dto.id,
           descripcion: dto.descripcion,
         }));
-
-        console.log(this.rols);
       },
       error: (err) => console.error(err),
     });
@@ -111,11 +109,10 @@ export class UserComponent implements OnInit {
     page: number = 1,
     pageSize: number = 10
   ): void {
-    this.userService
-      .getPaginadoUsuario(
+    this.userRolService
+      .getUsuariosPaginado(
         this.idEntidad,
         this.idAplicacion,
-        this.rolId_select, // 👈 transforma null → undefined
         search,
         page,
         pageSize
@@ -129,7 +126,7 @@ export class UserComponent implements OnInit {
           // this.totalRecords = res.meta.total;
         },
         error: (err) => {
-          console.error('Error al obtener unidadorganicaes', err);
+          console.error('Error al obtener los usuarios', err);
         },
       });
   }
@@ -164,30 +161,25 @@ export class UserComponent implements OnInit {
 
   /** (Método comentado) Abrir diálogo de aplicación a Unidad Orgánica */
   openDialog_UsuarioAsociadoUnidadorganica(
-    userDialog?: UsuarioPaginatedResponseDto
+    userRolDialog?: UsuarioRol_UsuarioResponseDto
   ) {
-    console.log('openDialog_UsuarioAsociadoUnidadorganica');
-    console.log(userDialog);
-
     // navegación absoluta
-    this.router.navigate(['/pages/user/unidadorganica-user', userDialog?.id], {
-      queryParams: {
-        userName: userDialog?.userName,
-        descripcionPersona: userDialog?.descripcionPersona,
-      },
-    });
-
-    // this.router.navigate(['/pages/user/unidadorganica-user', userDialog?.id]);
-
-    // o si quieres relativa:
-    // this.router.navigate(['unidadorganica-user', userDialog.id], { relativeTo: this.route });
+    this.router.navigate(
+      ['/pages/user/unidadorganica-user', userRolDialog?.userId],
+      {
+        queryParams: {
+          userName: userRolDialog?.userName,
+          descripcionPersona: userRolDialog?.nombreCompleto,
+        },
+      }
+    );
   }
 
   /** Deshabilitar una Usuario */
   deshabilitarUsuario(id: string) {
     this.confirmationService.confirmAndExecute(
       'El usuario será deshabilitado y no podrá acceder al sistema hasta que se habilite nuevamente. ¿Deseas continuar?',
-      this.userService.deshabilitarUsuario(id),
+      this.userRolService.deshabilitarUsuario(id),
       (response) => {
         if (response.success) {
           this.notificationsService.success(
@@ -205,7 +197,7 @@ export class UserComponent implements OnInit {
   habilitarUsuario(id: string) {
     this.confirmationService.confirmAndExecute(
       'El usuario será habilitado y podrá acceder nuevamente al sistema. ¿Deseas continuar?',
-      this.userService.habilitarUsuario(id),
+      this.userRolService.habilitarUsuario(id),
       (response) => {
         if (response.success) {
           this.notificationsService.success(
