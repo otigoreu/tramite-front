@@ -177,7 +177,7 @@ export class HeaderComponent {
           this.authService.entidad.set(entidadRol.descripcion);
           localStorage.setItem('entidad', this.authService.entidad());
           this.authService.idEntidad.set(entidadRol.id.toString());
-          localStorage.setItem('idEntidad',this.authService.idEntidad());
+          localStorage.setItem('idEntidad', this.authService.idEntidad());
 
           this.entidadHeader = this.authService.entidad();
         });
@@ -209,13 +209,13 @@ export class HeaderComponent {
                   this.firstOptionMenu.set(navItems[0].route!);
                 }
               });
+              navItems.forEach((parentNav: NavItem) => {
+                parentNav.children = data.filter(
+                  (nav) => nav.idMenuPadre === parentNav.id
+                );
+              });
 
               this.router.navigate([this.firstOptionMenu()]);
-              //   navItems.forEach((parentNav: NavItem) => {
-              //     parentNav.children = data.filter(
-              //       (nav) => nav.idMenuPadre === parentNav.id
-              //     );
-              //   });
             },
           });
       });

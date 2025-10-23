@@ -117,7 +117,7 @@ export class UnidadorganicaComponent implements OnInit {
       distinctUntilChanged(),
       switchMap((value) =>
         this.entidadService
-          .getPaginadoEntidad(userId, rolId, value!, 1, 10)
+          .getPaginadoEntidad( value!, 1, 10)
           .pipe(
             map((response) => response.items) // Retorna solo los items
           )
@@ -167,7 +167,7 @@ export class UnidadorganicaComponent implements OnInit {
     const rolId = localStorage.getItem('rolId')!;
 
     this.entidadService
-      .getPaginadoEntidad(userId, rolId, entidadNombre, 1, 10)
+      .getPaginadoEntidad(entidadNombre, 1, 10)
       .subscribe({
         next: (res) => {
           this.selectedEntidad =

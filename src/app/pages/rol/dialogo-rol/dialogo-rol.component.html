@@ -7,6 +7,7 @@
       <div class="row">
 
         <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Descripcion</mat-label>
           <input
             type="text"
             matInput
@@ -20,7 +21,7 @@
           @if(rolForm.controls.name.touched &&rolForm.controls.name.invalid){
           <mat-hint class="m-b-16 error-msg">
             @if (rolForm.controls.name.hasError('required')) {
-            <div class="text-error">Nombre <strong>requerido</strong></div>
+            <div class="text-error">Descripcion <strong>requerido</strong></div>
             }
           </mat-hint>
           }

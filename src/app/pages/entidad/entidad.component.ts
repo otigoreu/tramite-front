@@ -86,7 +86,7 @@ export class EntidadComponent implements OnInit, AfterViewInit {
     const rolId = 'ee423341-d4de-4c25-b3ba-da769f81d3d7'; //localStorage.getItem('rolId')!;
 
     this.entidadService
-      .getPaginadoEntidad(userId, rolId, search, page, pageSize)
+      .getPaginadoEntidad(search, page, pageSize)
       .subscribe({
         next: (res) => {
           this.totalRecords = res.meta.total;

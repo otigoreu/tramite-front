@@ -57,12 +57,45 @@ export class AplicacionService {
         })
       );
   }
+   getPaginadoAplicacion2(identidad:number, page = 1, pageSize = 10) {
+    const params = {
+      identidad,
+      Page: page,
+      RecordsPerPage: pageSize,
+    };
 
+    return this.http
+      .get<ApiResponse<Aplicacion[]>>(
+        `${this.baseUrl}/api/aplicaciones/byEntidad`,
+        {
+          params,
+          observe: 'response', // 👈 Esto es CLAVE para acceder a headers
+        }
+      )
+      .pipe(
+        map((response) => {
+          const items = response.body?.data ?? [];
+          const total = parseInt(
+            response.headers.get('totalrecordsquantity') ?? '0',
+            10
+          );
+          return {
+            items,
+            meta: {
+              total,
+              page,
+              pageSize,
+            },
+          };
+        })
+      );
+  }
   agregarAplicacion(
+    idEntidad:number,
     dto: AplicacionRequestDto
   ): Observable<ApiResponse<number>> {
     return this.http.post<ApiResponse<number>>(
-      `${this.baseUrl}/api/aplicaciones`,
+      `${this.baseUrl}/api/aplicaciones?idEntidad=${idEntidad}`,
       dto
     );
   }
@@ -104,6 +137,12 @@ export class AplicacionService {
 
  GetByAplicationPerRol(idRol: string) {
     return this.http.get<GetAplicacionApiResponse>(`${this.baseUrl}/api/aplicaciones/perrol?idRol=${idRol}`)
+      .pipe(map((response) => response.data));
+  }
+
+
+ GetByAplicationbyEntidad(idEntidad: number) {
+    return this.http.get<GetAplicacionApiResponse>(`${this.baseUrl}/api/aplicaciones/byentidad?idEntidad=${idEntidad}`)
       .pipe(map((response) => response.data));
   }
 

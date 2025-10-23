@@ -116,7 +116,7 @@ export class AppUnidadorganicaEditComponent implements OnInit {
     const rolId = localStorage.getItem('rolId')!;
 
     this.entidadService
-      .getPaginadoEntidad(userId, rolId, '', 1, 100)
+      .getPaginadoEntidad('', 1, 100)
       .subscribe({
         next: (res) => {
           this.entidades = res.items;

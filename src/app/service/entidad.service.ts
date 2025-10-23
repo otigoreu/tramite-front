@@ -58,8 +58,6 @@ export class EntidadService {
   }
 
   getPaginadoEntidad(
-    userId: string = '',
-    rolId: string = '',
     search: string = '',
     page?: number,
     pageSize?: number
@@ -68,8 +66,6 @@ export class EntidadService {
     meta: { total: number; page?: number; pageSize?: number };
   }> {
     let params = new HttpParams()
-      .set('userId', userId)
-      .set('rolId', rolId)
       .set('search', search);
 
     if (page !== undefined && pageSize !== undefined) {

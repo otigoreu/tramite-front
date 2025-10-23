@@ -24,6 +24,7 @@ import { AplicacionRequestDto } from '../Modals/AplicacionRequestDto';
 import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/model/ApiResponse';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
+import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
   selector: 'app-aplicacion-edit',
@@ -47,6 +48,7 @@ export class AplicacionEditComponent {
   dialogRef = inject(MatDialogRef);
   aplicacionService = inject(AplicacionService);
   notificationsService = inject(NotificationsService);
+  authService=inject(AuthService);
 
   titulo = '';
 
@@ -65,8 +67,9 @@ export class AplicacionEditComponent {
     if (esEdicion) {
       const aplicacion = { ...this.data };
       this.aplicacionForm.patchValue({
-        descripcion: aplicacion.descripcion,
+        descripcion: aplicacion.descripcion.toUpperCase()
       });
+
     }
   }
 
@@ -74,14 +77,14 @@ export class AplicacionEditComponent {
     if (this.aplicacionForm.invalid) return;
 
     const dto: AplicacionRequestDto = {
-      descripcion: this.aplicacionForm.value.descripcion!,
+      descripcion: this.aplicacionForm.value.descripcion!.toUpperCase(),
     };
 
     const esEdicion = !!this.data?.id;
 
     const peticion: Observable<ApiResponse<any>> = esEdicion
       ? this.aplicacionService.actualizarAplicacion(this.data.id, dto)
-      : this.aplicacionService.agregarAplicacion(dto);
+      : this.aplicacionService.agregarAplicacion(parseInt(this.authService.idEntidad()), dto);
 
     peticion.subscribe({
       next: (res) => {

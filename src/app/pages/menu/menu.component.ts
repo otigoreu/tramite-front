@@ -22,6 +22,7 @@ import { Aplicacion } from '../aplicacion/Modals/Aplicacion';
 import { AplicacionService } from 'src/app/service/aplicacion.service';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -47,14 +48,13 @@ export class MenuComponent {
   appService = inject(AplicacionService);
   app:Aplicacion;
   appId_select: number | null = null;
+  authservice=inject(AuthService);
 
   displayedColumns: string[] = [
     'item',
     'descripcion',
-    'id',
     'icono',
     'ruta',
-    'Aplicacion',
     'IdMenuPadre',
     'estado',
     'acciones',
@@ -99,7 +99,7 @@ export class MenuComponent {
   }
 
   loadData() {
-    this.menuService.getDataIgnoreQuery().subscribe((response) => {
+    this.menuService.getDataAllByEntidadAndAplicacion(parseInt(this.authservice.idEntidad()),parseInt(this.authservice.idAplicacion())).subscribe((response) => {
       this.dataSource = new MatTableDataSource(response);
 
       // console.log(this.dataSource);
@@ -119,7 +119,7 @@ export class MenuComponent {
     this.dialog
       .open(DialogMenuComponent, {
         width: '400px',
-        height: '650px',
+        height: '490px',
         data: menu,
       })
       .afterClosed()

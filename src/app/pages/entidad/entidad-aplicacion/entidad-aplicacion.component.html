@@ -13,18 +13,18 @@
     </mat-icon>
   </mat-form-field>
 
-  <mat-selection-list>
-    @for (row of aplicaciones(); let i = $index; track row.idAplicacion) {
-    <mat-list-option
-      [selected]="row.estado === true"
-      (selectedChange)="onSelectedChange(row, $event)"
-    >
-      {{ row.descripcionAplicacion }} - Index: {{ i }} - idAplicacion:
-      {{ row.idAplicacion }} /
-      {{ row.estado }}
-    </mat-list-option>
+
+    @for (row of aplicaciones(); let i = $index; track row.id) {
+
+
+     <ul>
+      <li class="mat-subtitle-2 f-w-600 p-16 ">{{row.descripcion}}</li>
+     </ul>
     }
-  </mat-selection-list>
+
+
+
+
 
   <p class="mat-subtitle-2 f-w-600 p-16 bg-light-primary rounded">
     Opciones seleccionadas:

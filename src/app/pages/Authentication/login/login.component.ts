@@ -116,7 +116,10 @@ export class LoginComponent {
             this.authService.aplicacion.set(appRol.descripcion);
             this.authService.idAplicacion.set(appRol.id.toString());
             localStorage.setItem('Aplicacion', this.authService.aplicacion());
-            localStorage.setItem('idAplicacion',this.authService.idAplicacion());
+            localStorage.setItem(
+              'idAplicacion',
+              this.authService.idAplicacion()
+            );
 
             this.menuService
               .GetByAplicationAsync(parseInt(this.authService.idAplicacion()))

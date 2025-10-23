@@ -10,7 +10,13 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { Menu, MenuInfo, MenuRol, Menus, MenuWithRoles } from 'src/app/model/menu';
+import {
+  Menu,
+  MenuInfo,
+  MenuRol,
+  Menus,
+  MenuWithRoles,
+} from 'src/app/model/menu';
 import { MenuService } from 'src/app/service/menu.service';
 import { DialogSedeComponent } from '../../sede/dialog-sede/dialog-sede.component';
 import { MaterialModule } from 'src/app/material.module';
@@ -26,6 +32,9 @@ import { CommonModule } from '@angular/common';
 import { Rol } from 'src/app/model/rol';
 import { RolService } from 'src/app/service/rol.service';
 import { Aplicacion } from '../../aplicacion/Modals/Aplicacion';
+import { AuthService } from 'src/app/service/auth.service';
+import { navItems } from 'src/app/layouts/full/vertical/sidebar/sidebar-data';
+import { NavItem } from 'src/app/layouts/full/vertical/sidebar/nav-item/nav-item';
 
 @Component({
   selector: 'app-dialog-menu',
@@ -49,6 +58,7 @@ export class DialogMenuComponent implements OnInit {
   menuService = inject(MenuService);
   rolService = inject(RolService);
   _dialogRef = inject(MatDialogRef);
+  authservice = inject(AuthService);
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: MenuInfo) {}
 
@@ -56,7 +66,6 @@ export class DialogMenuComponent implements OnInit {
     descripcion: new FormControl('', [Validators.required]),
     icono: new FormControl('', [Validators.required]),
     ruta: new FormControl('', [Validators.required]),
-    idAplicacion: new FormControl('', [Validators.required]),
     idMenuPadre: new FormControl('', [Validators.nullValidator]),
   });
   ngOnInit(): void {
@@ -81,7 +90,6 @@ export class DialogMenuComponent implements OnInit {
     });
   }
 
-
   close() {
     this._dialogRef.close();
   }
@@ -90,7 +98,7 @@ export class DialogMenuComponent implements OnInit {
       descripcion: this.appForm.controls.descripcion.value!,
       icono: this.appForm.controls.icono.value!,
       ruta: this.appForm.controls.ruta.value!,
-      idAplicacion: Number.parseInt(this.appForm.controls.idAplicacion.value!),
+      idAplicacion: Number.parseInt(this.authservice.idAplicacion()),
       idMenuPadre:
         this.appForm.controls.idMenuPadre.value == undefined
           ? null
@@ -99,6 +107,32 @@ export class DialogMenuComponent implements OnInit {
 
     if (this.menu != null && this.menu.id > 0) {
       this.menuService.update(this.menu.id, body).subscribe(() => {
+        this.menuService
+          .GetByAplicationAsync(parseInt(this.authservice.idAplicacion()))
+          .subscribe({
+            next: (data: any[]) => {
+              navItems.length = 0;
+              data.forEach((nav) => {
+                if (!nav.idMenuPadre) {
+                  const navItem: NavItem = {
+                    id: nav.id,
+                    displayName: nav.descripcion,
+                    iconName: nav.icono,
+                    route: nav.ruta,
+                    children: [],
+                  };
+
+                  navItems.push(navItem);
+                }
+              });
+              navItems.forEach((parentNav: NavItem) => {
+                parentNav.children = data.filter(
+                  (nav) => nav.idMenuPadre === parentNav.id
+                );
+              });
+            },
+          });
+
         this._dialogRef.close();
       });
     } else {
