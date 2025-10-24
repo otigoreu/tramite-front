@@ -15,16 +15,13 @@ interface GetAplicacionApiResponse {
 @Injectable({
   providedIn: 'root',
 })
-
-
-
 export class AplicacionService {
   baseUrl = environment.baseUrl;
   http = inject(HttpClient);
 
   constructor() {}
 
-  getPaginadoAplicacion(search = '', page = 1, pageSize = 10) {
+  getPaginadoAplicacion(search = '', page = 0, pageSize = 10) {
     const params = {
       search,
       Page: page,
@@ -57,7 +54,7 @@ export class AplicacionService {
         })
       );
   }
-   getPaginadoAplicacion2(identidad:number, page = 1, pageSize = 10) {
+  getPaginadoAplicacion2(identidad: number, page = 1, pageSize = 10) {
     const params = {
       identidad,
       Page: page,
@@ -91,7 +88,7 @@ export class AplicacionService {
       );
   }
   agregarAplicacion(
-    idEntidad:number,
+    idEntidad: number,
     dto: AplicacionRequestDto
   ): Observable<ApiResponse<number>> {
     return this.http.post<ApiResponse<number>>(
@@ -131,25 +128,27 @@ export class AplicacionService {
   }
 
   getDataIgnoreQuery() {
-    return this.http.get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones/descripcion`)
+    return this.http
+      .get<GetAplicacion>(`${this.baseUrl}/api/aplicaciones/descripcion`)
       .pipe(map((response) => response.data));
   }
 
- GetByAplicationPerRol(idRol: string) {
-    return this.http.get<GetAplicacionApiResponse>(`${this.baseUrl}/api/aplicaciones/perrol?idRol=${idRol}`)
+  GetByAplicationPerRol(idRol: string) {
+    return this.http
+      .get<GetAplicacionApiResponse>(
+        `${this.baseUrl}/api/aplicaciones/perrol?idRol=${idRol}`
+      )
       .pipe(map((response) => response.data));
   }
 
-
- GetByAplicationbyEntidad(idEntidad: number) {
-    return this.http.get<GetAplicacionApiResponse>(`${this.baseUrl}/api/aplicaciones/byentidad?idEntidad=${idEntidad}`)
+  GetByAplicationbyEntidad(idEntidad: number) {
+    return this.http
+      .get<GetAplicacionApiResponse>(
+        `${this.baseUrl}/api/aplicaciones/byentidad?idEntidad=${idEntidad}`
+      )
       .pipe(map((response) => response.data));
   }
-
-
 }
-
-
 
 interface GetAplicacion {
   data: Aplicacion[];

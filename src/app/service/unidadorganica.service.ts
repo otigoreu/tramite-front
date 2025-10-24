@@ -17,7 +17,7 @@ export class UnidadorganicaService {
 
   getPaginadoUnidadorganica(
     search: string = '',
-    page: number = 1,
+    page: number = 0,
     pageSize: number = 10,
     idEntidad?: number // 👈 Parámetro opcional
   ) {

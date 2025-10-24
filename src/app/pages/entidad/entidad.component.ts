@@ -79,23 +79,21 @@ export class EntidadComponent implements OnInit, AfterViewInit {
 
   loadEntidades(
     search: string = '',
-    page: number = 1,
+    page: number = 0,
     pageSize: number = 10
   ): void {
     const userId = localStorage.getItem('idUsuario')!;
     const rolId = 'ee423341-d4de-4c25-b3ba-da769f81d3d7'; //localStorage.getItem('rolId')!;
 
-    this.entidadService
-      .getPaginadoEntidad(search, page, pageSize)
-      .subscribe({
-        next: (res) => {
-          this.totalRecords = res.meta.total;
-          this.dataSource.data = res.items;
-        },
-        error: (err) => {
-          console.error('Error al obtener entidades', err);
-        },
-      });
+    this.entidadService.getPaginadoEntidad(search, page, pageSize).subscribe({
+      next: (res) => {
+        this.totalRecords = res.meta.total;
+        this.dataSource.data = res.items;
+      },
+      error: (err) => {
+        console.error('Error al obtener entidades', err);
+      },
+    });
   }
 
   onSearch(searchTerm: string): void {

@@ -42,9 +42,9 @@ export class AplicacionComponent {
 
   displayedColumns: string[] = ['descripcion', 'estado', 'actions'];
   dataSource: MatTableDataSource<Aplicacion> =
-  new MatTableDataSource<Aplicacion>();
+    new MatTableDataSource<Aplicacion>();
   totalRecords: number = 0;
-  authservice=inject(AuthService);
+  authservice = inject(AuthService);
 
   searchTerm: string = '';
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -60,7 +60,6 @@ export class AplicacionComponent {
   ngOnInit(): void {
     //this.loadAplicaciones();
     this.loadAplicaciones2();
-
   }
 
   ngAfterViewInit(): void {
@@ -72,7 +71,6 @@ export class AplicacionComponent {
       this.loadAplicaciones2(pageIndex, pageSize);
     });
   }
-
 
   // loadAplicaciones(
   //   search: string = '',
@@ -91,13 +89,17 @@ export class AplicacionComponent {
   //       },
   //     });
   // }
-   loadAplicaciones2(
+  loadAplicaciones2(
     //identidad: this,
-    page: number = 1,
+    page: number = 0,
     pageSize: number = 10
   ): void {
     this.aplicacionService
-      .getPaginadoAplicacion2(parseInt(this.authservice.idEntidad()), page, pageSize)
+      .getPaginadoAplicacion2(
+        parseInt(this.authservice.idEntidad()),
+        page,
+        pageSize
+      )
       .subscribe({
         next: (res) => {
           this.totalRecords = res.meta.total;
@@ -112,7 +114,7 @@ export class AplicacionComponent {
   onSearch(searchTerm: string): void {
     this.searchTerm = searchTerm.trim();
     this.paginator.firstPage(); // Reinicia a la primera página
-   //this.loadAplicaciones(this.searchTerm);
+    //this.loadAplicaciones(this.searchTerm);
     this.loadAplicaciones2();
   }
 

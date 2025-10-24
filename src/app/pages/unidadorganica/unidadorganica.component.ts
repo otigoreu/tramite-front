@@ -116,11 +116,9 @@ export class UnidadorganicaComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value) =>
-        this.entidadService
-          .getPaginadoEntidad( value!, 1, 10)
-          .pipe(
-            map((response) => response.items) // Retorna solo los items
-          )
+        this.entidadService.getPaginadoEntidad(value!, 1, 10).pipe(
+          map((response) => response.items) // Retorna solo los items
+        )
       )
     );
   }
@@ -137,7 +135,7 @@ export class UnidadorganicaComponent implements OnInit {
   /** Cargar datos de Unidad Orgánica paginados y filtrados */
   loadUnidadorganicaes(
     search: string = '',
-    page: number = 1,
+    page: number = 0,
     pageSize: number = 10,
     idEntidad?: number
   ): void {
@@ -166,18 +164,16 @@ export class UnidadorganicaComponent implements OnInit {
     const userId = localStorage.getItem('userId')!;
     const rolId = localStorage.getItem('rolId')!;
 
-    this.entidadService
-      .getPaginadoEntidad(entidadNombre, 1, 10)
-      .subscribe({
-        next: (res) => {
-          this.selectedEntidad =
-            res.items.find((e) => e.descripcion === entidadNombre) ?? null;
+    this.entidadService.getPaginadoEntidad(entidadNombre, 1, 10).subscribe({
+      next: (res) => {
+        this.selectedEntidad =
+          res.items.find((e) => e.descripcion === entidadNombre) ?? null;
 
-          if (this.selectedEntidad) {
-            this.loadUnidadorganicaes('', 1, 10, this.selectedEntidad.id);
-          }
-        },
-      });
+        if (this.selectedEntidad) {
+          this.loadUnidadorganicaes('', 1, 10, this.selectedEntidad.id);
+        }
+      },
+    });
   }
 
   /** Abrir diálogo de edición o creación de Unidad Orgánica */
