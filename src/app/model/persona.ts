@@ -60,7 +60,6 @@ export interface PersonaRequestDto {
   apellidoPat: string;
   apellidoMat: string;
   fechaNac: string;
-  email: string;
   idTipoDoc: number;
   nroDoc: string;
 }

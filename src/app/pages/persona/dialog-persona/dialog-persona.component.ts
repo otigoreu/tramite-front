@@ -77,7 +77,6 @@ export class DialogPersonaComponent {
       mayorDeEdadValidator(18),
     ]),
     edad: new FormControl({ value: '', disabled: true }),
-    email: new FormControl('', [Validators.required, Validators.email]),
     idTipoDoc: new FormControl<number | null>(null, [Validators.required]),
     nroDoc: new FormControl('', [
       Validators.nullValidator,
@@ -92,7 +91,6 @@ export class DialogPersonaComponent {
       apellidoPat: persona.apellidoPat,
       apellidoMat: persona.apellidoMat,
       fechaNac: persona.fechaNac,
-      email: persona.email,
       idTipoDoc: persona.idTipoDoc,
       nroDoc: persona.nroDoc,
     });
@@ -135,7 +133,6 @@ export class DialogPersonaComponent {
       apellidoPat: this.personaForm.controls.apellidoPat.value ?? '',
       apellidoMat: this.personaForm.controls.apellidoMat.value ?? '',
       fechaNac: this.personaForm.controls.fechaNac.value ?? '',
-      email: this.personaForm.controls.email.value ?? '',
       idTipoDoc: this.personaForm.controls.idTipoDoc.value ?? 0,
       nroDoc: this.personaForm.controls.nroDoc.value ?? '',
     };
@@ -224,7 +221,6 @@ export class DialogPersonaComponent {
               apellidoPat: res.data.apellidoPat,
               apellidoMat: res.data.apellidoMat,
               fechaNac: res.data.fechaNac,
-              email: res.data.email,
               idTipoDoc: res.data.idTipoDoc,
               nroDoc: res.data.nroDoc,
             });

@@ -79,7 +79,6 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     'item',
     'nombres',
     'apellidos',
-    'email',
     'fechaNac',
     'estado',
     'actions',
