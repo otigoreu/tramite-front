@@ -109,18 +109,22 @@ export class UnidadorganicaUserComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // 📌 Paginación
-    this.paginator.page.subscribe(() => {
-      this.pageIndex = this.paginator.pageIndex;
-      this.pageSize = this.paginator.pageSize;
-      this.load_UsuarioAsociadoUOs();
-    });
+    // Esperamos un ciclo de renderizado para asegurarnos de que sort y paginator existan
+    Promise.resolve().then(() => {
+      if (this.paginator) {
+        this.paginator.page.subscribe(() => {
+          this.pageIndex = this.paginator.pageIndex;
+          this.pageSize = this.paginator.pageSize;
+          this.load_UsuarioAsociadoUOs();
+        });
+      }
 
-    // 📌 Ordenamiento
-    this.sort.sortChange.subscribe(() => {
-      // cuando cambie el orden reiniciamos a la primera página
-      this.pageIndex = 0;
-      this.load_UsuarioAsociadoUOs();
+      if (this.sort) {
+        this.sort.sortChange.subscribe(() => {
+          this.pageIndex = 0;
+          this.load_UsuarioAsociadoUOs();
+        });
+      }
     });
   }
 

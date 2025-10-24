@@ -62,6 +62,8 @@ export class DialogPersonaComponent {
   _snackBar = inject(MatSnackBar);
   _dialogRef = inject(MatDialogRef);
 
+  titulo = '';
+
   constructor(@Inject(MAT_DIALOG_DATA) private data: Persona) {}
 
   personaForm = new FormGroup({
@@ -99,6 +101,8 @@ export class DialogPersonaComponent {
   ngOnInit(): void {
     const esEdicion = !!this.data?.id;
 
+    this.titulo = esEdicion ? 'Actualizar PERSONA' : 'Agregar nuevo PERSONA';
+
     this.loadTipoDoc();
 
     this.personaForm.controls.fechaNac.valueChanges.subscribe((fechaNac) => {
@@ -123,7 +127,7 @@ export class DialogPersonaComponent {
     });
   }
 
-  operate() {
+  onSubmit() {
     // ✅ 1. Construir el objeto Persona con valores reales
     const persona: PersonaRequestDto = {
       id: this.personaForm.controls.id.value ?? 0,
@@ -171,11 +175,6 @@ export class DialogPersonaComponent {
         error: (err) => {
           const msg = err?.error?.errorMessage || 'Error al registrar persona.';
           this.notificationsService.error(...NotificationMessages.error(msg));
-
-          this._snackBar.open(msg, 'Cerrar', {
-            duration: 3000,
-            verticalPosition: 'top',
-          });
         },
       });
     }

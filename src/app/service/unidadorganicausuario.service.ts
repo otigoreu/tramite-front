@@ -3,9 +3,9 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../model/ApiResponse';
 import { UnidadorganicaUsuarioResponseDto } from '../pages/unidadorganica/unidadorganica-usuario/Models/UnidadorganicaUsuarioResponseDto';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { UnidadorganicaUsuarioRequestDto } from '../pages/unidadorganica/unidadorganica-usuario/Models/UnidadorganicaUsuarioRequestDto';
-import { BaseResponse } from '../model/BaseResponse';
+import { BaseResponse, BaseResponseGeneric } from '../model/BaseResponse';
 
 export interface UnidadOrganicaUsuario_UsuarioAsociadoUOsPaginatedResponse {
   id: number;
@@ -94,34 +94,33 @@ export class UnidadorganicausuarioService {
         `${this.baseUrl}/api/usuarioUnidadOrganicas/usuario/${userId}/unidadorganicas`,
         {
           params,
-          observe: 'response', // 👈 Esto es CLAVE para acceder a headers
+          observe: 'response',
         }
       )
       .pipe(
-        map((response) => {
-          console.log('==> response <==');
-          console.log(response);
-          const data = response.body?.data ?? [];
-          const total = parseInt(
-            response.headers.get('totalrecordsquantity') ?? '0',
-            10
-          );
+        map((res) => {
+          const data = res.body?.data ?? [];
+          const total = +(res.headers.get('totalrecordsquantity') ?? 0);
+
           return {
             data,
-            meta: {
-              total,
-              page,
-              pageSize,
-            },
+            meta: { total, page, pageSize },
           };
+        }),
+        catchError((error) => {
+          console.warn('[getPaginado_UsuarioAsociadoUOs] Error:', error);
+          return of({
+            data: [],
+            meta: { total: 0, page, pageSize },
+          });
         })
       );
   }
 
   agregar(
     dto: UsuarioUnidadOrganicaRequestDto
-  ): Observable<ApiResponse<number>> {
-    return this.http.post<ApiResponse<number>>(
+  ): Observable<BaseResponseGeneric<number>> {
+    return this.http.post<BaseResponseGeneric<number>>(
       `${this.baseUrl}/api/usuarioUnidadOrganicas`,
       dto
     );
@@ -130,8 +129,8 @@ export class UnidadorganicausuarioService {
   actualizar(
     id: number,
     dto: UsuarioUnidadOrganicaRequestDto
-  ): Observable<ApiResponse<null>> {
-    return this.http.put<ApiResponse<null>>(
+  ): Observable<BaseResponseGeneric<number>> {
+    return this.http.put<BaseResponseGeneric<number>>(
       `${this.baseUrl}/api/usuarioUnidadOrganicas/${id}`,
       dto
     );

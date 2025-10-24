@@ -22,7 +22,7 @@ export class UserrolService {
     idEntidad: number,
     idAplicacion: number,
     search: string = '',
-    page: number = 1,
+    page: number = 0,
     pageSize: number = 10
   ) {
     const params = new HttpParams()

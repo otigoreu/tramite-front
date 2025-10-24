@@ -82,8 +82,6 @@ export class PersonaServiceService {
       .pipe(
         map((response) => {
           const data = response.body?.data ?? [];
-          console.log('data', data);
-
           const total = parseInt(
             response.headers.get('totalrecordsquantity') ?? '0',
             10
@@ -119,12 +117,6 @@ export class PersonaServiceService {
       )
       .pipe(map((response) => response));
   }
-
-  // getByNumDocumento(numDocumento: string) {
-  //   return this.http
-  //     .get<GetPersonsApiResponse>(this.baseUrl + '/email?email=' + numDocumento)
-  //     .pipe(map((response) => response.data));
-  // }
 
   deletePerson(id: number) {
     return this.http.delete<DeletePersonResponse>(this.baseUrl + '/' + id);

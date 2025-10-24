@@ -44,6 +44,7 @@ import { Aplicacion } from '../../aplicacion/Modals/Aplicacion';
 import { RegisterRequestDto } from '../Models/RegisterRequestDto';
 import { ApiResponse } from 'src/app/model/ApiResponse';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
+import { MessageService } from 'src/app/service/Message.service';
 
 @Component({
   selector: 'app-dialog-user',
@@ -97,7 +98,7 @@ export class DialogUserComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: Usuario,
     private fb: FormBuilder,
-    private _snackBar: MatSnackBar
+    private msg: MessageService
   ) {}
 
   // Autocomplete de Personas (Formulario reactivo)
@@ -123,7 +124,7 @@ export class DialogUserComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value) =>
-        this.personaService.getPaginado(value!, 1, 10).pipe(
+        this.personaService.getPaginado(value!).pipe(
           map((response) => response.data) // Retorna solo los items
         )
       )
@@ -213,7 +214,7 @@ export class DialogUserComponent implements OnInit {
         password,
         confirmPassword: password,
       };
-      console.log('dto', dto);
+
       const esEdicion = !!this.data?.id;
 
       const peticion: Observable<ApiResponse<any>> =
@@ -222,29 +223,18 @@ export class DialogUserComponent implements OnInit {
       peticion.subscribe({
         next: (res) => {
           if (res.success) {
-            const mensaje = esEdicion
-              ? NotificationMessages.successActualizar('USUARIO')
-              : NotificationMessages.successCrear('USUARIO');
-            this.notificationsService.success(...mensaje);
+            this.msg.success(res.errorMessage!);
             this.dialogRef.close(esEdicion ? true : res.data); // true si fue update, ID si fue create
           } else {
-            this._snackBar.open(
-              res.errorMessage || 'Error desconocido',
-              'Cerrar',
-              { duration: 3000 }
-            );
+            this.msg.warning(res.errorMessage!);
           }
         },
         error: (err) => {
-          this._snackBar.open('Error del servidor', 'Cerrar', {
-            duration: 3000,
-          });
-          console.error(err);
+          const msg = err?.error?.errorMessage || 'Error al registrar usuario.';
+          this.msg.error(msg);
         },
       });
-      // Aquí puedes llamar al servicio para guardar o actualizar la unidad orgánica
     } else {
-      console.log('Formulario inválido');
       this.usuarioForm.markAllAsTouched();
     }
   }

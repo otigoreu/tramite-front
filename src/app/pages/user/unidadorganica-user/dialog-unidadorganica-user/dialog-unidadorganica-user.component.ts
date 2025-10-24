@@ -51,6 +51,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { Notificacion } from 'src/app/model/Notificacion';
+import { MessageService } from 'src/app/service/Message.service';
 
 export interface UnidadOrganica {
   id: number;
@@ -137,7 +138,7 @@ export class DialogUnidadorganicaUserComponent implements OnInit {
     private data: { data: UnidadOrganicaUsuario; userId: string }, // UnidadOrganicaUsuario,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute
+    private msg: MessageService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -190,77 +191,96 @@ export class DialogUnidadorganicaUserComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    if (this.uo_usuarioForm.valid) {
-      const raw = this.uo_usuarioForm.getRawValue();
+  onSubmit(): void {
+    if (this.uo_usuarioForm.invalid) return;
 
-      const esEdicion = !!this.data?.data;
+    const raw = this.uo_usuarioForm.getRawValue();
+    const esEdicion = !!this.data?.data;
 
-      const data: UsuarioUnidadOrganicaRequestDto = {
-        idUsuario: this.userId,
-        idUnidadOrganica: raw.idUnidadOrganica!,
-        desde: raw.desde!,
-        hasta: raw.hasta,
-      };
+    const data: UsuarioUnidadOrganicaRequestDto = {
+      idUsuario: this.userId,
+      idUnidadOrganica: raw.idUnidadOrganica!,
+      desde: raw.desde!,
+      hasta: raw.hasta,
+    };
 
-      if (!esEdicion) {
-        this.uo_usuarioService.agregar(data).subscribe({
-          next: (res) => {
-            console.log('==> res', res);
+    const request$ = esEdicion
+      ? this.uo_usuarioService.actualizar(this.data.data.id, data)
+      : this.uo_usuarioService.agregar(data);
 
-            if (res.success) {
-              const [titulo, mensajeTexto] = NotificationMessages.successCrear(
-                'UNIDADORGANICA-USUARIO'
-              );
-
-              this.snackBar.open(mensajeTexto, 'Cerrar', { duration: 3000 });
-            } else {
-              this.notificacion.set({
-                title: 'Mensaje de Validación',
-                description: res.errorMessage! ?? 'Error desconocido',
-                type: 'error',
-              });
-            }
-          },
-          error: (err) => {
-            console.error('==> error', err);
-
-            this.notificacion.set({
-              title: 'Mensaje de Validacion',
-              description: err?.error?.errorMessage! ?? 'Error desconocido',
-              type: 'error',
-            });
-          },
-          complete: () => {
-            console.log('Petición completada');
-          },
-        });
-      } else {
-        this.uo_usuarioService.actualizar(this.data.data.id, data).subscribe({
-          next: (res) => {
-            if (res.success) {
-              const [titulo, mensajeTexto] =
-                NotificationMessages.successActualizar(
-                  'UNIDADORGANICA-USUARIO'
-                );
-
-              this.snackBar.open(mensajeTexto, 'Cerrar', { duration: 3000 });
-            }
-          },
-          error: (err) => {
-            console.error('==> error', err);
-
-            this.notificacion.set({
-              title: 'Mensaje de Validacion',
-              description: err?.error?.errorMessage! ?? 'Error desconocido',
-              type: 'error',
-            });
-          },
-          complete: () => {
-            console.log('Petición completada');
-          },
-        });
-      }
-    }
+    request$.subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.msg.success('Se asignó una unidad orgánica al usuario.');
+          this.dialogRef.close(esEdicion ? true : res.data);
+        } else {
+          this.msg.warning(
+            res.errorMessage || 'Ocurrió un error al procesar la acción.'
+          );
+        }
+      },
+      error: (err) => {
+        const msg = err?.error?.errorMessage || 'Error al registrar usuario.';
+        this.msg.error(msg);
+      },
+      complete: () => console.log('Petición completada'),
+    });
   }
+
+  // onSubmit() {
+  //   if (this.uo_usuarioForm.valid) {
+  //     const raw = this.uo_usuarioForm.getRawValue();
+
+  //     const esEdicion = !!this.data?.data;
+
+  //     const data: UsuarioUnidadOrganicaRequestDto = {
+  //       idUsuario: this.userId,
+  //       idUnidadOrganica: raw.idUnidadOrganica!,
+  //       desde: raw.desde!,
+  //       hasta: raw.hasta,
+  //     };
+
+  //     if (!esEdicion) {
+  //       this.uo_usuarioService.agregar(data).subscribe({
+  //         next: (res) => {
+  //           if (res.success) {
+  //             this.msg.success('Se asignó una unidad orgánica al usuario.');
+  //             this.dialogRef.close(esEdicion ? true : res.data); // true si fue update, ID si fue create
+  //           } else {
+  //             this.msg.warning(res.errorMessage!);
+  //           }
+  //         },
+  //         error: (err) => {
+  //           const msg =
+  //             err?.error?.errorMessage || 'Error al registrar usuario.';
+
+  //           this.msg.error(msg);
+  //         },
+  //         complete: () => {
+  //           console.log('Petición completada');
+  //         },
+  //       });
+  //     } else {
+  //       this.uo_usuarioService.actualizar(this.data.data.id, data).subscribe({
+  //         next: (res) => {
+  //           if (res.success) {
+  //             this.msg.success('Se asignó una unidad orgánica al usuario.');
+  //             this.dialogRef.close(esEdicion ? true : res.data); // true si fue update, ID si fue create
+  //           } else {
+  //             this.msg.warning(res.errorMessage!);
+  //           }
+  //         },
+  //         error: (err) => {
+  //           const msg =
+  //             err?.error?.errorMessage || 'Error al registrar usuario.';
+
+  //           this.msg.error(msg);
+  //         },
+  //         complete: () => {
+  //           console.log('Petición completada');
+  //         },
+  //       });
+  //     }
+  //   }
+  // }
 }

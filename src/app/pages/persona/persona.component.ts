@@ -31,6 +31,9 @@ import { DialogPersonaComponent } from './dialog-persona/dialog-persona.componen
 import { registerLocaleData } from '@angular/common';
 import localeES from '@angular/common/locales/es';
 import Swal from 'sweetalert2';
+import { ConfirmationService } from 'src/app/service/confirmation.service';
+import { NotificationsService } from 'angular2-notifications';
+import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 registerLocaleData(localeES);
 
 @Component({
@@ -57,7 +60,20 @@ registerLocaleData(localeES);
 export class PersonaComponent implements OnInit, AfterViewInit {
   title = 'TramiteGoreu-FrontEnd';
 
-  appService = inject(PersonaServiceService);
+  personaService = inject(PersonaServiceService);
+  dialog = inject(MatDialog);
+  confirmationService = inject(ConfirmationService);
+  notificationsService = inject(NotificationsService);
+
+  dataSource: PersonaResponseDto[] = [];
+  search: string = '';
+
+  pageIndex: number = 0; // MatPaginator usa base 0
+  pageSize: number = 10;
+  totalRecords: number = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
   displayedColumns: string[] = [
     'item',
@@ -68,51 +84,42 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     'estado',
     'actions',
   ];
-  dataSource: MatTableDataSource<PersonaResponseDto>;
 
-  // @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
-    Object.create(null);
-  @ViewChild(MatSort) sort!: MatSort;
+  constructor() {}
 
-  // Paginación
-  searchText = signal<string>('');
-  pageSize = 10;
-  pageIndex = 0;
-  totalItems = signal(0);
+  ngAfterViewInit() {
+    // 📌 Paginación
+    this.paginator.page.subscribe(() => {
+      this.pageIndex = this.paginator.pageIndex;
+      this.pageSize = this.paginator.pageSize;
+      this.load_Personas();
+    });
 
-  dialog = inject(MatDialog);
-
-  constructor() {
-    const persona: PersonaResponseDto[] = [];
-    this.dataSource = new MatTableDataSource(persona);
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    // 📌 Ordenamiento
+    this.sort.sortChange.subscribe(() => {
+      // cuando cambie el orden reiniciamos a la primera página
+      this.pageIndex = 0;
+      this.load_Personas();
+    });
   }
 
   ngOnInit(): void {
     this.load_Personas();
   }
 
-  // loadDataFilter() {
-  //   this.appService.getDatafilter().subscribe((response) => {
-  //     this.dataSource = new MatTableDataSource(response);
-  //     this.dataSource.paginator = this.paginator;
-  //   });
-  // }
-
   load_Personas(): void {
-    this.appService
-      .getPaginado(this.searchText(), this.pageSize, this.pageIndex)
+    this.personaService
+      .getPaginado(this.search, this.pageSize, this.pageIndex)
       .subscribe({
         next: (res) => {
-          this.dataSource.data = res.data;
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
+          this.dataSource = res.data;
+          this.totalRecords = res.meta.total;
 
-          // this.totalRecords = res.meta.total;
+          if (this.paginator) {
+            // 🔹 Asegura que los valores del paginator se sincronicen
+            this.paginator.length = this.totalRecords;
+            this.paginator.pageIndex = this.pageIndex;
+          }
         },
         error: (err) => {
           console.error('Error al obtener clientes', err);
@@ -120,38 +127,30 @@ export class PersonaComponent implements OnInit, AfterViewInit {
       });
   }
 
-  // loadDataPAgeable(p: number, s: number) {
-  //   this.appService.getDataPageable(p, s).subscribe((response) => {
-  //     this.dataSource = new MatTableDataSource(response);
-  //     //this.dataSource.paginator = this.paginator;
-  //     this.totalElements = Object.keys(response).length;
-  //   });
-  // }
+  applyFilter(value: string) {
+    this.search = value.trim().toLowerCase();
+    this.pageIndex = 0;
 
-  // Filtro de búsqueda simple (puedes implementar backend o frontend)
-  // applyFilter(event: Event): void {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.searchText.set(filterValue);
-  //   // Implementar filtrado si es necesario
-  //   this.load_Clientes();
-  // }
-
-  applyFilter2(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-
-    this.searchText.set(filterValue);
+    // 🔹 Reiniciar visualmente el paginator
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
 
     this.load_Personas();
-    // const filterValue = (event.target as HTMLInputElement).value;
-    // this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    // if (this.dataSource.paginator) {
-    //   this.dataSource.paginator.firstPage();
-    // }
   }
 
-  applyFilter(filterValue: any): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  openDialog(personaDialog?: Persona) {
+    this.dialog
+      .open(DialogPersonaComponent, {
+        width: '600px',
+        height: '675px',
+
+        data: personaDialog,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.load_Personas();
+      });
   }
 
   delete(id: number) {
@@ -165,7 +164,7 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // lógica de confirmación
-        this.appService.deletePerson(id).subscribe((response) => {
+        this.personaService.deletePerson(id).subscribe((response) => {
           if (response.success) {
             //this.loadDataFilter();
           }
@@ -174,67 +173,37 @@ export class PersonaComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openDialog(personaDialog?: Persona) {
-    this.dialog
-      .open(DialogPersonaComponent, {
-        width: '600px',
-        height: '675px',
-
-        data: personaDialog,
-      })
-      .afterClosed()
-      .subscribe(() => {
-        //this.loadDataFilter();
-      });
-  }
-
-  // showmore(e: any) {
-  //   this.appService
-  //     .getDataPageable(e.pageIndex + 1, e.pageSize)
-  //     .subscribe((response) => {
-  //       this.dataSource = new MatTableDataSource(response);
-  //       // this.totalElements = Object.keys(response).length;
-  //     });
-
-  // }
-
   finalized(id: number) {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      // text: '¡No podrás revertir esto!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, Desactivar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // lógica de confirmación
-        this.appService.finalized(id).subscribe((response) => {
-          if (response.success) {
-            this.load_Personas();
-          }
-        });
-      }
-    });
+    this.confirmationService.confirmAndExecute(
+      'La Persona será deshabilitado. ¿Deseas continuar?',
+      this.personaService.finalized(id),
+      (response) => {
+        if (response.success) {
+          this.notificationsService.success(
+            ...NotificationMessages.success('Persona Deshabilitada')
+          );
+          this.load_Personas();
+        }
+      },
+      'La persona fue deshabilitado correctamente.',
+      'Confirmar deshabilitación de persona'
+    );
   }
 
   initialized(id: number) {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      // text: '¡No podrás revertir esto!',
-      icon: 'success',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, Activar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // lógica de confirmación
-        this.appService.initialized(id).subscribe((response) => {
-          if (response.success) {
-            this.load_Personas();
-          }
-        });
-      }
-    });
+    this.confirmationService.confirmAndExecute(
+      'La persona será habilitado. ¿Deseas continuar?',
+      this.personaService.initialized(id),
+      (response) => {
+        if (response.success) {
+          this.notificationsService.success(
+            ...NotificationMessages.success('Persona Habilitada')
+          );
+          this.load_Personas();
+        }
+      },
+      'La persona fue habilitado correctamente.',
+      'Confirmar habilitación de la persona'
+    );
   }
 }
