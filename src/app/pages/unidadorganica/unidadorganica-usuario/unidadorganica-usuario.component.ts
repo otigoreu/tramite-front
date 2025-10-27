@@ -73,7 +73,6 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
   ngOnInit(): void {
     this.unidadorganicaDescripcion = this.data?.descripcion;
 
-    console.log();
     this.loadUnidadorganicaUsuarios(this.data?.id);
   }
 
@@ -92,7 +91,7 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
   loadUnidadorganicaUsuarios(
     idUnidadorganica: number,
     search: string = '',
-    page: number = 1,
+    page: number = 0,
     pageSize: number = 10
   ): void {
     this.usuarios.set([]);

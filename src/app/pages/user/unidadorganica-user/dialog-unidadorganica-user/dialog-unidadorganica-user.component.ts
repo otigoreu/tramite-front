@@ -174,15 +174,10 @@ export class DialogUnidadorganicaUserComponent implements OnInit {
   private async cargarUnidadOrganicas(idEntidad: number): Promise<void> {
     try {
       const res = await firstValueFrom(
-        this.unidadorganicaService.getPaginadoUnidadorganica(
-          '',
-          1,
-          100,
-          idEntidad
-        )
+        this.unidadorganicaService.getPaginado('', 1, 100, idEntidad)
       );
 
-      this.unidadorganicas = res.items.map((z) => ({
+      this.unidadorganicas = res.data.map((z) => ({
         id: z.id,
         descripcion: z.descripcion,
       }));

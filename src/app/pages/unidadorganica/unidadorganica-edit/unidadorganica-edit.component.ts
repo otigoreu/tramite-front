@@ -7,8 +7,6 @@ import {
 } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -22,7 +20,6 @@ import { EntidadService } from 'src/app/service/entidad.service';
 import { Entidad } from '../../entidad/Models/Entidad';
 import { CommonModule } from '@angular/common';
 import { UnidadorganicaService } from 'src/app/service/unidadorganica.service';
-import { UnidadorganicaPaginatedResponseDto } from '../Models/UnidadorganicaPaginatedResponseDto';
 import { UnidadorganicaRequestDto } from '../Models/UnidadorganicaRequestDto';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -30,6 +27,7 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/model/ApiResponse';
 import { NotificationsService } from 'angular2-notifications';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
+import { UnidadOrganicaResponseDto } from 'src/app/model/unidadOrganica';
 
 @Component({
   selector: 'app-unidadorganica-edit',
@@ -52,14 +50,13 @@ export class AppUnidadorganicaEditComponent implements OnInit {
   dialogRef = inject(MatDialogRef);
 
   entidades: Entidad[] = [];
-  unidadorganicas: UnidadorganicaPaginatedResponseDto[] = [];
+  unidadorganicas: UnidadOrganicaResponseDto[] = [];
 
   entidadService = inject(EntidadService);
   unidadorganicaService = inject(UnidadorganicaService);
 
   uoForm = this.fb.group({
     descripcion: ['', Validators.required],
-    idEntidad: [null as number | null, Validators.required],
     idDependencia: [null as number | null], // 👈 Opcional, sin validación requerida
   });
 
@@ -71,6 +68,8 @@ export class AppUnidadorganicaEditComponent implements OnInit {
     private fb: FormBuilder
   ) {}
 
+  idEntidad: number;
+
   ngOnInit(): void {
     const esEdicion = !!this.data?.id;
 
@@ -78,18 +77,9 @@ export class AppUnidadorganicaEditComponent implements OnInit {
       ? 'Actualizar UNIDAD ORGÁNICA'
       : 'Agregar nueva UNIDAD ORGÁNICA';
 
-    this.cargarEntidades();
+    this.idEntidad = parseInt(localStorage.getItem('idEntidad')!);
 
-    this.uoForm.get('idEntidad')?.valueChanges.subscribe((idEntidad) => {
-      console.log('idEntidad', idEntidad);
-
-      if (idEntidad) {
-        this.cargarUnidadOrganica(idEntidad);
-      } else {
-        this.unidadorganicas = [];
-        this.uoForm.get('idDependencia')?.setValue(null);
-      }
-    });
+    this.cargarUnidadOrganica();
 
     if (esEdicion) {
       this.setFormValues(this.data);
@@ -98,46 +88,23 @@ export class AppUnidadorganicaEditComponent implements OnInit {
 
   private setFormValues(uo: Unidadorganica): void {
     this.uoForm.patchValue({
-      idEntidad: uo.idEntidad,
       descripcion: uo.descripcion,
       idDependencia: uo.idDependencia,
     });
-
     if (uo.idDependencia) {
-      this.cargarUnidadOrganica(uo.idEntidad, uo.idDependencia);
+      this.cargarUnidadOrganica(uo.idDependencia);
     } else {
       this.unidadorganicas = [];
       this.uoForm.get('idDependencia')?.setValue(null);
     }
   }
 
-  cargarEntidades() {
-    const userId = localStorage.getItem('userId')!;
-    const rolId = localStorage.getItem('rolId')!;
-
-    this.entidadService
-      .getPaginadoEntidad('', 1, 100)
-      .subscribe({
-        next: (res) => {
-          this.entidades = res.items;
-
-          const valorActual = this.uoForm.get('idEntidad')?.value;
-
-          if (!valorActual && this.entidades.length > 0) {
-            // Solo seteas la primera entidad si es registro nuevo
-            this.uoForm.get('idEntidad')?.setValue(this.entidades[0].id);
-          }
-        },
-        error: (err) => console.error(err),
-      });
-  }
-
-  cargarUnidadOrganica(idEntidad: number, dependenciaSeleccionada?: number) {
+  cargarUnidadOrganica(dependenciaSeleccionada?: number) {
     this.unidadorganicaService
-      .getPaginadoUnidadorganica('', 1, 100, idEntidad)
+      .getPaginado('', 100, 0, this.idEntidad)
       .subscribe({
         next: (res) => {
-          this.unidadorganicas = res.items;
+          this.unidadorganicas = res.data;
 
           if (this.unidadorganicas.length > 0) {
             if (dependenciaSeleccionada) {
@@ -158,20 +125,15 @@ export class AppUnidadorganicaEditComponent implements OnInit {
 
   onSubmit() {
     if (this.uoForm.valid) {
-      console.log('Formulario válido:', this.uoForm.value);
-
-      const { idEntidad, idDependencia, descripcion } = this.uoForm.value;
+      const { idDependencia, descripcion } = this.uoForm.value;
 
       const dto: UnidadorganicaRequestDto = {
-        idEntidad: idEntidad!,
+        idEntidad: this.idEntidad!,
         ...(idDependencia != null && { idDependencia }), // 👈 Solo lo agrega si no es null o undefined
         descripcion: descripcion!,
       };
 
       const esEdicion = !!this.data?.id;
-      console.log('esEdicion', esEdicion);
-
-      console.log('dto', dto);
 
       const peticion: Observable<ApiResponse<any>> = esEdicion
         ? this.unidadorganicaService.actualizarUnidadorganica(this.data.id, dto)
@@ -185,7 +147,7 @@ export class AppUnidadorganicaEditComponent implements OnInit {
               : NotificationMessages.successCrear('ENTIDAD');
 
             this.notificationsService.success(...mensaje);
-            this.dialogRef.close(esEdicion ? true : res.data); // true si fue update, ID si fue create
+            this.dialogRef.close();
           } else {
             this._snackBar.open(
               res.errorMessage || 'Error desconocido',

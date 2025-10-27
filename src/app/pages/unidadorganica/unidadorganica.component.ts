@@ -43,6 +43,7 @@ import {
   switchMap,
 } from 'rxjs';
 import { UnidadorganicaUsuarioComponent } from './unidadorganica-usuario/unidadorganica-usuario.component';
+import { UnidadOrganicaResponseDto } from 'src/app/model/unidadOrganica';
 
 @Component({
   selector: 'app-unidadorganica',
@@ -68,12 +69,17 @@ export class UnidadorganicaComponent implements OnInit {
   entidadService = inject(EntidadService);
   dialog = inject(MatDialog);
 
-  constructor(
-    private notificationsService: NotificationsService,
-    private confirmationService: ConfirmationService
-  ) {}
+  // DataSource de la tabla y total de registros
+  dataSource: UnidadOrganicaResponseDto[] = [];
+  search: string = '';
 
-  // Columnas a mostrar en la tabla
+  pageIndex: number = 0; // MatPaginator usa base 0
+  pageSize: number = 10;
+  totalRecords: number = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
   displayedColumns: string[] = [
     'descripcion',
     'nombreEntidad',
@@ -83,68 +89,59 @@ export class UnidadorganicaComponent implements OnInit {
     'actions',
   ];
 
-  // DataSource de la tabla y total de registros
-  dataSource: MatTableDataSource<UnidadorganicaPaginatedResponseDto> =
-    new MatTableDataSource<UnidadorganicaPaginatedResponseDto>();
-  totalRecords: number = 0;
+  constructor(
+    private notificationsService: NotificationsService,
+    private confirmationService: ConfirmationService
+  ) {}
 
-  // Variables para búsqueda y filtrado
-  searchTerm: string = '';
   idEntidad: number;
-  selectedEntidad: Entidad | null = null;
 
   // Variables para paginación y ordenamiento
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
 
   // Autocomplete de Entidades (Formulario reactivo)
   firstControl = new FormControl('');
   firstoption: string[] = ['One', 'Two', 'Three']; // Ejemplo, probablemente puedas eliminar si no lo usas
   filteredOptions: Observable<Entidad[]>;
 
-  /** Método de inicialización */
-  ngOnInit(): void {
-    const idEntidad = parseInt(localStorage.getItem('idAEntidad')!);
-
-    this.loadUnidadorganicaes();
-
-    const userId = localStorage.getItem('userId')!;
-    const rolId = localStorage.getItem('rolId')!;
-
-    // Configuración del autocomplete con debounce y búsqueda
-    this.filteredOptions = this.firstControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((value) =>
-        this.entidadService.getPaginadoEntidad(value!, 1, 10).pipe(
-          map((response) => response.items) // Retorna solo los items
-        )
-      )
-    );
-  }
-
-  /** Suscripción al evento del paginador (después de renderizar) */
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
+    // 📌 Paginación
     this.paginator.page.subscribe(() => {
-      const pageIndex = this.paginator.pageIndex + 1; // Angular Material es 0-based
-      const pageSize = this.paginator.pageSize;
-      this.loadUnidadorganicaes(this.searchTerm, pageIndex, pageSize);
+      this.pageIndex = this.paginator.pageIndex;
+      this.pageSize = this.paginator.pageSize;
+      this.load_UnidadOrganicas();
+    });
+
+    // 📌 Ordenamiento
+    this.sort.sortChange.subscribe(() => {
+      // cuando cambie el orden reiniciamos a la primera página
+      this.pageIndex = 0;
+      this.load_UnidadOrganicas();
     });
   }
 
+  ngOnInit(): void {
+    this.idEntidad = parseInt(localStorage.getItem('idEntidad')!);
+
+    this.load_UnidadOrganicas();
+
+    const userId = localStorage.getItem('userId')!;
+    const rolId = localStorage.getItem('rolId')!;
+  }
+
   /** Cargar datos de Unidad Orgánica paginados y filtrados */
-  loadUnidadorganicaes(
-    search: string = '',
-    page: number = 0,
-    pageSize: number = 10,
-    idEntidad?: number
-  ): void {
+  load_UnidadOrganicas(): void {
     this.unidadorganicaService
-      .getPaginadoUnidadorganica(search, page, pageSize, idEntidad)
+      .getPaginado(this.search, this.pageSize, this.pageIndex, this.idEntidad)
       .subscribe({
         next: (res) => {
+          this.dataSource = res.data;
           this.totalRecords = res.meta.total;
-          this.dataSource.data = res.items;
+
+          if (this.paginator) {
+            // 🔹 Asegura que los valores del paginator se sincronicen
+            this.paginator.length = this.totalRecords;
+            this.paginator.pageIndex = this.pageIndex;
+          }
         },
         error: (err) => {
           console.error('Error al obtener unidadorganicaes', err);
@@ -153,27 +150,16 @@ export class UnidadorganicaComponent implements OnInit {
   }
 
   /** Búsqueda por término */
-  onSearch(searchTerm: string): void {
-    this.searchTerm = searchTerm.trim();
-    this.paginator.firstPage(); // Reinicia a la primera página
-    this.loadUnidadorganicaes(this.searchTerm);
-  }
+  applyFilter(value: string) {
+    this.search = value.trim().toLowerCase();
+    this.pageIndex = 0;
 
-  /** Filtrar por entidad seleccionada */
-  onEntidadSelected(entidadNombre: string): void {
-    const userId = localStorage.getItem('userId')!;
-    const rolId = localStorage.getItem('rolId')!;
+    // 🔹 Reiniciar visualmente el paginator
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
 
-    this.entidadService.getPaginadoEntidad(entidadNombre, 1, 10).subscribe({
-      next: (res) => {
-        this.selectedEntidad =
-          res.items.find((e) => e.descripcion === entidadNombre) ?? null;
-
-        if (this.selectedEntidad) {
-          this.loadUnidadorganicaes('', 1, 10, this.selectedEntidad.id);
-        }
-      },
-    });
+    this.load_UnidadOrganicas();
   }
 
   /** Abrir diálogo de edición o creación de Unidad Orgánica */
@@ -186,11 +172,7 @@ export class UnidadorganicaComponent implements OnInit {
       })
       .afterClosed()
       .subscribe((result) => {
-        if (result) {
-          const pageIndex = this.paginator.pageIndex + 1;
-          const pageSize = this.paginator.pageSize;
-          this.loadUnidadorganicaes(this.searchTerm, pageIndex, pageSize);
-        }
+        this.load_UnidadOrganicas();
       });
   }
 
@@ -203,10 +185,7 @@ export class UnidadorganicaComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(() => {
-        const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
-        const pageSize = this.paginator.pageSize;
-
-        this.loadUnidadorganicaes(this.searchTerm, pageIndex, pageSize);
+        this.load_UnidadOrganicas();
       });
   }
 
@@ -218,7 +197,7 @@ export class UnidadorganicaComponent implements OnInit {
       (response) => {
         if (response.success) {
           this.notificationsService.success(...NotificationMessages.success());
-          this.loadUnidadorganicaes();
+          this.load_UnidadOrganicas();
         }
       }
     );
@@ -234,7 +213,7 @@ export class UnidadorganicaComponent implements OnInit {
           this.notificationsService.success(
             ...NotificationMessages.success('Unidad Orgánica Deshabilitada')
           );
-          this.loadUnidadorganicaes();
+          this.load_UnidadOrganicas();
         }
       }
     );
@@ -250,7 +229,7 @@ export class UnidadorganicaComponent implements OnInit {
           this.notificationsService.success(
             ...NotificationMessages.success('Unidad Orgánica Habilitada')
           );
-          this.loadUnidadorganicaes();
+          this.load_UnidadOrganicas();
         }
       }
     );

@@ -2,44 +2,11 @@
   <mat-card-content>
     <div class="row justify-content-between">
       <div class="col-lg-4">
-        <mat-form-field class="w-100" appearance="outline">
-          <input
-            type="text"
-            placeholder="Buscar y Seleccionar Entidad"
-            matInput
-            [formControl]="firstControl"
-            [matAutocomplete]="auto"
-          />
-          <mat-icon matSuffix>
-            <i-tabler name="search" class="icon-20"></i-tabler>
-          </mat-icon>
-          <mat-autocomplete
-            autoActiveFirstOption
-            #auto="matAutocomplete"
-            (optionSelected)="onEntidadSelected($event.option.value)"
-          >
-            <mat-option
-              *ngFor="let entidad of filteredOptions | async"
-              [value]="entidad.descripcion"
-            >
-              {{ entidad.descripcion }}
-            </mat-option>
-            <mat-option
-              disabled
-              *ngIf="(filteredOptions | async)?.length === 10"
-            >
-              Mostrando los primeros 10 resultados...
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
-
-      <div class="col-lg-4">
         <mat-form-field appearance="outline" class="w-100 hide-hint">
           <input
             matInput
             placeholder="Buscar Unidad Organica"
-            (keyup)="onSearch($any($event.target).value)"
+            (keyup)="applyFilter($any($event.target).value)"
           />
           <mat-icon matSuffix>
             <i-tabler name="search" class="icon-20"></i-tabler>

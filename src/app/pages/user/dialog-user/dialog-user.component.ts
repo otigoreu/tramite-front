@@ -45,6 +45,7 @@ import { RegisterRequestDto } from '../Models/RegisterRequestDto';
 import { ApiResponse } from 'src/app/model/ApiResponse';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { MessageService } from 'src/app/service/Message.service';
+import { UnidadOrganicaResponseDto } from 'src/app/model/unidadOrganica';
 
 @Component({
   selector: 'app-dialog-user',
@@ -71,7 +72,7 @@ export class DialogUserComponent implements OnInit {
   persona: Persona;
   entidads: Entidad[] = [];
   rols: Rol[] = [];
-  unidadorganicas: UnidadorganicaPaginatedResponseDto[] = [];
+  unidadorganicas: UnidadOrganicaResponseDto[] = [];
   aplicacions: Aplicacion[] = [];
 
   usuarioService = inject(UserService);
@@ -148,14 +149,12 @@ export class DialogUserComponent implements OnInit {
   }
 
   cargarUnidadOrganicas(idEntidad: number, dependenciaSeleccionada?: number) {
-    this.unidadorganicaService
-      .getPaginadoUnidadorganica('', 1, 100, idEntidad)
-      .subscribe({
-        next: (res) => {
-          this.unidadorganicas = res.items;
-        },
-        error: (err) => console.error(err),
-      });
+    this.unidadorganicaService.getPaginado('', 1, 100, idEntidad).subscribe({
+      next: (res) => {
+        this.unidadorganicas = res.data;
+      },
+      error: (err) => console.error(err),
+    });
   }
 
   selectionChangeEntidad(idEntidad: number) {

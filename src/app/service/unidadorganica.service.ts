@@ -1,39 +1,47 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { ApiResponse } from '../model/ApiResponse';
 import { UnidadorganicaPaginatedResponseDto } from '../pages/unidadorganica/Models/UnidadorganicaPaginatedResponseDto';
 import { map, Observable } from 'rxjs';
 import { UnidadorganicaRequestDto } from '../pages/unidadorganica/Models/UnidadorganicaRequestDto';
+import { BaseResponseGeneric } from '../model/BaseResponse';
+import { UnidadOrganicaResponseDto } from '../model/unidadOrganica';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UnidadorganicaService {
-  baseUrl = environment.baseUrl;
+  baseUrl = environment.baseUrl + '/api/UnidadOrganica';
   http = inject(HttpClient);
 
   constructor() {}
 
-  getPaginadoUnidadorganica(
-    search: string = '',
-    page: number = 0,
-    pageSize: number = 10,
+  getPaginado(
+    search?: string,
+    pageSize?: number,
+    pageIndex?: number,
     idEntidad?: number // 👈 Parámetro opcional
   ) {
-    let params: any = {
-      search,
-      Page: page,
-      RecordsPerPage: pageSize,
-    };
+    let params = new HttpParams();
+
+    if (search) {
+      params = params.set('search', search);
+    }
+    if (pageSize != null) {
+      params = params.set('recordsPerPage', pageSize.toString());
+    }
+    if (pageIndex != null) {
+      params = params.set('page', pageIndex.toString());
+    }
 
     if (idEntidad) {
-      params.idEntidad = idEntidad; // 👈 Solo se agrega si existe
+      params = params.set('idEntidad', idEntidad.toString());
     }
 
     return this.http
-      .get<ApiResponse<UnidadorganicaPaginatedResponseDto[]>>(
-        `${this.baseUrl}/api/UnidadOrganica/descripcion`,
+      .get<BaseResponseGeneric<UnidadOrganicaResponseDto[]>>(
+        `${this.baseUrl}/descripcion`,
         {
           params,
           observe: 'response',
@@ -41,14 +49,14 @@ export class UnidadorganicaService {
       )
       .pipe(
         map((response) => {
-          const items = response.body?.data ?? [];
+          const data = response.body?.data ?? [];
           const total = parseInt(
             response.headers.get('totalrecordsquantity') ?? '0',
             10
           );
           return {
-            items,
-            meta: { total, page, pageSize },
+            data,
+            meta: { total, pageIndex, pageSize },
           };
         })
       );
@@ -57,38 +65,30 @@ export class UnidadorganicaService {
   agregarUnidadorganica(
     dto: UnidadorganicaRequestDto
   ): Observable<ApiResponse<number>> {
-    return this.http.post<ApiResponse<number>>(
-      `${this.baseUrl}/api/UnidadOrganica`,
-      dto
-    );
+    return this.http.post<ApiResponse<number>>(`${this.baseUrl}`, dto);
   }
 
   actualizarUnidadorganica(
     id: number,
     dto: UnidadorganicaRequestDto
   ): Observable<ApiResponse<null>> {
-    return this.http.put<ApiResponse<null>>(
-      `${this.baseUrl}/api/UnidadOrganica/${id}`,
-      dto
-    );
+    return this.http.put<ApiResponse<null>>(`${this.baseUrl}/${id}`, dto);
   }
 
   eliminarUnidadorganica(id: number): Observable<ApiResponse<null>> {
-    return this.http.delete<ApiResponse<null>>(
-      `${this.baseUrl}/api/UnidadOrganica/${id}`
-    );
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/${id}`);
   }
 
   deshabilitarUnidadorganica(id: number): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
-      `${this.baseUrl}/api/UnidadOrganica/${id}/finalize`,
+      `${this.baseUrl}/${id}/finalize`,
       null
     );
   }
 
   habilitarUnidadorganica(id: number): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
-      `${this.baseUrl}/api/UnidadOrganica/${id}/initialize`,
+      `${this.baseUrl}/${id}/initialize`,
       null
     );
   }
