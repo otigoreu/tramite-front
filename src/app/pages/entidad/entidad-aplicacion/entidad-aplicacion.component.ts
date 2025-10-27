@@ -66,7 +66,7 @@ export class EntidadAplicacionComponent implements OnInit {
   currentPageSize = 10;
 
   // 👉 Control de carga
-  isLoading = false;
+  isLoading = false;//
 
   // 👉 Paginador y ordenamiento
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -94,7 +94,7 @@ export class EntidadAplicacionComponent implements OnInit {
    */
   loadEntidadAplicaciones2(
     idEntidad: number,
-    page: number = 1,
+    page: number = 0,
     pageSize: number = 10
   ): void {
     this.aplicaciones.set([]);
@@ -112,7 +112,7 @@ export class EntidadAplicacionComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al obtener aplicaciones', err);
-          this.isLoading = false; // ⚠️ No olvides apagar loading en error
+          //this.isLoading = false; // ⚠️ No olvides apagar loading en error
         },
       });
   }

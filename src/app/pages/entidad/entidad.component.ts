@@ -82,8 +82,6 @@ export class EntidadComponent implements OnInit, AfterViewInit {
     page: number = 0,
     pageSize: number = 10
   ): void {
-    const userId = localStorage.getItem('idUsuario')!;
-    const rolId = 'ee423341-d4de-4c25-b3ba-da769f81d3d7'; //localStorage.getItem('rolId')!;
 
     this.entidadService.getPaginadoEntidad(search, page, pageSize).subscribe({
       next: (res) => {
@@ -109,7 +107,7 @@ export class EntidadComponent implements OnInit, AfterViewInit {
       })
       .afterClosed()
       .subscribe(() => {
-        const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
+        const pageIndex = this.paginator.pageIndex; // el paginador es 0-based
         const pageSize = this.paginator.pageSize;
 
         this.loadEntidades(this.searchTerm, pageIndex, pageSize);
@@ -123,7 +121,7 @@ export class EntidadComponent implements OnInit, AfterViewInit {
       })
       .afterClosed()
       .subscribe(() => {
-        const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
+        const pageIndex = this.paginator.pageIndex; // el paginador es 0-based
         const pageSize = this.paginator.pageSize;
 
         this.loadEntidades(this.searchTerm, pageIndex, pageSize);
