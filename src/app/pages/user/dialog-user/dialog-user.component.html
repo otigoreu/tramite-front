@@ -10,7 +10,7 @@
         (selectionChange)="selectionChangeRol($event.value)"
       >
         <mat-option *ngFor="let e of rols" [value]="e.id">
-          {{ e.name}}
+          {{ e.descripcion }}
         </mat-option>
       </mat-select>
       <mat-error *ngIf="usuarioForm.get('idRol')?.hasError('required')"

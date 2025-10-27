@@ -38,7 +38,7 @@ import { UnidadorganicaService } from 'src/app/service/unidadorganica.service';
 import { Entidad } from '../../entidad/Models/Entidad';
 import { UnidadorganicaPaginatedResponseDto } from '../../unidadorganica/Models/UnidadorganicaPaginatedResponseDto';
 import { RolService } from 'src/app/service/rol.service';
-import { Rol } from 'src/app/model/rol';
+import { Rol, RolSingleResponse } from 'src/app/model/rol';
 import { EntidadaplicacionService } from 'src/app/service/entidadaplicacion.service';
 import { Aplicacion } from '../../aplicacion/Modals/Aplicacion';
 import { RegisterRequestDto } from '../Models/RegisterRequestDto';
@@ -71,7 +71,7 @@ export class DialogUserComponent implements OnInit {
   usuario: Usuario;
   persona: Persona;
   entidads: Entidad[] = [];
-  rols: Rol[] = [];
+  rols: RolSingleResponse[] = [];
   unidadorganicas: UnidadOrganicaResponseDto[] = [];
   aplicacions: Aplicacion[] = [];
 
@@ -136,16 +136,16 @@ export class DialogUserComponent implements OnInit {
   }
 
   cargarRols(idEntidad: number, idAplicacion: number) {
-    // this.rolService.getPaginado(idEntidad, idAplicacion!).subscribe({
-    //   next: (res) => {
-    //     // 👇 transformamos DTO -> Rol[]
-    //     this.rols = res.data.map((dto) => ({
-    //       id: dto.id,
-    //       descripcion: dto.descripcion,
-    //     }));
-    //   },
-    //   error: (err) => console.error(err),
-    // });
+    this.rolService.getPaginado(idEntidad, idAplicacion!).subscribe({
+      next: (res) => {
+        // 👇 transformamos DTO -> Rol[]
+        this.rols = res.data.map((dto) => ({
+          id: dto.id,
+          descripcion: dto.descripcion,
+        }));
+      },
+      error: (err) => console.error(err),
+    });
   }
 
   cargarUnidadOrganicas(idEntidad: number, dependenciaSeleccionada?: number) {

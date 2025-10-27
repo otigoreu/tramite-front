@@ -135,7 +135,7 @@ export class UnidadorganicaUserComponent implements OnInit, AfterViewInit {
       .getPaginado_UsuarioAsociadoUOs(
         this.idEntidad,
         this.search,
-        this.pageIndex + 1, // API espera base 1
+        this.pageIndex, // API espera base 1
         this.pageSize,
         this.userId
       )
