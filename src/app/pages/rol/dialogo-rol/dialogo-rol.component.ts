@@ -84,11 +84,13 @@ export class DialogoRolComponent implements OnInit {
 
     if (this.rol?.id != null) {
       // Editar rol
+      console.log('entro a actualizar');
       this.rolService
         .update(this.rol.id, this.rol)
         .subscribe(() => this.close());
     } else {
       // Nuevo rol
+      console.log('entro a guardar');
       this.entidadaplicacionService.getEntidadAplicacion(
         parseInt(this.authService.idEntidad()),
         parseInt(this.authService.idAplicacion()))
