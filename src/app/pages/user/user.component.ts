@@ -22,6 +22,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserrolService } from 'src/app/service/userrol.service';
 import { UsuarioRol_UsuarioResponseDto } from 'src/app/model/UserRol';
+import { AppRolUserComponent } from './rol-user/rol-user.component';
 
 @Component({
   selector: 'app-user',
@@ -49,9 +50,9 @@ export class UserComponent implements OnInit {
   displayedColumns: string[] = [
     'item',
     'Usuario',
-    'Rol',
     'DescripcionPersona',
     'Unidadorganica',
+    'Rol',
     'Estado',
     'actions',
   ];
@@ -60,7 +61,7 @@ export class UserComponent implements OnInit {
 
   idEntidad: number;
   idAplicacion: number;
-  rolId_select: string | null = null;
+  rolId: string | null = null;
 
   // DataSource de la tabla y total de registros
   dataSource: MatTableDataSource<UsuarioRol_UsuarioResponseDto> =
@@ -113,6 +114,7 @@ export class UserComponent implements OnInit {
       .getUsuariosPaginado(
         this.idEntidad,
         this.idAplicacion,
+        this.rolId,
         search,
         page,
         pageSize
@@ -122,7 +124,7 @@ export class UserComponent implements OnInit {
           this.dataSource.data = res.data;
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
-          console.log('data',res);
+          console.log('data', res);
 
           // this.totalRecords = res.meta.total;
         },
@@ -137,8 +139,7 @@ export class UserComponent implements OnInit {
   }
 
   onRolSelected(event: any): void {
-    const selectedRolId = event.value;
-    // console.log('Rol seleccionado:', selectedRolId);
+    this.rolId = event.value;
 
     // 👇 aquí puedes llamar directamente a tu método de carga de usuarios
     this.load_Usuarios();
@@ -153,9 +154,6 @@ export class UserComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(() => {
-        const pageIndex = this.paginator.pageIndex + 1; // el paginador es 0-based
-        const pageSize = this.paginator.pageSize;
-
         this.load_Usuarios();
       });
   }
@@ -166,7 +164,7 @@ export class UserComponent implements OnInit {
   ) {
     // navegación absoluta
     this.router.navigate(
-      ['/pages/user/unidadorganica-user', userRolDialog?.userId],
+      ['/pages/user/unidadorganica-user', userRolDialog?.id],
       {
         queryParams: {
           userName: userRolDialog?.userName,
@@ -174,6 +172,19 @@ export class UserComponent implements OnInit {
         },
       }
     );
+  }
+
+  openDialog_UsuarioAsociadoRol(user_Dialog?: UsuarioRol_UsuarioResponseDto) {
+    this.dialog
+      .open(AppRolUserComponent, {
+        width: '600px',
+        height: '675px',
+        data: user_Dialog,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.load_Usuarios();
+      });
   }
 
   /** Deshabilitar una Usuario */

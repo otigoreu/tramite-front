@@ -1,0 +1,31 @@
+<h2 mat-dialog-title class="m-b-24">Asignación de Roles</h2>
+<mat-divider></mat-divider>
+
+<mat-card-header>
+  <!-- <div class="p-24 rounded bg-light-primary m-t-16"> -->
+  <mat-card-title>{{ nombreCompleto }}</mat-card-title>
+  <mat-card-subtitle class="mat-body-1">{{ userName }}</mat-card-subtitle>
+  <!-- </div> -->
+</mat-card-header>
+
+<mat-dialog-content class="mat-typography" style="max-width: 600px">
+  <mat-selection-list>
+    @for(row of dataSource(); let i = $index; track row.id){
+    <mat-list-option
+      [selected]="row.estado === true"
+      (selectedChange)="onSelectedChange(row, $event)"
+    >
+      {{ row.descripcion }}
+    </mat-list-option>
+    }
+  </mat-selection-list>
+
+  <p class="mat-subtitle-2 f-w-600 p-16 bg-light-primary rounded">
+    Opciones seleccionadas: {{ seleccionadas }}
+  </p>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+<mat-dialog-actions class="p-24">
+  <button mat-stroked-button color="warn" mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

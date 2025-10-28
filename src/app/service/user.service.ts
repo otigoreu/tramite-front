@@ -12,11 +12,12 @@ import {
   RegisterRequestBody,
   ResetPasswordRequestBody,
   Usuario,
+  UsuarioResponseDto,
 } from '../model/usuario';
 import { RegisterRequestDto } from '../pages/user/Models/RegisterRequestDto';
 import { ApiResponse } from '../model/ApiResponse';
 import { UsuarioPaginatedResponseDto } from '../pages/user/Models/UsuarioPaginatedResponseDto';
-import { BaseResponse } from '../model/BaseResponse';
+import { BaseResponse, BaseResponseGeneric } from '../model/BaseResponse';
 
 interface GetUsuario {
   data: Usuario[];
@@ -28,14 +29,14 @@ interface GetUsuario {
   providedIn: 'root',
 })
 export class UserService {
-  baseUrl = environment.baseUrl;
+  baseUrl = environment.baseUrl + '/api/users';
   http = inject(HttpClient);
 
   constructor() {}
 
   registerUser(user: RegisterRequestDto) {
     return this.http
-      .post<RegisterApiResponse>(`${this.baseUrl}/api/users/Register`, user)
+      .post<RegisterApiResponse>(`${this.baseUrl}/Register`, user)
       .pipe(
         catchError((httpErrorResponse: HttpErrorResponse) => {
           const errorResponse: RegisterApiResponse = {
@@ -51,7 +52,7 @@ export class UserService {
 
   loginUser(login: LoginRequestBody) {
     return this.http
-      .post<LoginApiResponse>(`${this.baseUrl}/api/users/Login`, login)
+      .post<LoginApiResponse>(`${this.baseUrl}/Login`, login)
       .pipe(
         catchError((httpErrorResponse: HttpErrorResponse) => {
           const errorResponse: LoginApiResponse = {
@@ -90,7 +91,7 @@ export class UserService {
   requestTokenPassword(email: string) {
     return this.http
       .post<ForgotPasswordApiResponse>(
-        `${this.baseUrl}/api/users/RequestTokenToResetPassword`,
+        `${this.baseUrl}/RequestTokenToResetPassword`,
         email
       )
       .pipe(
@@ -106,7 +107,7 @@ export class UserService {
   }
 
   resetPassword(body: ResetPasswordRequestBody) {
-    return this.http.post(`${this.baseUrl}/api/users/ResetPassword`, body);
+    return this.http.post(`${this.baseUrl}/ResetPassword`, body);
   }
 
   changePassword(body: ChangePasswordRequestBody) {
@@ -114,45 +115,47 @@ export class UserService {
   }
 
   getUsersByRoleAll() {
-    return this.http.get(`${this.baseUrl}/api/users/GetUsersByRole`);
+    return this.http.get(`${this.baseUrl}/GetUsersByRole`);
   }
 
   getUsersByRole(rol: string) {
-    return this.http.get(
-      `${this.baseUrl}/api/users/GetUsersByRole?role=${rol}`
-    );
+    return this.http.get(`${this.baseUrl}/GetUsersByRole?role=${rol}`);
   }
 
   getUsersByEmail(email: string) {
-    return this.http.get(
-      `${this.baseUrl}/api/users/GetUserbyEmail?email=${email}`
-    );
+    return this.http.get(`${this.baseUrl}/GetUserbyEmail?email=${email}`);
+  }
+
+  getByIdPersona(
+    idPersona: number
+  ): Observable<BaseResponseGeneric<UsuarioResponseDto>> {
+    const url = `${this.baseUrl}/persona/${idPersona}`;
+    return this.http.get<BaseResponseGeneric<UsuarioResponseDto>>(url);
+  }
+
+  getById(userId: string): Observable<BaseResponseGeneric<UsuarioResponseDto>> {
+    const url = `${this.baseUrl}/${userId}`;
+    return this.http.get<BaseResponseGeneric<UsuarioResponseDto>>(url);
   }
 
   createRole(name: string) {
-    return this.http.post(`${this.baseUrl}/api/users/roles/create`, name);
+    return this.http.post(`${this.baseUrl}/roles/create`, name);
   }
 
   deleteRole(name: string) {
-    return this.http.delete(`${this.baseUrl}/api/users/role/remove/:${name}`);
+    return this.http.delete(`${this.baseUrl}/role/remove/:${name}`);
   }
 
   getRoles() {
-    return this.http.get(`${this.baseUrl}/api/users/roles`);
+    return this.http.get(`${this.baseUrl}/roles`);
   }
 
   grantRoleById(id: String, roleName: string) {
-    return this.http.post(
-      `${this.baseUrl}/api/users/roles/grant/:${id}`,
-      roleName
-    );
+    return this.http.post(`${this.baseUrl}/roles/grant/:${id}`, roleName);
   }
 
   grantRoleByEmail(email: string, roleName: string) {
-    return this.http.post(
-      `${this.baseUrl}/api/users/roles/grantByEmail`,
-      roleName
-    );
+    return this.http.post(`${this.baseUrl}/roles/grantByEmail`, roleName);
   }
 
   rovokeRolesById(id: string) {
@@ -160,7 +163,7 @@ export class UserService {
   }
 
   revokeRoleNameById(id: string, roleName: string) {
-    return this.http.post(`${this.baseUrl}/api/users/role/revoke`, id);
+    return this.http.post(`${this.baseUrl}/role/revoke`, id);
   }
 
   getPaginadoUsuario(
@@ -184,13 +187,10 @@ export class UserService {
     }
 
     return this.http
-      .get<ApiResponse<UsuarioPaginatedResponseDto[]>>(
-        `${this.baseUrl}/api/users`,
-        {
-          params,
-          observe: 'response',
-        }
-      )
+      .get<ApiResponse<UsuarioPaginatedResponseDto[]>>(`${this.baseUrl}`, {
+        params,
+        observe: 'response',
+      })
       .pipe(
         map((response) => {
           const data = response.body?.data ?? [];
@@ -208,21 +208,21 @@ export class UserService {
 
   deshabilitarUsuario(id: string): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
-      `${this.baseUrl}/api/users/${id}/finalize`,
+      `${this.baseUrl}/${id}/finalize`,
       null
     );
   }
 
   habilitarUsuario(id: string): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
-      `${this.baseUrl}/api/users/${id}/initialize`,
+      `${this.baseUrl}/${id}/initialize`,
       null
     );
   }
 
   forcePasswordChange(id: string): Observable<BaseResponse> {
     return this.http.patch<BaseResponse>(
-      `${this.baseUrl}/api/users/${id}/force-password`,
+      `${this.baseUrl}/${id}/force-password`,
       {} // PATCH requiere body, aunque sea vacío
     );
   }

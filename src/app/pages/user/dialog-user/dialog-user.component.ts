@@ -82,19 +82,24 @@ export class DialogUserComponent implements OnInit {
   entidadaplicacionService = inject(EntidadaplicacionService);
   rolService = inject(RolService);
 
+  mostrarRol = false; // oculto al inicio
+
   usuarioForm = this.fb.group({
     idPersona: [null as number | null, Validators.required],
-    idRol: [null as string | null, Validators.required],
 
     username: [{ value: '', disabled: true }, Validators.required],
     password: [
       { value: '==> DNI INGRESADO <==', disabled: true },
       Validators.required,
     ],
-    email: [{ value: '', disabled: true }, Validators.required],
+    email: [{ value: '', disabled: false }, Validators.required],
+    iniciales: [{ value: '', disabled: false }, Validators.required],
+
+    idRol: [null as string | null],
   });
 
   titulo = '';
+  esEdicion: boolean;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: Usuario,
@@ -103,39 +108,44 @@ export class DialogUserComponent implements OnInit {
   ) {}
 
   // Autocomplete de Personas (Formulario reactivo)
-  firstControl = new FormControl('');
+  //firstControl = new FormControl('');
+  firstControl = new FormControl<Persona | null>(null);
   firstoption: string[] = ['One', 'Two', 'Three']; // Ejemplo, probablemente puedas eliminar si no lo usas
   filteredOptions: Observable<PersonaResponseDto[]>;
 
   ngOnInit(): void {
-    const esEdicion = !!this.data?.id;
+    this.esEdicion = !!this.data?.id;
     const idEntidad = Number(localStorage.getItem('idEntidad'));
     const idAplicacion = Number(localStorage.getItem('idAplicacion'));
 
-    this.titulo = esEdicion ? 'Actualizar USUARIO' : 'Agregar nuevo USUARIO';
+    this.titulo = this.esEdicion
+      ? 'Actualizar USUARIO'
+      : 'Agregar nuevo USUARIO';
 
-    if (esEdicion) {
+    this.cargar_Rols(idEntidad, idAplicacion);
+
+    if (this.esEdicion) {
       this.setFormValues(this.data);
     }
-
-    this.cargarRols(idEntidad, idAplicacion);
 
     // Configuración del autocomplete con debounce y búsqueda
     this.filteredOptions = this.firstControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((value) =>
-        this.personaService.getPaginado(value!).pipe(
-          map((response) => response.data) // Retorna solo los items
-        )
-      )
-    );
+      switchMap((value) => {
+        // 👇 Si el usuario escribe, "value" es string
+        // Si selecciona una persona del autocomplete, "value" es Persona
+        const searchText =
+          typeof value === 'string' ? value : value?.nombreCompleto || ''; // o cualquier campo que quieras usar para buscar
 
-    // this.usuario = { ...this.data };
-    // console.log('data', this.usuario);
+        return this.personaService
+          .getPaginado(searchText)
+          .pipe(map((response) => response.data || []));
+      })
+    );
   }
 
-  cargarRols(idEntidad: number, idAplicacion: number) {
+  cargar_Rols(idEntidad: number, idAplicacion: number) {
     this.rolService.getPaginado(idEntidad, idAplicacion!).subscribe({
       next: (res) => {
         // 👇 transformamos DTO -> Rol[]
@@ -148,49 +158,89 @@ export class DialogUserComponent implements OnInit {
     });
   }
 
-  cargarUnidadOrganicas(idEntidad: number, dependenciaSeleccionada?: number) {
-    this.unidadorganicaService.getPaginado('', 1, 100, idEntidad).subscribe({
-      next: (res) => {
-        this.unidadorganicas = res.data;
-      },
-      error: (err) => console.error(err),
-    });
-  }
-
-  selectionChangeEntidad(idEntidad: number) {
-    // Limpia dependientes
-    this.rols = [];
-    this.usuarioForm.get('idRol')?.reset();
-  }
-
-  selectionChangeRol(idRol: string) {
-    this.usuarioForm.get('idRol')?.setValue(idRol);
-  }
-
   private setFormValues(usuario: Usuario): void {
-    // this.usuarioForm.patchValue({
-    //   idEntidad: usuario.idEntidad,
-    //   descripcion: uo.descripcion,
-    //   idDependencia: uo.idDependencia,
-    // });
-    // if (uo.idDependencia) {
-    //   this.cargarUnidadOrganica(uo.idEntidad, uo.idDependencia);
-    // } else {
-    //   this.unidadorganicas = [];
-    //   this.uoForm.get('idDependencia')?.setValue(null);
-    // }
+    this.usuarioService.getById(usuario.id).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.usuarioForm.patchValue({
+            idPersona: res.data.idPersona,
+
+            username: res.data.userName,
+            email: res.data.email,
+            iniciales: res.data.iniciales,
+          });
+
+          this.personaService.getPerson(res.data.idPersona).subscribe({
+            next: (res) => {
+              console.log('res (Persona)', res);
+              if (res.success && res.data) {
+                const persona: Persona = {
+                  ...res.data,
+                  nombreCompleto: `${res.data.apellidoPat} ${res.data.apellidoMat}, ${res.data.nombres}`,
+                };
+
+                this.firstControl.setValue(persona);
+                this.firstControl.disable(); // 🔒 Deshabilita
+              }
+            },
+            error: (err) => console.error(err),
+          });
+        } else {
+          this.msg.info(res.errorMessage);
+        }
+      },
+      error: (err) => {
+        this.msg.error('Ocurrió un error al verificar el usuario.');
+        console.error(err);
+      },
+    });
   }
 
   /** Filtrar por entidad seleccionada */
   onPersonaSelected(persona: any): void {
-    console.log('Seleccionado:', persona); // ahora puedes acceder a persona.id, persona.nombres, etc.
-
     // Setea el objeto completo en el form, útil para luego usar persona.id
     this.usuarioForm.patchValue({
       idPersona: persona.id, // 👈 guardamos el objeto persona completo (mejor para backend)
       username: persona.nroDoc,
       email: persona.email ?? '',
     });
+
+    this.usuarioService.getByIdPersona(persona.id).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.usuarioForm.patchValue({
+            iniciales: res.data.iniciales,
+          });
+
+          this.msg.warning(
+            'El usuario ya existe. Debe seleccionar un rol para continuar.'
+          );
+
+          this.mostrarRol = true;
+
+          this.usuarioForm.get('email')?.disable(); // 🔒 Desactiva
+          this.usuarioForm.get('iniciales')?.disable(); // 🔒 Desactiva
+        } else {
+          this.msg.info(res.errorMessage);
+        }
+      },
+      error: (err) => {
+        //this.msg.error('Ocurrió un error al verificar el usuario.');
+        this.usuarioForm.get('email')?.enable();
+        this.usuarioForm.get('email')?.reset(); // 🔹 Limpia su valor y estado (touched, dirty, etc.)
+
+        this.usuarioForm.get('iniciales')?.enable();
+        this.usuarioForm.get('iniciales')?.reset();
+
+        this.mostrarRol = false;
+
+        console.error(err);
+      },
+    });
+  }
+
+  onRolSelected(idRol: string): void {
+    this.usuarioForm.get('idRol')?.setValue(idRol);
   }
 
   displayPersona = (persona: Persona): string =>
@@ -200,18 +250,20 @@ export class DialogUserComponent implements OnInit {
 
   onSubmit() {
     if (this.usuarioForm.valid) {
-      //   console.log('Formulario válido:', this.usuarioForm.value);
-      //   const { idEntidad, idDependencia, descripcion } = this.uoForm.value;
       const raw = this.usuarioForm.getRawValue();
+
       const password = raw.username! + 'Aa*';
 
       const dto: RegisterRequestDto = {
+        esEdicion: this.esEdicion,
+
         userName: raw.username!,
+        iniciales: raw.iniciales!,
         email: raw.email!,
         idPersona: raw.idPersona!,
-        rolId: raw.idRol!,
         password,
         confirmPassword: password,
+        rolId: raw.idRol ?? undefined, // ✅
       };
 
       const esEdicion = !!this.data?.id;

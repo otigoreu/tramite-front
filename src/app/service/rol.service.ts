@@ -1,7 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
-import { Rol, RolSingleResponse, RolWithEntidadAplicacion, RolWithEntidadAplicacionCounter } from '../model/rol';
+import {
+  Rol,
+  RolSingleResponse,
+  RolWithEntidadAplicacion,
+  RolWithEntidadAplicacionCounter,
+} from '../model/rol';
 import { map } from 'rxjs';
 import { ApiResponse } from '../model/ApiResponse';
 import { RolPaginationResponseDto } from '../pages/rol/models/RolPaginationResponseDto';
@@ -123,14 +128,19 @@ export class RolService {
       .pipe(map((response) => response.data));
   }
 
-  getDataWithEntidadAplicacion(idEntidad:number, idAplicacion:number) {
+  getDataWithEntidadAplicacion(idEntidad: number, idAplicacion: number) {
     return this.http
-      .get<GetRolWithEntidadAplicacion>(`${this.baseUrl}/api/roles/Withentidadaplicacion?idEntidad=${idEntidad}&idAplicacion=${idAplicacion}`)
+      .get<GetRolWithEntidadAplicacion>(
+        `${this.baseUrl}/api/roles/Withentidadaplicacion?idEntidad=${idEntidad}&idAplicacion=${idAplicacion}`
+      )
       .pipe(map((response) => response.data));
   }
- getDataWithEntidadAplicacionCounter(idEntidad:number, idAplicacion:number) {
+
+  getDataWithEntidadAplicacionCounter(idEntidad: number, idAplicacion: number) {
     return this.http
-      .get<GetRolWithEntidadAplicacionCounter>(`${this.baseUrl}/api/roles/WithentidadaplicacionCounter?idEntidad=${idEntidad}&idAplicacion=${idAplicacion}`)
+      .get<GetRolWithEntidadAplicacionCounter>(
+        `${this.baseUrl}/api/roles/WithentidadaplicacionCounter?idEntidad=${idEntidad}&idAplicacion=${idAplicacion}`
+      )
       .pipe(map((response) => response.data));
   }
 
@@ -151,6 +161,7 @@ export class RolService {
       `${this.baseUrl}/api/roles/initialized?id=${id}`
     );
   }
+
   finalized(id: string) {
     return this.http.delete<DeleteRol>(
       `${this.baseUrl}/api/roles/finalized?id=${id}`

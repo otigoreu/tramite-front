@@ -9,7 +9,7 @@
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Rol</mat-label>
               <mat-select
-                [(ngModel)]="rolId_select"
+                [(ngModel)]="rolId"
                 (selectionChange)="onRolSelected($event)"
               >
                 <!-- 🔹 Opción para no seleccionar ningún rol -->
@@ -69,19 +69,28 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="Rol">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">Rol</th>
-          <td mat-cell *matCellDef="let row" class="f-s-14">
-            {{ row.rol_Descripcion }}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="DescripcionPersona">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
             Apellidos y Nombre(s)
           </th>
           <td mat-cell *matCellDef="let row" class="f-s-14">
             {{ row.nombreCompleto }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Rol">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            Roles
+          </th>
+          <td mat-cell *matCellDef="let row" class="f-s-14">
+            <button
+              mat-stroked-button
+              color="primary"
+              class="m-l-auto"
+              (click)="openDialog_UsuarioAsociadoRol(row)"
+            >
+              {{ row.cantidadRol }} + Ir a Roles
+            </button>
           </td>
         </ng-container>
 
@@ -132,6 +141,13 @@
               Acciones
             </th>
             <td mat-cell *matCellDef="let row" class="action-link">
+              <a
+                (click)="openDialog(row)"
+                class="m-r-10 cursor-pointer"
+                matTooltip="Editar"
+                matTooltipPosition="above"
+                ><i-tabler name="edit" class="icon-18"></i-tabler
+              ></a>
               @if(!row.estado){
               <a
                 (click)="habilitarUsuario(row.id)"

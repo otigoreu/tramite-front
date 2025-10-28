@@ -21,16 +21,21 @@ export class UserrolService {
   getUsuariosPaginado(
     idEntidad: number,
     idAplicacion: number,
+    rolId?: string | null,
     search: string = '',
     page: number = 0,
     pageSize: number = 10
   ) {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('idEntidad', idEntidad.toString())
       .set('idAplicacion', idAplicacion.toString())
       .set('search', search)
       .set('page', page.toString())
       .set('recordsPerPage', pageSize.toString());
+
+    if (rolId != null) {
+      params = params.set('rolId', rolId);
+    }
 
     return this.http
       .get<BaseResponseGeneric<UsuarioRol_UsuarioResponseDto[]>>(

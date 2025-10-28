@@ -70,6 +70,7 @@ export class DialogMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.rol = { ...this.data };
+
     this.loadMenuByRolEstado();
   }
 

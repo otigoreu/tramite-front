@@ -1,4 +1,3 @@
-
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -14,7 +13,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
-import { Rol, RolWithEntidadAplicacion, RolWithEntidadAplicacionCounter } from 'src/app/model/rol';
+import {
+  Rol,
+  RolWithEntidadAplicacion,
+  RolWithEntidadAplicacionCounter,
+} from 'src/app/model/rol';
 import { RolService } from 'src/app/service/rol.service';
 import { DialogoRolComponent } from './dialogo-rol/dialogo-rol.component';
 import Swal from 'sweetalert2';
@@ -34,11 +37,17 @@ import { DialogMenuComponent } from './dialog-menu/dialog-menu.component';
   templateUrl: './rol.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RolComponent implements OnInit{
+export class RolComponent implements OnInit {
   authService = inject(AuthService);
   rolService = inject(RolService);
 
-  displayedColumns: string[] = ['item', 'descripcion','menu', 'estado', 'acciones'];
+  displayedColumns: string[] = [
+    'item',
+    'descripcion',
+    'menu',
+    'estado',
+    'acciones',
+  ];
 
   dataSource: MatTableDataSource<RolWithEntidadAplicacionCounter>;
   totalRecords: number = 0;
@@ -54,7 +63,7 @@ export class RolComponent implements OnInit{
   dialog = inject(MatDialog);
 
   constructor() {
-    const roles:RolWithEntidadAplicacionCounter[]=[];
+    const roles: RolWithEntidadAplicacionCounter[] = [];
     this.dataSource = new MatTableDataSource(roles);
     //this.dataSource = new MatTableDataSource(roles);
   }
@@ -107,16 +116,17 @@ export class RolComponent implements OnInit{
   //     });
   // }
 
-loadData(){
-  this.rolService.getDataWithEntidadAplicacionCounter(parseInt(this.authService.idEntidad()),parseInt(this.authService.idAplicacion())).subscribe((response)=>{
-    this.dataSource=new MatTableDataSource(response);
-    this.dataSource.paginator = this.paginator;
-
-  });
-}
-
-
-
+  loadData() {
+    this.rolService
+      .getDataWithEntidadAplicacionCounter(
+        parseInt(this.authService.idEntidad()),
+        parseInt(this.authService.idAplicacion())
+      )
+      .subscribe((response) => {
+        this.dataSource = new MatTableDataSource(response);
+        this.dataSource.paginator = this.paginator;
+      });
+  }
 
   // applyFilter(value: string) {
   //   this.search = value.trim().toLowerCase();
@@ -153,16 +163,19 @@ loadData(){
       .open(DialogoRolComponent, {
         width: '400px',
         height: '254px',
-        data: rol })
+        data: rol,
+      })
       .afterClosed()
       .subscribe(() => {
         this.loadData();
       });
   }
-   openDialogMenus(rol?: Rol) {
+
+  openDialogMenus(rol?: Rol) {
     this.dialog
       .open(DialogMenuComponent, {
-        data: rol })
+        data: rol,
+      })
       .afterClosed()
       .subscribe(() => {
         this.loadData();

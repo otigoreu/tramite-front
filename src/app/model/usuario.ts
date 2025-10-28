@@ -4,7 +4,6 @@ import { UnidadOrganica } from './unidadOrganica';
 import { Aplicacion } from '../pages/aplicacion/Modals/Aplicacion';
 import { Rol, RolSignal } from './rol';
 
-
 export interface LoginApiResponse {
   data: Data;
   success: boolean;
@@ -88,4 +87,19 @@ export interface Usuario {
   nombres: string;
   apellidoPat: string;
   apellidoMat: string;
+  iniciales: string;
+}
+
+export interface UsuarioResponseDto {
+  id: string;
+  email: string;
+  userName: string;
+
+  idPersona: number;
+  iniciales: string;
+  estado: boolean;
+  mustChangePassword: boolean;
+
+  cantidadUnidadOrganica: number;
+  descripcionPersona: string;
 }
