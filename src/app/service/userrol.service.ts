@@ -6,7 +6,11 @@ import {
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { BaseResponse, BaseResponseGeneric } from '../model/BaseResponse';
-import { UsuarioRol_UsuarioResponseDto } from '../model/UserRol';
+import {
+  UsuarioRol_RolConAsignacionDto,
+  UsuarioRol_RolConAsignacionRequestDto,
+  UsuarioRol_UsuarioResponseDto,
+} from '../model/UserRol';
 import { map, Observable } from 'rxjs';
 
 @Injectable({
@@ -58,6 +62,52 @@ export class UserrolService {
           };
         })
       );
+  }
+
+  getRolesConAsignacion(
+    idEntidad: number,
+    idAplicacion: number,
+    userId: string,
+    search: string = '',
+    page: number = 0,
+    pageSize: number = 10
+  ) {
+    let params = new HttpParams()
+      .set('idEntidad', idEntidad.toString())
+      .set('idAplicacion', idAplicacion.toString())
+      .set('userId', userId)
+      .set('search', search)
+      .set('page', page.toString())
+      .set('recordsPerPage', pageSize.toString());
+
+    return this.http
+      .get<BaseResponseGeneric<UsuarioRol_RolConAsignacionDto[]>>(
+        this.baseUrl + '/asignacion', // 🔹 usa la ruta correcta del endpoint
+        { params, observe: 'response' }
+      )
+      .pipe(
+        map((response) => {
+          const data = response.body?.data ?? [];
+          const total =
+            Number(response.headers.get('totalrecordsquantity')) || 0;
+
+          return {
+            data,
+            meta: {
+              total,
+              page,
+              pageSize,
+            },
+          };
+        })
+      );
+  }
+
+  asignarRol(request: UsuarioRol_RolConAsignacionRequestDto) {
+    return this.http.patch<BaseResponse>(
+      `${this.baseUrl}/asignar-rol`,
+      request
+    );
   }
 
   deshabilitarUsuario(id: string): Observable<BaseResponse> {

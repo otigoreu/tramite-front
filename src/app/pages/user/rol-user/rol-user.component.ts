@@ -16,10 +16,15 @@ import { RouterModule } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { Rol, RolSingleResponse } from 'src/app/model/rol';
-import { UsuarioRol_UsuarioResponseDto } from 'src/app/model/UserRol';
+import {
+  UsuarioRol_RolConAsignacionDto,
+  UsuarioRol_RolConAsignacionRequestDto,
+  UsuarioRol_UsuarioResponseDto,
+} from 'src/app/model/UserRol';
 import { AuthService } from 'src/app/service/auth.service';
 import { MessageService } from 'src/app/service/Message.service';
 import { RolService } from 'src/app/service/rol.service';
+import { UserrolService } from 'src/app/service/userrol.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @Component({
@@ -41,11 +46,12 @@ import { SharedModule } from 'src/app/shared/shared.module';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppRolUserComponent implements OnInit {
+  userRolService = inject(UserrolService);
   rolService = inject(RolService);
   authservice = inject(AuthService);
   dialog = inject(MatDialog);
 
-  dataSource = signal<RolSingleResponse[]>([]);
+  dataSource = signal<UsuarioRol_RolConAsignacionDto[]>([]);
 
   idEntidad: number;
   idAplicacion: number;
@@ -64,21 +70,50 @@ export class AppRolUserComponent implements OnInit {
     this.nombreCompleto = this.data.nombreCompleto;
     this.userName = this.data.userName;
 
-    this.rolService.getPaginado(this.idEntidad, this.idAplicacion).subscribe({
-      next: (res) => {
-        console.log('data (rolService - getPaginado)', res);
+    this.load_Asignaciones();
+  }
 
-        this.dataSource.set(res.data);
-      },
-      error: (err) => {
-        console.error('Error al obtener los usuarios', err);
-      },
-    });
+  load_Asignaciones(): void {
+    this.userRolService
+      .getRolesConAsignacion(this.idEntidad, this.idAplicacion, this.data.id)
+      .subscribe({
+        next: (res) => {
+          this.dataSource.set(res.data);
+        },
+        error: (err) => {
+          console.error('Error al obtener los usuarios', err);
+        },
+      });
   }
 
   get seleccionadas(): number {
-    return this.dataSource().filter((app) => app.estado).length;
+    return this.dataSource().filter((app) => app.asignado).length;
   }
 
-  onSelectedChange(row: RolSingleResponse, selected: boolean): void {}
+  onSelectedChange(
+    row: UsuarioRol_RolConAsignacionDto,
+    selected: boolean
+  ): void {
+    const request: UsuarioRol_RolConAsignacionRequestDto = {
+      idEntidad: this.idEntidad,
+      idAplicacion: this.idAplicacion,
+      userId: this.data.id,
+      rolId: row.id,
+      selected: selected, // true para asignar, false para quitar
+    };
+
+    this.userRolService.asignarRol(request).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.load_Asignaciones();
+        } else {
+          this.msg.warning(res.errorMessage || 'No se pudo actualizar el rol');
+        }
+      },
+      error: (err) => {
+        this.msg.error('Error al asignar el rol');
+        console.error(err);
+      },
+    });
+  }
 }
