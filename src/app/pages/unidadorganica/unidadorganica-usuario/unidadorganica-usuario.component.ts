@@ -54,6 +54,9 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
   // 👉 Signal para manejar el listado de usuarios
   usuarios = signal<UnidadorganicaUsuarioResponseDto[]>([]);
 
+  idEntidad: number;
+  idAplicacion: number;
+
   // 👉 Variables de paginación y búsqueda
   totalRecords: number = 0;
   searchTerm: string = '';
@@ -71,9 +74,11 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) private data: Unidadorganica) {}
 
   ngOnInit(): void {
+    this.idEntidad = Number(localStorage.getItem('idEntidad'));
+    this.idAplicacion = Number(localStorage.getItem('idAplicacion'));
     this.unidadorganicaDescripcion = this.data?.descripcion;
 
-    this.loadUnidadorganicaUsuarios(this.data?.id);
+    this.load_UnidadorganicaUsuarios(this.data?.id);
   }
 
   // 👉 Propiedad calculada: cantidad de aplicaciones seleccionadas
@@ -88,7 +93,7 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
    * @param page - Página actual
    * @param pageSize - Tamaño de página
    */
-  loadUnidadorganicaUsuarios(
+  load_UnidadorganicaUsuarios(
     idUnidadorganica: number,
     search: string = '',
     page: number = 0,
@@ -98,7 +103,14 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
     this.isLoading = true;
 
     this.uousuarioService
-      .getPaginadoUnidadorgnicaUsuario(idUnidadorganica, search, page, pageSize)
+      .getPaginadoUnidadorgnicaUsuario(
+        this.idEntidad,
+        this.idAplicacion,
+        idUnidadorganica,
+        search,
+        page,
+        pageSize
+      )
       .subscribe({
         next: (res) => {
           this.totalRecords = res.meta.total;
@@ -120,7 +132,7 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
    */
   onSearch(searchTerm: string): void {
     this.searchTerm = searchTerm.trim();
-    this.loadUnidadorganicaUsuarios(
+    this.load_UnidadorganicaUsuarios(
       this.data?.id,
       this.searchTerm,
       this.currentPage,
@@ -213,7 +225,7 @@ export class UnidadorganicaUsuarioComponent implements OnInit {
     this.currentPage = event.pageIndex + 1; // Angular usa índice 0, tu API índice 1
     this.currentPageSize = event.pageSize;
 
-    this.loadUnidadorganicaUsuarios(
+    this.load_UnidadorganicaUsuarios(
       this.data?.id,
       this.searchTerm,
       this.currentPage,

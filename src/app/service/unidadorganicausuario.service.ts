@@ -33,12 +33,16 @@ export class UnidadorganicausuarioService {
   constructor() {}
 
   getPaginadoUnidadorgnicaUsuario(
+    idEntidad: number,
+    idAplicacion: number,
     idUnidadorganica: number,
     search = '',
-    page = 1,
+    page = 0,
     pageSize = 10
   ) {
     const params = {
+      idEntidad,
+      idAplicacion,
       idUnidadorganica,
       search,
       Page: page,
