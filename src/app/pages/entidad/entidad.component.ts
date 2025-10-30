@@ -46,6 +46,7 @@ export class EntidadComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = [
     'descripcion',
+    'sigla',
     'aplicacion',
     'estado',
     'actions',

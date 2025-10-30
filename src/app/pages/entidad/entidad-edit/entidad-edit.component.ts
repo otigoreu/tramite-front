@@ -51,6 +51,9 @@ export class EntidadEditComponent implements OnInit {
       Validators.required,
       Validators.pattern(/^\d{1,11}$/), // Solo números, hasta 11 dígitos
     ]),
+    sigla: new FormControl('', [
+      Validators.required, // Solo números, hasta 11 dígitos
+    ]),
   });
 
   dialogRef = inject(MatDialogRef);
@@ -74,6 +77,7 @@ export class EntidadEditComponent implements OnInit {
       this.entidadForm.patchValue({
         descripcion: entidad.descripcion,
         ruc: entidad.ruc,
+        sigla:entidad.sigla
       });
     }
   }
@@ -84,6 +88,8 @@ export class EntidadEditComponent implements OnInit {
     const dto: EntidadRequestDto = {
       descripcion: this.entidadForm.value.descripcion!,
       ruc: this.entidadForm.value.ruc!,
+      sigla:this.entidadForm.value.sigla!
+
     };
 
     const esEdicion = !!this.data?.id;

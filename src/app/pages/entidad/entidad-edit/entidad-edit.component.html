@@ -51,6 +51,30 @@
       </mat-hint>
       }
     </mat-form-field>
+
+
+     <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Sigla</mat-label>
+      <input
+     matInput
+        required
+        placeholder="SIGLA"
+        formControlName="sigla"
+        appEnterKeyFocus
+
+      />
+
+      @if(entidadForm.controls.sigla.touched&&entidadForm.controls.sigla.invalid){
+      <mat-hint class="m-b-16 error-msg">
+        @if(entidadForm.controls.sigla.hasError('required')){
+        <div class="text-error">Sigla<strong>requerido</strong></div>
+        }
+      </mat-hint>
+      }
+    </mat-form-field>
+
+
+
   </form>
 </mat-dialog-content>
 
