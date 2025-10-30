@@ -65,6 +65,7 @@ export class UnidadorganicaService {
   agregarUnidadorganica(
     dto: UnidadorganicaRequestDto
   ): Observable<ApiResponse<number>> {
+    console.log('dto', dto);
     return this.http.post<ApiResponse<number>>(`${this.baseUrl}`, dto);
   }
 

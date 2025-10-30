@@ -22,6 +22,14 @@
         >Campo requerido</mat-error
       >
     </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Abrev</mat-label>
+      <input matInput formControlName="abrev" />
+      <mat-error *ngIf="uoForm.get('abrev')?.hasError('required')"
+        >Campo requerido</mat-error
+      >
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 

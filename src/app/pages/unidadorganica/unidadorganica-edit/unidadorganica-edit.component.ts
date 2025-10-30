@@ -28,6 +28,7 @@ import { ApiResponse } from 'src/app/model/ApiResponse';
 import { NotificationsService } from 'angular2-notifications';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { UnidadOrganicaResponseDto } from 'src/app/model/unidadOrganica';
+import { MessageService } from 'src/app/service/Message.service';
 
 @Component({
   selector: 'app-unidadorganica-edit',
@@ -58,6 +59,7 @@ export class AppUnidadorganicaEditComponent implements OnInit {
   uoForm = this.fb.group({
     descripcion: ['', Validators.required],
     idDependencia: [null as number | null], // 👈 Opcional, sin validación requerida
+    abrev: ['', Validators.required],
   });
 
   titulo = '';
@@ -65,7 +67,8 @@ export class AppUnidadorganicaEditComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: Unidadorganica,
     private _snackBar: MatSnackBar,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private msg: MessageService
   ) {}
 
   idEntidad: number;
@@ -90,6 +93,7 @@ export class AppUnidadorganicaEditComponent implements OnInit {
     this.uoForm.patchValue({
       descripcion: uo.descripcion,
       idDependencia: uo.idDependencia,
+      abrev: uo.abrev,
     });
     if (uo.idDependencia) {
       this.cargarUnidadOrganica(uo.idDependencia);
@@ -125,12 +129,13 @@ export class AppUnidadorganicaEditComponent implements OnInit {
 
   onSubmit() {
     if (this.uoForm.valid) {
-      const { idDependencia, descripcion } = this.uoForm.value;
+      const { idDependencia, descripcion, abrev } = this.uoForm.value;
 
       const dto: UnidadorganicaRequestDto = {
         idEntidad: this.idEntidad!,
         ...(idDependencia != null && { idDependencia }), // 👈 Solo lo agrega si no es null o undefined
         descripcion: descripcion!,
+        abrev: abrev!,
       };
 
       const esEdicion = !!this.data?.id;
@@ -146,21 +151,15 @@ export class AppUnidadorganicaEditComponent implements OnInit {
               ? NotificationMessages.successActualizar('ENTIDAD')
               : NotificationMessages.successCrear('ENTIDAD');
 
-            this.notificationsService.success(...mensaje);
+            this.msg.success(res.errorMessage!);
             this.dialogRef.close();
           } else {
-            this._snackBar.open(
-              res.errorMessage || 'Error desconocido',
-              'Cerrar',
-              { duration: 3000 }
-            );
+            this.msg.warning(res.errorMessage!);
           }
         },
         error: (err) => {
-          this._snackBar.open('Error del servidor', 'Cerrar', {
-            duration: 3000,
-          });
-          console.error(err);
+          const msg = err?.error?.errorMessage || 'Error al registrar usuario.';
+          this.msg.error(msg);
         },
       });
 
