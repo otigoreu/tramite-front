@@ -4,25 +4,7 @@
       <div class="col-lg-6">
 
         <div class="row">
-        <div class="col-md-6">
-        <mat-form-field appearance="outline" class="w-100">
-              <mat-label >Aplicacion</mat-label>
-              <mat-select
-              [(ngModel)]="appId_select"
-              (selectionChange)="onAppSelected($event)"
-              >
 
-                <!-- 🔹 Opción para no seleccionar ningún rol -->
-                <mat-option [value]="null">-- Todos --</mat-option>
-
-                @for(app of aplicaciones; track $index){
-                  <mat-option [value]="app.id">
-                    {{app.descripcion}}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-            </div>
 
         <div class="col-md-6">
         <mat-form-field appearance="outline" class="w-100 hide-hint">
