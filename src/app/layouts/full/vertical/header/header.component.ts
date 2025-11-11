@@ -35,6 +35,7 @@ import {
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { NotificationsService } from 'angular2-notifications';
 import { EntidadService } from 'src/app/service/entidad.service';
+import { Aplicacion } from 'src/app/pages/aplicacion/Modals/Aplicacion';
 
 // import { AuthService } from 'src/app/service/auth.service';
 
@@ -157,42 +158,42 @@ export class HeaderComponent {
   }
 
   cambiarRol(idRol: string, nameRol: string) {
-    // console.log('idRol', idRol);
-    // console.log('nameRol', nameRol);
+    //console.log('idRol', idRol);
+    //console.log('nameRol', nameRol);
 
     if (this.authService.userRole() == nameRol) {
       this.notificationsHEader.set(notify13, true);
-      // console.log('Rol', this.authService.userRole());
-      // console.log('nameRol', nameRol);
+      //console.log('Rol', this.authService.userRole());
+      //console.log('nameRol', nameRol);
     } else {
-      this.authService.userRole.set(nameRol);
-      this.authService.userIdRol.set(idRol);
+      // this.authService.userRole.set(nameRol);
+      // this.authService.userIdRol.set(idRol);
 
-      localStorage.setItem('userRole', this.authService.userRole());
-      localStorage.setItem('userIdRol', this.authService.userIdRol());
+      // localStorage.setItem('userRole', this.authService.userRole());
+      // localStorage.setItem('userIdRol', this.authService.userIdRol());
 
-      this.entidadservice
-        .GetByEntidadPerRol(this.authService.userIdRol())
-        .subscribe((entidadRol) => {
-          this.authService.entidad.set(entidadRol.descripcion);
-          localStorage.setItem('entidad', this.authService.entidad());
-          this.authService.idEntidad.set(entidadRol.id.toString());
-          localStorage.setItem('idEntidad', this.authService.idEntidad());
+      // this.entidadservice
+      //   .GetByEntidadPerRol(this.authService.userIdRol())
+      //   .subscribe((entidadRol) => {
+      //     this.authService.entidad.set(entidadRol.descripcion);
+      //     localStorage.setItem('entidad', this.authService.entidad());
+      //     this.authService.idEntidad.set(entidadRol.id.toString());
+      //     localStorage.setItem('idEntidad', this.authService.idEntidad());
 
-          this.entidadHeader = this.authService.entidad();
-        });
+      //     this.entidadHeader = this.authService.entidad();
+      //   });
 
-      this.appservice.GetByAplicationPerRol(idRol).subscribe((appRol) => {
-        console.log('AppRol :', appRol);
-        this.authService.aplicacion.set(appRol.descripcion);
-        this.authService.idAplicacion.set(appRol.id.toString());
-        localStorage.setItem('Aplicacion', this.authService.aplicacion());
-        localStorage.setItem('idAplicacion', this.authService.idAplicacion());
-        this.aplicacionHeader = this.authService.aplicacion();
+      this.appservice
+        .GetByAplicationPerRol(idRol)
+        .subscribe((appRol: Aplicacion) => {
+          // console.log('AppRol :', appRol);
+          // this.authService.aplicacion.set(appRol.descripcion);
+          // this.authService.idAplicacion.set(appRol.id.toString());
+          // localStorage.setItem('Aplicacion', this.authService.aplicacion());
+          // localStorage.setItem('idAplicacion', this.authService.idAplicacion());
+          // this.aplicacionHeader = this.authService.aplicacion();
 
-        this.menuService
-          .GetByAplicationAsync(parseInt(this.authService.idAplicacion()))
-          .subscribe({
+          this.menuService.GetByAplicationAsync(appRol.id).subscribe({
             next: (data: any[]) => {
               navItems.length = 0;
               data.forEach((nav) => {
@@ -215,11 +216,46 @@ export class HeaderComponent {
                 );
               });
 
+              this.authService.aplicacion.set(appRol.descripcion);
+              this.authService.idAplicacion.set(appRol.id.toString());
+              localStorage.setItem('Aplicacion', this.authService.aplicacion());
+              localStorage.setItem(
+                'idAplicacion',
+                this.authService.idAplicacion()
+              );
+              this.aplicacionHeader = this.authService.aplicacion();
+
+              this.authService.userRole.set(nameRol);
+              this.authService.userIdRol.set(idRol);
+
+              localStorage.setItem('userRole', this.authService.userRole());
+              localStorage.setItem('userIdRol', this.authService.userIdRol());
+
+              this.entidadservice
+                .GetByEntidadPerRol(this.authService.userIdRol())
+                .subscribe((entidadRol) => {
+                  this.authService.entidad.set(entidadRol.descripcion);
+                  localStorage.setItem('entidad', this.authService.entidad());
+                  this.authService.idEntidad.set(entidadRol.id.toString());
+                  localStorage.setItem(
+                    'idEntidad',
+                    this.authService.idEntidad()
+                  );
+
+                  this.entidadHeader = this.authService.entidad();
+                });
+
               this.router.navigate([this.firstOptionMenu()]);
+              this.notificationsHEader.set(notify12, true);
+            },
+            error: (err) => {
+              console.error('Error al obtener menú:', err);
+              this.notificationsHEader.info(
+                ...NotificationMessages.info('El Rol no tiene Menus asignados.')
+              );
             },
           });
-      });
-      this.notificationsHEader.set(notify12, true);
+        });
     }
   }
 
