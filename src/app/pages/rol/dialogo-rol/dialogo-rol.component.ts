@@ -24,6 +24,7 @@ import { EntidadaplicacionService } from 'src/app/service/entidadaplicacion.serv
 import { identity } from 'rxjs';
 import { Aplicacion } from '../../aplicacion/Modals/Aplicacion';
 import { AuthService } from '../../../service/auth.service';
+import { MessageService } from 'src/app/service/Message.service';
 
 interface Estado {
   valor: boolean;
@@ -52,7 +53,6 @@ export class DialogoRolComponent implements OnInit {
   entidades: Entidad[] = [];
   aplicaciones: Aplicacion[] = [];
 
-
   rolService = inject(RolService);
   entidadService = inject(EntidadService);
   entidadaplicacionService = inject(EntidadaplicacionService);
@@ -62,17 +62,16 @@ export class DialogoRolComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: Rol,
-    private _dialogRef: MatDialogRef<DialogoRolComponent>
+    private _dialogRef: MatDialogRef<DialogoRolComponent>,
+    private msg: MessageService
   ) {}
 
   rolForm = new FormGroup({
-
     name: new FormControl('', [Validators.required]),
   });
 
   ngOnInit(): void {
     this.rol = { ...this.data };
-
   }
 
   close() {
@@ -83,30 +82,33 @@ export class DialogoRolComponent implements OnInit {
     this.rol.normalizedName = this.rol.name;
 
     if (this.rol?.id != null) {
-      // Editar rol
-      console.log('entro a actualizar');
       this.rolService
         .update(this.rol.id, this.rol)
         .subscribe(() => this.close());
     } else {
-      // Nuevo rol
-      console.log('entro a guardar');
-      this.entidadaplicacionService.getEntidadAplicacion(
-        parseInt(this.authService.idEntidad()),
-        parseInt(this.authService.idAplicacion()))
-        .subscribe((response)=>{
+      this.entidadaplicacionService
+        .getEntidadAplicacion(
+          parseInt(this.authService.idEntidad()),
+          parseInt(this.authService.idAplicacion())
+        )
+        .subscribe((response) => {
+          const body: Rol = {
+            name: this.rolForm.controls.name.value!,
+            normalizedName: this.rolForm.controls.name.value!,
+            idEntidadAplicacion: response.data?.id!,
+          };
+          // this.rolService.save(body).subscribe(() => this.close());
 
-          const body:Rol={
-            name:this.rolForm.controls.name.value!,
-            normalizedName:this.rolForm.controls.name.value!,
-            idEntidadAplicacion:response.data?.id!
-          }
-
-          this.rolService.save(body).subscribe(() => this.close());
-
-        })
+          this.rolService.save(body).subscribe({
+            next: (res) => {
+              if (!res.success) this.msg.warning(res.errorMessage);
+            },
+            error: (err) => {
+              this.msg.error(err.error.errorMessage);
+              console.error(err);
+            },
+          });
+        });
     }
   }
-
-
 }

@@ -116,17 +116,18 @@ export class RolComponent implements OnInit {
   //     });
   // }
 
-loadData(){
-  this.rolService.getDataWithEntidadAplicacionCounter(parseInt(this.authService.idEntidad()),parseInt(this.authService.idAplicacion())).subscribe((response)=>{
-    this.dataSource=new MatTableDataSource(response);
-    this.dataSource.paginator = this.paginator;
-    console.log('response',response);
-
-  });
-}
-
-
-
+  loadData() {
+    this.rolService
+      .getDataWithEntidadAplicacionCounter(
+        parseInt(this.authService.idEntidad()),
+        parseInt(this.authService.idAplicacion())
+      )
+      .subscribe((response) => {
+        this.dataSource = new MatTableDataSource(response);
+        this.dataSource.paginator = this.paginator;
+        console.log('response', response);
+      });
+  }
 
   // applyFilter(value: string) {
   //   this.search = value.trim().toLowerCase();

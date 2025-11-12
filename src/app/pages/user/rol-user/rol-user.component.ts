@@ -111,7 +111,7 @@ export class AppRolUserComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.msg.error('Error al asignar el rol');
+        this.msg.error(err.error.errorMessage);
         console.error(err);
       },
     });

@@ -10,6 +10,7 @@ import {
 import { map } from 'rxjs';
 import { ApiResponse } from '../model/ApiResponse';
 import { RolPaginationResponseDto } from '../pages/rol/models/RolPaginationResponseDto';
+import { BaseResponseGeneric } from '../model/BaseResponse';
 
 interface GetRol {
   data: Rol[];
@@ -145,7 +146,10 @@ export class RolService {
   }
 
   save(rol: Rol) {
-    return this.http.post(`${this.baseUrl}/api/roles`, rol);
+    return this.http.post<BaseResponseGeneric<string>>(
+      `${this.baseUrl}/api/roles`,
+      rol
+    );
   }
 
   update(id: string, rol: Rol) {
