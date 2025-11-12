@@ -102,6 +102,7 @@ export class DialogoRolComponent implements OnInit {
           this.rolService.save(body).subscribe({
             next: (res) => {
               if (!res.success) this.msg.warning(res.errorMessage);
+              else this.close();
             },
             error: (err) => {
               this.msg.error(err.error.errorMessage);
