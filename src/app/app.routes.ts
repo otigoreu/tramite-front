@@ -60,7 +60,7 @@ export const routes: Routes = [
       },
 
       {
-        path: 'pages/persona',
+        path: 'pages/persona',//1
         canActivate: [authGuard],
         component: PersonaComponent,
         data: {
@@ -72,7 +72,7 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'pages/tipo-documento',
+        path: 'pages/tipo-documento',//4
 
         // canActivate: [authGuard],
 
@@ -93,7 +93,7 @@ export const routes: Routes = [
       },
 
       {
-        path: 'pages/menu',
+        path: 'pages/menu',//5
 
         // canActivate: [authGuard],
 
@@ -107,7 +107,7 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'pages/rol',
+        path: 'pages/rol',//2
 
         // canActivate: [authGuard],
 

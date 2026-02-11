@@ -61,12 +61,14 @@ export class AppComponent {
     // console.log('localStorage Sede =' + unidadOrganicas);
     // console.log('localStorage rol =' + userRole);
     // console.log('localStorage userIdRole=' + userIdRol);
-    // console.log('localStorage nivelRole=' + nivelRol);
+    // console.log('localStorage Entidad=' + entidad);
+    // console.log('localStorage RolesString=' + rolesString);
     // console.log('localStorage Name =' + userName);
     // console.log('localStorage Aplicacion =' + aplicacion);
     // console.log('localStorage email=' + userEmail);
     // console.log('localStorage nombreApellido=' + nombreApellido);
     // console.log('localStorage idAplicacion =' + idAplicacion);
+    // console.log('localStorage idEntidad=' + idEntidad);
 
     // console.log('---------------------------------------');
 
@@ -96,11 +98,19 @@ export class AppComponent {
       this.authService.entidad.set(entidad);
       this.authService.idEntidad.set(idEntidad);
       this.authService.roles.update((rolArray) => [...rolArray, ...roles]);
+      // console.log('---------------------------------------');
+      // console.log('signal Aplicacion =' + this.authService.aplicacion());
+      // console.log('signal UnidadOrganica =' + this.authService.unidadOrganicas());
       // console.log('signal rol =' + this.authService.userRole());
       // console.log('signal Name =' + this.authService.userName());
-      // console.log('signal sede =' + this.authService.unidadOrganicas());
-      // console.log('signal Aplicacion =' + this.authService.aplicacion());
-      // console.log('signal rol para el menu en el  appCoponent='+this.authService.userRole());
+      // console.log('signal Role=' + this.authService.userRole());
+      // console.log('signal idRol =' + this.authService.userIdRol());
+      // console.log('signal UserName =' + this.authService.userName());
+      // console.log('signal userEmail =' + this.authService.userEmail());
+      // console.log('signal nombresApellidos =' + this.authService.nombresApellidos());
+      // console.log('signal idAplicacion =' + this.authService.idAplicacion());
+      // console.log('signal entidad =' + this.authService.entidad());
+      // console.log('signal idEntidad =' + this.authService.idEntidad());
       // console.log('---------------------------------------');
 
       // if (this.authService.userRole() === 'Administrador') {

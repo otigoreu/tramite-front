@@ -11,7 +11,7 @@ export const PagesRoutes: Routes = [
     path: '',
     children: [
       {
-        path: 'user',
+        path: 'user',//3
         children: [
           {
             path: '',
@@ -39,7 +39,7 @@ export const PagesRoutes: Routes = [
         ],
       },
       {
-        path: 'entidad',
+        path: 'entidad',//8
         component: EntidadComponent,
         data: {
           title: 'Entidad',
@@ -50,7 +50,7 @@ export const PagesRoutes: Routes = [
         },
       },
       {
-        path: 'aplicacion',
+        path: 'aplicacion',//6
         component: AplicacionComponent,
         data: {
           title: 'Aplicacion',
@@ -61,7 +61,7 @@ export const PagesRoutes: Routes = [
         },
       },
       {
-        path: 'unidadOrganica',
+        path: 'unidadOrganica',//7
         component: UnidadorganicaComponent,
         data: {
           title: 'Unidad Organica',

@@ -158,13 +158,14 @@ export class HeaderComponent {
   }
 
   cambiarRol(idRol: string, nameRol: string) {
-    //console.log('idRol', idRol);
-    //console.log('nameRol', nameRol);
+    // console.log('idRol', idRol);
+    // console.log('nameRol', nameRol);
 
     if (this.authService.userRole() == nameRol) {
       this.notificationsHEader.set(notify13, true);
-      //console.log('Rol', this.authService.userRole());
-      //console.log('nameRol', nameRol);
+      // console.log('Rol', this.authService.userRole());
+      // console.log('nameRol', nameRol);
+      console.log('no va cambiar de Rol');
     } else {
       // this.authService.userRole.set(nameRol);
       // this.authService.userIdRol.set(idRol);
@@ -186,12 +187,13 @@ export class HeaderComponent {
       this.appservice
         .GetByAplicationPerRol(idRol)
         .subscribe((appRol: Aplicacion) => {
-          // console.log('AppRol :', appRol);
+          //console.log('AppRol :', appRol);
           // this.authService.aplicacion.set(appRol.descripcion);
           // this.authService.idAplicacion.set(appRol.id.toString());
           // localStorage.setItem('Aplicacion', this.authService.aplicacion());
           // localStorage.setItem('idAplicacion', this.authService.idAplicacion());
           // this.aplicacionHeader = this.authService.aplicacion();
+          console.log('va cambiar de Rol');
 
           this.menuService.GetByAplicationAsync(appRol.id).subscribe({
             next: (data: any[]) => {
