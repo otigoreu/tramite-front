@@ -16,7 +16,7 @@ import { navItems } from '../sidebar/sidebar-data';
 import { TranslateService } from '@ngx-translate/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -30,17 +30,47 @@ import {
   notify1,
   notify12,
   notify13,
+  notify14,
   notify6,
 } from 'src/app/data/mensajes.data';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
 import { NotificationsService } from 'angular2-notifications';
 import { EntidadService } from 'src/app/service/entidad.service';
 import { Aplicacion } from 'src/app/pages/aplicacion/Modals/Aplicacion';
+import { routes } from 'src/app/app.routes';
+import { MenuInfo } from 'src/app/model/menu';
 
 // import { AuthService } from 'src/app/service/auth.service';
 
 // import { ChangePasswordComponent } from 'src/app/pages/Authentication/change-Password/change-Password.component';
+//--------------------------------------------------------///
+export function extractRoutePaths(routes: Routes): string[] {
+  const paths: string[] = [];
 
+  function collectPaths(routeList: Routes, parentPath: string = '') {
+    routeList.forEach((route) => {
+      const fullPath = parentPath + '' + (route.path || '');
+      if (route.path) {
+        paths.push(fullPath.replace('//', '/'));
+      }
+      if (route.children) {
+        collectPaths(route.children, fullPath);
+      }
+    });
+  }
+
+  collectPaths(routes);
+  return paths;
+}
+
+
+
+
+
+
+
+
+//--------------------------------------------------------///
 interface notifications {
   id: number;
   img: string;
@@ -158,44 +188,29 @@ export class HeaderComponent {
   }
 
   cambiarRol(idRol: string, nameRol: string) {
-    // console.log('idRol', idRol);
-    // console.log('nameRol', nameRol);
 
     if (this.authService.userRole() == nameRol) {
       this.notificationsHEader.set(notify13, true);
-      // console.log('Rol', this.authService.userRole());
-      // console.log('nameRol', nameRol);
+
       console.log('no va cambiar de Rol');
     } else {
-      // this.authService.userRole.set(nameRol);
-      // this.authService.userIdRol.set(idRol);
 
-      // localStorage.setItem('userRole', this.authService.userRole());
-      // localStorage.setItem('userIdRol', this.authService.userIdRol());
-
-      // this.entidadservice
-      //   .GetByEntidadPerRol(this.authService.userIdRol())
-      //   .subscribe((entidadRol) => {
-      //     this.authService.entidad.set(entidadRol.descripcion);
-      //     localStorage.setItem('entidad', this.authService.entidad());
-      //     this.authService.idEntidad.set(entidadRol.id.toString());
-      //     localStorage.setItem('idEntidad', this.authService.idEntidad());
-
-      //     this.entidadHeader = this.authService.entidad();
-      //   });
 
       this.appservice
         .GetByAplicationPerRol(idRol)
         .subscribe((appRol: Aplicacion) => {
-          //console.log('AppRol :', appRol);
-          // this.authService.aplicacion.set(appRol.descripcion);
-          // this.authService.idAplicacion.set(appRol.id.toString());
-          // localStorage.setItem('Aplicacion', this.authService.aplicacion());
-          // localStorage.setItem('idAplicacion', this.authService.idAplicacion());
-          // this.aplicacionHeader = this.authService.aplicacion();
-          console.log('va cambiar de Rol');
 
-          this.menuService.GetByAplicationAsync(appRol.id).subscribe({
+          console.log('va cambiar de Rol');
+         const allPaths = extractRoutePaths(routes);
+         console.log('paths:', allPaths);
+
+          this.menuService.getDataAllByRol(idRol).subscribe((data:MenuInfo[])=>{
+            if(!data.some(item=> allPaths.includes(item.ruta))){
+
+                  this.notificationsHEader.set(notify14, true);
+                }
+            else{
+              this.menuService.GetByAplicationAsync(appRol.id).subscribe({
             next: (data: any[]) => {
               navItems.length = 0;
               data.forEach((nav) => {
@@ -257,6 +272,12 @@ export class HeaderComponent {
               );
             },
           });
+
+            }
+          });
+
+
+
         });
     }
   }

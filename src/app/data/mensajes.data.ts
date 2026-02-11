@@ -87,17 +87,24 @@ export const menssageNoti:Notification[]=[
 
   },
   {
-    type:NotificationType.Info,
-    icon: IconsNotify.Info,
-    title:'Usted ha cambiado de Rol',
-    content: 'El menu principal presentará cambios',
+    type:NotificationType.Success,
+    icon: IconsNotify.Success,
+    title:'Ha cambiado de Rol',
+    content: 'El menu presentará cambios',
 
   },
   {
     type:NotificationType.Info,
     icon: IconsNotify.Info,
-    title:'Usted ya tiene este Rol Seleccionado',
+    title:'El Rol ya esta Seleccionado',
     content: 'Asegurese de elegir un Rol diferente',
+
+  },
+   {
+    type:NotificationType.Warn,
+    icon: IconsNotify.Warn,
+    title:'No puede seleccionar este Rol',
+    content: 'los menus no cuentan con rutas validas',
 
   }
 
@@ -117,6 +124,7 @@ export const[
   notify10,
   notify11,
   notify12,
-   notify13,
+  notify13,
+  notify14,
 
 ] =menssageNoti
