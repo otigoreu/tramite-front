@@ -48,6 +48,7 @@ export class AuthService {
   unidadOrganicas = signal('');
   entidad = signal('');
   roles = signal<RolSignal[]>([]);
+  menusPaths=signal<string[]>([]);
 
   login(dni: string, password: string): Observable<LoginApiResponse> {
     const apiUrl = this.baseUrl + '/api/users/Login';

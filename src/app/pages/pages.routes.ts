@@ -5,6 +5,11 @@ import { AplicacionComponent } from './aplicacion/aplicacion.component';
 import { UserComponent } from './user/user.component';
 import { UnidadorganicaUserComponent } from './user/unidadorganica-user/unidadorganica-user.component';
 import { UnidadorganicaComponent } from './unidadorganica/unidadorganica.component';
+import { PersonaComponent } from './persona/persona.component';
+import { TipoDocumentoComponent } from './tipo-documento/tipo-documento.component';
+import { MenuComponent } from './menu/menu.component';
+import { RolComponent } from './rol/rol.component';
+import { authGuard } from './Authentication/guards/auth.guard';
 
 export const PagesRoutes: Routes = [
   {
@@ -12,6 +17,7 @@ export const PagesRoutes: Routes = [
     children: [
       {
         path: 'user',//3
+       // canActivate: [authGuard],
         children: [
           {
             path: '',
@@ -26,6 +32,7 @@ export const PagesRoutes: Routes = [
           },
           {
             path: 'unidadorganica-user/:userId',
+            //canActivate: [authGuard],
             component: UnidadorganicaUserComponent, // página completa
             data: {
               title: 'Unidad Orgánica (Usuario)',
@@ -40,6 +47,7 @@ export const PagesRoutes: Routes = [
       },
       {
         path: 'entidad',//8
+        //canActivate: [authGuard],
         component: EntidadComponent,
         data: {
           title: 'Entidad',
@@ -51,6 +59,7 @@ export const PagesRoutes: Routes = [
       },
       {
         path: 'aplicacion',//6
+        //canActivate: [authGuard],
         component: AplicacionComponent,
         data: {
           title: 'Aplicacion',
@@ -62,6 +71,7 @@ export const PagesRoutes: Routes = [
       },
       {
         path: 'unidadOrganica',//7
+        //canActivate: [authGuard],
         component: UnidadorganicaComponent,
         data: {
           title: 'Unidad Organica',
@@ -71,6 +81,55 @@ export const PagesRoutes: Routes = [
           ],
         },
       },
+      {
+        path: 'persona',
+       // canActivate: [authGuard],
+        component: PersonaComponent,
+        data: {
+          title: 'Personas',
+          urls: [
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Personas' },
+          ],
+        },
+      },
+       {
+        path: 'tipo-documento',//7
+        //canActivate: [authGuard],
+        component: TipoDocumentoComponent,
+        data: {
+          title: 'Tipo Documento',
+          urls: [
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Tipo Documento' },
+          ],
+        },
+      },
+      {
+        path: 'menu',//7
+       // canActivate: [authGuard],
+        component: MenuComponent,
+        data: {
+          title: 'Menu',
+          urls: [
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Menu' },
+          ],
+        },
+      },
+      {
+        path: 'rol',//7
+        //canActivate: [authGuard],
+        component: RolComponent,
+        data: {
+          title: 'Roles',
+          urls: [
+            { title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Roles' },
+          ],
+        },
+      },
+
     ],
   },
 ];

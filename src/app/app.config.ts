@@ -38,6 +38,7 @@ import {
 } from './pages/Authentication/interceptors/auth.interceptor';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { NgxLoadingModule } from 'ngx-loading';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 export function HttpLoaderFactory(http: HttpClient): any {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -54,6 +55,7 @@ export const appConfig: ApplicationConfig = {
       }),
       withComponentInputBinding()
     ),
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     //provideHttpClient(withInterceptorsFromDi()),
     provideHttpClient(
       withInterceptorsFromDi(),

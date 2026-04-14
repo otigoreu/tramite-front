@@ -1,5 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { IconCircleLetterG } from 'angular-tabler-icons/icons';
 import { finalize, tap } from 'rxjs';
 import { AuthService } from 'src/app/service/auth.service';
 
@@ -8,10 +9,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const excludedUrls = ['/reset-password', '/auth/login', '/auth/register'];
+  const excludedUrls = ['/login',
+    '/register',
+    '/forgot-password',
+    '/reset-password',
+    '/change-password'];
 
   if (excludedUrls.some((url) => req.url.includes(url))) {
-    // No inyectar token para rutas públicas
     return next(req);
   }
 
@@ -20,9 +24,11 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     const cloned = req.clone({
       headers: req.headers.set('Authorization', `Bearer ${token}`),
     });
+    //console.log('req2',req);
     return next(cloned);
   }
 
+  //console.log('req3',req);
   return next(req);
 };
 

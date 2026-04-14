@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, Routes } from '@angular/router';
 import { Options, SimpleNotificationsModule } from 'angular2-notifications';
 import { AuthService } from './service/auth.service';
 import { NgxLoadingModule } from 'ngx-loading';
@@ -10,6 +10,58 @@ import {
   navItemsUser,
 } from './layouts/full/vertical/sidebar/sidebar-data';
 import { MenuService } from './service/menu.service';
+import { PagesRoutes } from './pages/pages.routes';
+import { routes } from './app.routes';
+
+//EXTRAER LAS RUTAS DE FORMA JERÁRQUICA
+export function extractRoutePaths(routes: Routes): string[] {
+  const paths: string[] = [];
+
+  function collectPaths(routeList: Routes, parentPath: string = '') {
+    routeList.forEach((route) => {
+      const fullPath = parentPath + '' + (route.path || '');
+      if (route.path) {
+        paths.push(fullPath.replace('//', '/'));
+      }
+      if (route.children) {
+        collectPaths(route.children, fullPath);
+      }
+    });
+  }
+
+  collectPaths(routes);
+  return paths;
+}
+
+const allPaths = extractRoutePaths(routes);
+
+//------------------------------------------------------------------------------///
+//EXTRAER LAS RUTAS DE FORMA JERÁRQUICA DE LOS HIJOS DE PAGES
+export function getPageChildRoutes(): Routes {
+  return [...PagesRoutes];
+}
+
+export function getPageChildPathStrings(): string[] {
+  return getPageChildRoutes().flatMap((route) => {
+    const parentPath = `pages/${route.path}` || '';
+    if (route.children) {
+      return [
+        parentPath,
+        ...route.children.map((child) =>
+          `${parentPath}/${child.path}`.replace(/\/\/+/g, '/')
+        ),
+      ];
+    }
+    return [parentPath];
+  });
+}
+
+const allPageChildPaths = getPageChildPathStrings();
+//------------------------------------------------------------------------------///
+
+const menuPaths=allPaths.concat(allPageChildPaths);
+
+//------------------------------------------------------------------------------///
 
 @Component({
   selector: 'app-root',
@@ -38,6 +90,7 @@ export class AppComponent {
       '/change-password',
     ];
 
+    this.authService.menusPaths.set(menuPaths);
     const currentUrl = window.location.pathname;
 
     // ✅ Si estás en una ruta pública, no redirijas

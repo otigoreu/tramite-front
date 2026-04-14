@@ -44,33 +44,7 @@ import { MenuInfo } from 'src/app/model/menu';
 
 // import { ChangePasswordComponent } from 'src/app/pages/Authentication/change-Password/change-Password.component';
 //--------------------------------------------------------///
-export function extractRoutePaths(routes: Routes): string[] {
-  const paths: string[] = [];
 
-  function collectPaths(routeList: Routes, parentPath: string = '') {
-    routeList.forEach((route) => {
-      const fullPath = parentPath + '' + (route.path || '');
-      if (route.path) {
-        paths.push(fullPath.replace('//', '/'));
-      }
-      if (route.children) {
-        collectPaths(route.children, fullPath);
-      }
-    });
-  }
-
-  collectPaths(routes);
-  return paths;
-}
-
-
-
-
-
-
-
-
-//--------------------------------------------------------///
 interface notifications {
   id: number;
   img: string;
@@ -201,11 +175,12 @@ export class HeaderComponent {
         .subscribe((appRol: Aplicacion) => {
 
           console.log('va cambiar de Rol');
-         const allPaths = extractRoutePaths(routes);
-         console.log('paths:', allPaths);
+          console.log('idRol', idRol);
 
           this.menuService.getDataAllByRol(idRol).subscribe((data:MenuInfo[])=>{
-            if(!data.some(item=> allPaths.includes(item.ruta))){
+            console.log('menus por idrol',data);
+            console.log('menu del menusPaths', this.authService.menusPaths());
+            if(!data.some(item=> this.authService.menusPaths().includes(item.ruta))){
 
                   this.notificationsHEader.set(notify14, true);
                 }

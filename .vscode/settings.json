@@ -4,5 +4,8 @@
             "externalTemplate": true,
             "skipStyle": true
         }
-    }
+    },
+    "dataworkspace.excludedProjects": [
+        "prueba/prueba.sqlproj"
+    ]
 }
