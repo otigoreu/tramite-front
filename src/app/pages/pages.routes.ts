@@ -1,14 +1,4 @@
 import { Routes } from '@angular/router';
-import { EntidadComponent } from './entidad/entidad.component';
-import { AplicacionComponent } from './aplicacion/aplicacion.component';
-
-import { UserComponent } from './user/user.component';
-import { UnidadorganicaUserComponent } from './user/unidadorganica-user/unidadorganica-user.component';
-import { UnidadorganicaComponent } from './unidadorganica/unidadorganica.component';
-import { PersonaComponent } from './persona/persona.component';
-import { TipoDocumentoComponent } from './tipo-documento/tipo-documento.component';
-import { MenuComponent } from './menu/menu.component';
-import { RolComponent } from './rol/rol.component';
 import { authGuard } from './Authentication/guards/auth.guard';
 
 export const PagesRoutes: Routes = [
@@ -17,11 +7,11 @@ export const PagesRoutes: Routes = [
     children: [
       {
         path: 'user',//3
-       // canActivate: [authGuard],
+        //canActivate: [authGuard],
         children: [
           {
             path: '',
-            component: UserComponent, // página principal de usuario
+            loadComponent: () => import('./user/user.component').then((m) => m.UserComponent), // página principal de usuario
             data: {
               title: 'Usuario',
               urls: [
@@ -33,7 +23,7 @@ export const PagesRoutes: Routes = [
           {
             path: 'unidadorganica-user/:userId',
             //canActivate: [authGuard],
-            component: UnidadorganicaUserComponent, // página completa
+            loadComponent: () => import('./user/unidadorganica-user/unidadorganica-user.component').then((m) => m.UnidadorganicaUserComponent), // página completa
             data: {
               title: 'Unidad Orgánica (Usuario)',
               urls: [
@@ -48,11 +38,11 @@ export const PagesRoutes: Routes = [
       {
         path: 'entidad',//8
         //canActivate: [authGuard],
-        component: EntidadComponent,
+        loadComponent: () => import('./entidad/entidad.component').then((m) => m.EntidadComponent),
         data: {
           title: 'Entidad',
           urls: [
-            { title: 'Inicio', url: '/dashboards/dashboard1' },
+           // { title: 'Inicio', url: '/dashboards/dashboard1' },
             { title: 'Entidad' },
           ],
         },
@@ -60,35 +50,35 @@ export const PagesRoutes: Routes = [
       {
         path: 'aplicacion',//6
         //canActivate: [authGuard],
-        component: AplicacionComponent,
+        loadComponent: () => import('./aplicacion/aplicacion.component').then((m) => m.AplicacionComponent),
         data: {
-          title: 'Aplicacion',
+          title: 'Aplicación',
           urls: [
-            { title: 'Inicio', url: '/dashboards/dashboard1' },
-            { title: 'Aplicacion' },
+            //{ title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Aplicación' },
           ],
         },
       },
       {
-        path: 'unidadOrganica',//7
+        path: 'unidadorganica',//7
         //canActivate: [authGuard],
-        component: UnidadorganicaComponent,
+        loadComponent: () => import('./unidadorganica/unidadorganica.component').then((m) => m.UnidadorganicaComponent),
         data: {
-          title: 'Unidad Organica',
+          title: 'Unidad Orgánica',
           urls: [
-            { title: 'Inicio', url: '/dashboards/dashboard1' },
-            { title: 'Unidad Organica' },
+            //{ title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Unidad Orgánica' },
           ],
         },
       },
       {
         path: 'persona',
-       // canActivate: [authGuard],
-        component: PersonaComponent,
+        //canActivate: [authGuard],
+        loadComponent: () => import('./persona/persona.component').then((m) => m.PersonaComponent),
         data: {
           title: 'Personas',
           urls: [
-            { title: 'Inicio', url: '/dashboards/dashboard1' },
+           // { title: 'Inicio', url: '/dashboards/dashboard1' },
             { title: 'Personas' },
           ],
         },
@@ -96,35 +86,35 @@ export const PagesRoutes: Routes = [
        {
         path: 'tipo-documento',//7
         //canActivate: [authGuard],
-        component: TipoDocumentoComponent,
+        loadComponent: () => import('./tipo-documento/tipo-documento.component').then((m) => m.TipoDocumentoComponent),
         data: {
           title: 'Tipo Documento',
           urls: [
-            { title: 'Inicio', url: '/dashboards/dashboard1' },
+           // { title: 'Inicio', url: '/dashboards/dashboard1' },
             { title: 'Tipo Documento' },
           ],
         },
       },
       {
         path: 'menu',//7
-       // canActivate: [authGuard],
-        component: MenuComponent,
+        //canActivate: [authGuard],
+        loadComponent: () => import('./menu/menu.component').then((m) => m.MenuComponent),
         data: {
-          title: 'Menu',
+          title: 'Menú',
           urls: [
-            { title: 'Inicio', url: '/dashboards/dashboard1' },
-            { title: 'Menu' },
+           // { title: 'Inicio', url: '/dashboards/dashboard1' },
+            { title: 'Menú' },
           ],
         },
       },
       {
         path: 'rol',//7
         //canActivate: [authGuard],
-        component: RolComponent,
+        loadComponent: () => import('./rol/rol.component').then((m) => m.RolComponent),
         data: {
           title: 'Roles',
           urls: [
-            { title: 'Inicio', url: '/dashboards/dashboard1' },
+          //  { title: 'Inicio', url: '/dashboards/dashboard1' },
             { title: 'Roles' },
           ],
         },

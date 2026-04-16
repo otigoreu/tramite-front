@@ -9,23 +9,22 @@ export const authGuard: CanActivateFn = (route, state) => {
   //console.log('Guard → state.url:', state.url);
 
  // atrapa la URL sin query params para comparar con rutas públicas
-  const cleanUrl = state.url.split('?')[0];
-  //console.log('ruta', cleanUrl);
+  // const cleanUrl = state.url.split('?')[0].replace('#', '');
+  // console.log('ruta', cleanUrl);
 
-  const publicRoutes = [
-    '/login',
-    '/register',
-    '/forgot-password',
-    '/reset-password',
-    '/change-password',
-  ];
+  // const publicRoutes = [
+  //   '/login',
+  //   '/forgot-password',
+  //   '/reset-password',
+
+  // ];
 
   // verifica si la URL de cleanUrl coincide con alguna ruta de publicRoutes
   // ✅ Permitir acceso a rutas públicas (aunque tengan query params)
-  if (publicRoutes.some((r) => cleanUrl.startsWith(r))) {
-    //console.log('cleanUrl', cleanUrl, 'esta dentro del arreglo :', publicRoutes);
-    return true;
-  }
+  // if (publicRoutes.some((r) => cleanUrl.startsWith(r))) {
+  //   console.log('cleanUrl', cleanUrl, 'esta dentro del arreglo :', publicRoutes);
+  //   return true;
+  // }
 
   // ✅ Permitir acceso si hay token
   if (token) {

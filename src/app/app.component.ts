@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterOutlet, Routes } from '@angular/router';
 import { Options, SimpleNotificationsModule } from 'angular2-notifications';
 import { AuthService } from './service/auth.service';
@@ -69,7 +69,7 @@ const menuPaths=allPaths.concat(allPageChildPaths);
   imports: [RouterOutlet, SimpleNotificationsModule, NgxLoadingModule],
   templateUrl: './app.component.html',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Modernize Angular Admin Tempplate';
   notificationsOptions: Options = {
     position: ['top', 'right'],
@@ -82,6 +82,10 @@ export class AppComponent {
   menuService = inject(MenuService);
 
   constructor() {
+    this.authService.menusPaths.set(menuPaths);
+  }
+
+  ngOnInit(): void {
     const publicRoutes = [
       '/login',
       '/register',
@@ -90,9 +94,11 @@ export class AppComponent {
       '/change-password',
     ];
 
-    this.authService.menusPaths.set(menuPaths);
-    const currentUrl = window.location.pathname;
+    // Para HashLocationStrategy, la ruta está en el hash
+    const hash = window.location.hash.substring(1); // quita el '#'
 
+    // Usar this.router.url para obtener la ruta actual, que incluye el hash
+    const currentUrl = hash ? hash.split('?')[0] : window.location.pathname; // quita query params
     // ✅ Si estás en una ruta pública, no redirijas
     if (publicRoutes.some((r) => currentUrl.startsWith(r))) {
       return;

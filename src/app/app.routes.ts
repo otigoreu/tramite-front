@@ -7,59 +7,31 @@ export const routes: Routes = [
   // 🔓 RUTAS PÚBLICAS primero
   {
     path: 'login',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('../app/pages/Authentication/login/login.component').then(
-        (m) => m.LoginComponent
-      ),
-  },
-  {
-    path: 'register',
-    loadComponent: () =>
-      import('./pages/Authentication/register/register.component').then(
-        (m) => m.RegisterComponent
-      ),
+    loadComponent: () =>import('./pages/Authentication/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'forgot-password',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import(
-        '../app/pages/Authentication/forgot-password/forgot-password.component'
-      ).then((m) => m.ForgotPasswordComponent),
+    loadComponent: () =>import('./pages/Authentication/forgot-password/forgot-password.component').then((m) => m.ForgotPasswordComponent),
   },
   {
     path: 'reset-password',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import(
-        './pages/Authentication/reset-password/reset-password.component'
-      ).then((m) => m.ResetPasswordComponent),
+    loadComponent: () =>import('./pages/Authentication/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
   },
-  {
-    path: 'change-password',
-    loadComponent: () =>
-      import(
-        './pages/Authentication/change-Password/change-Password.component'
-      ).then((m) => m.ChangePasswordComponent),
-  },
-
   // 🔒 LUEGO tu layout principal protegido
   {
-    path: '',
+    path: 'pages',
     canActivate: [authGuard],
     component: FullComponent,
-    children: [
-      {
-        path: 'pages',
-        loadChildren: () =>
-          import('./pages/pages.routes').then((m) => m.PagesRoutes),
-      },
-    ],
+    loadChildren: () =>import('./pages/pages.routes').then((m) => m.PagesRoutes),
+  },
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: '/login',
+    redirectTo: 'login',
   },
 ];
 

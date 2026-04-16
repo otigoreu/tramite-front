@@ -9,15 +9,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const excludedUrls = ['/login',
-    '/register',
-    '/forgot-password',
-    '/reset-password',
-    '/change-password'];
+  // const excludedUrls = ['/login',
+  //   '/register',
+  //   '/forgot-password',
+  //   '/reset-password',
+  //   '/change-password'];
 
-  if (excludedUrls.some((url) => req.url.includes(url))) {
-    return next(req);
-  }
+  // if (excludedUrls.some((url) => req.url.includes(url))) {
+  //   console.log('excludeUrls', excludedUrls);
+  //   console.log('request url', req.url);
+  //   return next(req);
+  // }
 
   const token = localStorage.getItem('token');
   if (token) {
