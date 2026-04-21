@@ -34,6 +34,7 @@ import Swal from 'sweetalert2';
 import { ConfirmationService } from 'src/app/service/confirmation.service';
 import { NotificationsService } from 'angular2-notifications';
 import { NotificationMessages } from 'src/app/shared/notification-messages/notification-messages';
+import { Subject, takeUntil } from 'rxjs';
 registerLocaleData(localeES);
 
 @Component({
@@ -58,6 +59,7 @@ registerLocaleData(localeES);
   templateUrl: './persona.component.html',
 })
 export class PersonaComponent implements OnInit, AfterViewInit {
+  private destroy$ = new Subject<void>();
   title = 'TramiteGoreu-FrontEnd';
 
   personaService = inject(PersonaServiceService);
@@ -89,19 +91,24 @@ export class PersonaComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     // 📌 Paginación
-    this.paginator.page.subscribe(() => {
+    this.paginator.page.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.pageIndex = this.paginator.pageIndex;
       this.pageSize = this.paginator.pageSize;
       this.load_Personas();
     });
 
     // 📌 Ordenamiento
-    this.sort.sortChange.subscribe(() => {
+    this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       // cuando cambie el orden reiniciamos a la primera página
       this.pageIndex = 0;
       this.load_Personas();
     });
   }
+  ngOnDestroy() {
+    //console.log('destroy de persona');
+  this.destroy$.next();
+  this.destroy$.complete();
+}
 
   ngOnInit(): void {
     this.load_Personas();

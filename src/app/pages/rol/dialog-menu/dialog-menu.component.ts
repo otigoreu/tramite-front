@@ -109,7 +109,7 @@ export class DialogMenuComponent implements OnInit {
         if (esEdicion) {
           this.menusrolservice.update(res.id!, dto).subscribe({
             next: (res) => {
-              console.log('res', res);
+             // console.log('res', res);
               this.menuservice
                 .GetByAplicationAsync(parseInt(this.authservice.idAplicacion()))
                 .subscribe({
@@ -137,13 +137,13 @@ export class DialogMenuComponent implements OnInit {
                 });
             },
             error: (err) => {
-              console.log('error', err);
+              //console.log('error', err);
             },
           });
         } else {
           this.menusrolservice.save(dto).subscribe({
             next: (res) => {
-              console.log('res', res);
+             // console.log('res', res);
               this.menuservice
                 .GetByAplicationAsync(parseInt(this.authservice.idAplicacion()))
                 .subscribe({

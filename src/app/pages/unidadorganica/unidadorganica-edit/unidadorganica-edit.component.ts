@@ -165,7 +165,7 @@ export class AppUnidadorganicaEditComponent implements OnInit {
 
       // Aquí puedes llamar al servicio para guardar o actualizar la unidad orgánica
     } else {
-      console.log('Formulario inválido');
+      //console.log('Formulario inválido');
       this.uoForm.markAllAsTouched();
     }
   }

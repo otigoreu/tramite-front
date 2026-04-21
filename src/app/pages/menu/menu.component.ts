@@ -92,7 +92,7 @@ export class MenuComponent {
   loadMenus(idAplicacion:number){
 
     this.menuService.GetByAplicationAsyncSingle(idAplicacion).subscribe((response)=>{
-      console.log('data',response.toString);
+      //console.log('data',response.toString);
       this.dataSource=new MatTableDataSource(response);
       this.dataSource.paginator=this.paginator;
     });

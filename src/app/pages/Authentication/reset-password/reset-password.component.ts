@@ -62,9 +62,9 @@ export class ResetPasswordComponent implements OnInit {
       this.correo = params['correo'];
       this.nombreCompleto = params['nombreCompleto'];
 
-      console.log('Token recibido:', this.token);
-      console.log('Correo recibido:', this.correo);
-      console.log('Nombre Completo recibido:', this.nombreCompleto);
+      // console.log('Token recibido:', this.token);
+      // console.log('Correo recibido:', this.correo);
+      // console.log('Nombre Completo recibido:', this.nombreCompleto);
 
       // 👇 Rellenar los inputs automáticamente
       this.loginForm.patchValue({

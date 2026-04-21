@@ -40,6 +40,10 @@ export class MenuService {
     return this.http.get<GetMenu>(this.baseUrl + '/api/menus/' + idAplicacion)
       .pipe(map((response) => response.data));
   }
+   GetByAplicationWithIdRol(idRol: string) {
+    return this.http.get<GetMenu>(this.baseUrl + '/api/menus/getAllByRol?idRol='+ idRol)
+      .pipe(map((response) => response.data));
+  }
   GetByAplicationAsyncSingle(idAplicacion: number) {
     return this.http.get<GetMenu>(this.baseUrl + '/api/menus/single/' + idAplicacion)
       .pipe(map((response) => response.data));

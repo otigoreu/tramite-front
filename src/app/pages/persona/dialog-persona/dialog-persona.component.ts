@@ -204,7 +204,7 @@ export class DialogPersonaComponent {
     const nuDniConsulta = this.personaForm.get('nroDoc')?.value;
 
     if (!nuDniConsulta) {
-      console.log('Debe ingresar un número de documento');
+      //console.log('Debe ingresar un número de documento');
       //this.notificationsService.warning('Debe ingresar un número de documento');
       return;
     }
@@ -214,7 +214,7 @@ export class DialogPersonaComponent {
       .pipe(
         tap((res) => {
           // ✅ Si el backend responde correctamente (200 OK)
-          console.log('Datos BD:', res);
+          //console.log('Datos BD:', res);
 
           // Si usas BaseResponseGeneric<T>
           if (res.success && res.data) {
@@ -238,7 +238,7 @@ export class DialogPersonaComponent {
             .consultarDni(nuDniUsuario, nuDniConsulta)
             .pipe(
               tap((data) => {
-                console.log('Datos RENIEC:', data);
+               // console.log('Datos RENIEC:', data);
 
                 // this.data = data;
 

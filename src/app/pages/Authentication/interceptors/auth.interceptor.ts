@@ -9,17 +9,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  // const excludedUrls = ['/login',
-  //   '/register',
-  //   '/forgot-password',
-  //   '/reset-password',
-  //   '/change-password'];
 
-  // if (excludedUrls.some((url) => req.url.includes(url))) {
-  //   console.log('excludeUrls', excludedUrls);
-  //   console.log('request url', req.url);
-  //   return next(req);
-  // }
 
   const token = localStorage.getItem('token');
   if (token) {
@@ -34,17 +24,6 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req);
 };
 
-// export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-//   console.log('jwtInterceptor');
-//   const token = localStorage.getItem('token');
-//   let clonedRequest = req;
-//   if (token) {
-//     clonedRequest = req.clone({
-//       headers: req.headers.set('Authorization', `Bearer ${token}`),
-//     });
-//   }
-//   return next(clonedRequest);
-// };
 
 export const loadingScreenInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);

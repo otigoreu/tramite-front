@@ -125,7 +125,7 @@ export class RolComponent implements OnInit {
       .subscribe((response) => {
         this.dataSource = new MatTableDataSource(response);
         this.dataSource.paginator = this.paginator;
-        console.log('response', response);
+       // console.log('response', response);
       });
   }
 

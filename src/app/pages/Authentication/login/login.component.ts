@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  OnDestroy,
   signal,
 } from '@angular/core';
 import {
@@ -34,6 +35,7 @@ import { routes } from 'src/app/app.routes';
 import { Menu, MenuInfo, Menus } from 'src/app/model/menu';
 import { Entidad } from 'src/app/model/entidad';
 import { Rol } from 'src/app/model/rol';
+import { Subject, takeUntil } from 'rxjs';
 
 //EXTRAER LAS RUTAS DE FORMA JERÁRQUICA
 export function extractRoutePaths(routes: Routes): string[] {
@@ -98,7 +100,8 @@ const menuPaths = allPaths.concat(allPageChildPaths);
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy{
+   private destroy$ = new Subject<void>();
   hide = true;
   options = this.settings.getOptions();
 
@@ -106,6 +109,7 @@ export class LoginComponent {
     private settings: CoreService,
     public dialog: MatDialog,
   ) {}
+
 
   captchaValid = false;
 
@@ -217,13 +221,13 @@ export class LoginComponent {
                       'idAplicacion',
                       this.authService.idAplicacion(),
                     );
-
-                    this.menuService
-                      .GetByAplicationAsync(
-                        parseInt(this.authService.idAplicacion()),
-                      )
+                    //carga los menus por ID de aplicacion y rol
+                    this.menuService.GetByAplicationWithIdRol(this.authService.userIdRol())
+                    //this.menuService.GetByAplicationAsync(parseInt(this.authService.idAplicacion()),)
+                    .pipe(takeUntil(this.destroy$))
                       .subscribe({
                         next: (data: any[]) => {
+                          //console.log('entro a crear el menu ');
                           //console.log('menu', data);
                           navItems.length = 0;
                           data.forEach((nav) => {
@@ -315,5 +319,11 @@ export class LoginComponent {
 
   onCaptchaVerified(isValid: boolean) {
     this.captchaValid = isValid;
+  }
+
+   ngOnDestroy(): void {
+    //console.log('ingresando al ngDestroy login');
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

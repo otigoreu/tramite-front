@@ -166,7 +166,7 @@ export class HeaderComponent {
     if (this.authService.userRole() == nameRol) {
       this.notificationsHEader.set(notify13, true);
 
-      console.log('no va cambiar de Rol');
+      //console.log('no va cambiar de Rol');
     } else {
 
 
@@ -174,12 +174,12 @@ export class HeaderComponent {
         .GetByAplicationPerRol(idRol)
         .subscribe((appRol: Aplicacion) => {
 
-          console.log('va cambiar de Rol');
-          console.log('idRol', idRol);
+          // console.log('va cambiar de Rol');
+          // console.log('idRol', idRol);
 
           this.menuService.getDataAllByRol(idRol).subscribe((data:MenuInfo[])=>{
-            console.log('menus por idrol',data);
-            console.log('menu del menusPaths', this.authService.menusPaths());
+            // console.log('menus por idrol',data);
+            // console.log('menu del menusPaths', this.authService.menusPaths());
             if(!data.some(item=> this.authService.menusPaths().includes(item.ruta))){
 
                   this.notificationsHEader.set(notify14, true);
@@ -259,8 +259,8 @@ export class HeaderComponent {
 
   openDialog() {
     this.dialog.open(ChangePasswordComponent);
-    console.log('roles con authService', this.authService.roles());
-    console.log('Roles con Variable', this.rolesHeader);
+    // console.log('roles con authService', this.authService.roles());
+    // console.log('Roles con Variable', this.rolesHeader);
   }
 
   changeLanguage(lang: any): void {
