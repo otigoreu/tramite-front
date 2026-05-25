@@ -169,7 +169,7 @@ export class AppComponent implements OnInit, OnDestroy {
     //traer menu por aplicacion
     if (idAplicacion) {
       //console.log('idAplicacion: '+idAplicacion);
-      this.menuService.GetByAplicationAsync(parseInt(idAplicacion))
+      this.menuService.GetByAplicationWithIdRol(userIdRol || '')
       .pipe(takeUntil(this.destroy$))
         .subscribe((data: any[]) => {
           //console.log('menu', data);

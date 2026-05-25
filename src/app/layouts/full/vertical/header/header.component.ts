@@ -174,19 +174,23 @@ export class HeaderComponent {
         .GetByAplicationPerRol(idRol)
         .subscribe((appRol: Aplicacion) => {
 
-          // console.log('va cambiar de Rol');
-          // console.log('idRol', idRol);
+          console.log('va cambiar de Rol');
+          console.log('idRol', idRol);
 
           this.menuService.getDataAllByRol(idRol).subscribe((data:MenuInfo[])=>{
-            // console.log('menus por idrol',data);
-            // console.log('menu del menusPaths', this.authService.menusPaths());
+            console.log('menus por idrol',data);
+            console.log('menu del menusPaths', this.authService.menusPaths());
             if(!data.some(item=> this.authService.menusPaths().includes(item.ruta))){
 
                   this.notificationsHEader.set(notify14, true);
                 }
             else{
-              this.menuService.GetByAplicationAsync(appRol.id).subscribe({
+              console.log('va a cambair con el rol', idRol);
+              console.log('va a cambair con el rol2',appRol.id);
+              this.menuService.GetByAplicationWithIdRol(idRol).subscribe({
             next: (data: any[]) => {
+              console.log('entro a crear el menu ');
+              console.log('menu creado por rol', data);
               navItems.length = 0;
               data.forEach((nav) => {
                 if (!nav.idMenuPadre) {

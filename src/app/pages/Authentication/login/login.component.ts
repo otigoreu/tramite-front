@@ -227,8 +227,8 @@ export class LoginComponent implements OnDestroy{
                     .pipe(takeUntil(this.destroy$))
                       .subscribe({
                         next: (data: any[]) => {
-                          //console.log('entro a crear el menu ');
-                          //console.log('menu', data);
+                          console.log('entro a crear el menu ');
+                          console.log('menu creado por rol', data);
                           navItems.length = 0;
                           data.forEach((nav) => {
                             //console.log('nav', nav);
@@ -267,9 +267,8 @@ export class LoginComponent implements OnDestroy{
 
                 // this.notifications.set(notify1, true);
                 //----------------------------------------------------------------------//
-                // this.authService.roles.update((arr) => []);
-
-                //console.log('Array2 de Roles en login',this.authService.roles());
+                localStorage.setItem('entidad', '');
+                localStorage.setItem('idEntidad', '');
                 this.entidadservice
                   .GetByEntidadPerRol(this.authService.userIdRol())
                   .subscribe((entidadRol: Entidad) => {
@@ -277,6 +276,7 @@ export class LoginComponent implements OnDestroy{
                     this.authService.idEntidad.set(entidadRol.id.toString());
                     localStorage.setItem('entidad', entidadRol.descripcion);
                     localStorage.setItem('idEntidad', entidadRol.id.toString());
+                    console.log('entidad por rol', localStorage.getItem('entidad'));
                   });
 
               }

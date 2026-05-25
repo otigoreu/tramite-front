@@ -1,5 +1,5 @@
 export const environment = {
+  production: false, // development environment
   baseUrl: 'https://localhost:7230',
- //baseUrl: 'https://172.16.14.14:7230',
-  //baseUrl: 'https://goreuapi.regionucayali.gob.pe'
+  // Use this URL only for production builds in environment.production.ts
 };

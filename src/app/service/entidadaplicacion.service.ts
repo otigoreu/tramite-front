@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment'; // changed to standard environment import
 import { ApiResponse } from '../model/ApiResponse';
 import { EntidadAplicacionResponseDto } from '../pages/entidad/entidad-aplicacion/Models/EntidadAplicacionResponseDto';
 import { map, Observable } from 'rxjs';

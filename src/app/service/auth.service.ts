@@ -3,7 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { catchError, EMPTY, map, Observable, of } from 'rxjs';
 import { NotificationsService } from 'angular2-notifications';
 import { navItems } from '../layouts/full/vertical/sidebar/sidebar-data';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment'; // changed to standard environment import
 import { Rol, RolSignal } from '../model/rol';
 import { notify5 } from '../data/mensajes.data';
 import {

@@ -8,7 +8,7 @@ import {
 } from '../model/persona';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Subject, finalize } from 'rxjs';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment'; // changed to standard environment import
 import { ApiResponse } from '../model/ApiResponse';
 import { BaseResponseGeneric } from '../model/BaseResponse';
 

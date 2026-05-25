@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment'; // changed to standard environment import
 
 import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../model/ApiResponse';

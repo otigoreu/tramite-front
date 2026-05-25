@@ -5,7 +5,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { Menu, MenuInfo,  Menus, MenuWithRol, MenuWithRoles } from '../model/menu';
 import { map } from 'rxjs';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment'; // changed to standard environment import
 
 interface GetMenu{
   data:MenuInfo[];
