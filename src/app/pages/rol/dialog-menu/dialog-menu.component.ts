@@ -62,6 +62,7 @@ export class DialogMenuComponent implements OnInit {
   firstOptionMenu = signal('');
   router = inject(Router);
   isLoading = false;
+  userIdRolGeneral: string | null = null;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: Rol,
@@ -72,7 +73,13 @@ export class DialogMenuComponent implements OnInit {
     this.rol = { ...this.data };
 
     this.loadMenuByRolEstado();
+     this.userIdRolGeneral = localStorage.getItem('userIdRol');
+      console.log('idRolGeneral', this.userIdRolGeneral);
+      console.log('idrol traido', this.rol.id);
+
   }
+
+
 
   get seleccionadas(): number {
     return this.menusRolEstado().filter((app) => app.estado).length;
@@ -93,6 +100,11 @@ export class DialogMenuComponent implements OnInit {
   }
 
   onSelectedChange(row: MenuRol, selected: boolean): void {
+    // 👇 si el valor nuevo es igual al que ya tenía, es el binding inicial, no un clic real
+    if (row.estado === selected) {
+      return;
+    }
+    console.log('se activo el select');
     if (this.isLoading) return;
 
     const dto: MenuRol = {
@@ -109,11 +121,17 @@ export class DialogMenuComponent implements OnInit {
         if (esEdicion) {
           this.menusrolservice.update(res.id!, dto).subscribe({
             next: (res) => {
-             // console.log('res', res);
+             row.estado = selected; // 👈 actualiza el estado local tras confirmar el guardado
+
+             if(this.userIdRolGeneral === this.rol.id){
+              console.log('roles iguales');
+              //actualizar menus por rol
               this.menuservice
-                .GetByAplicationAsync(parseInt(this.authservice.idAplicacion()))
+                .GetByAplicationWithIdRol(dto.idRol)//GetByAplicationAsync(parseInt(this.authservice.idAplicacion()))
                 .subscribe({
+
                   next: (data: any[]) => {
+                    //console.log('menu', data);
                     navItems.length = 0;
                     data.forEach((nav) => {
                       if (!nav.idMenuPadre) {
@@ -135,6 +153,10 @@ export class DialogMenuComponent implements OnInit {
                     });
                   },
                 });
+                ///fin de actualizar menus por rol
+
+             }
+
             },
             error: (err) => {
               //console.log('error', err);
@@ -143,11 +165,15 @@ export class DialogMenuComponent implements OnInit {
         } else {
           this.menusrolservice.save(dto).subscribe({
             next: (res) => {
-             // console.log('res', res);
+              row.estado = selected;// 👈 actualiza el estado local tras confirmar el guardado
+               if(this.userIdRolGeneral === this.rol.id){
+              console.log('roles iguales');
+                //actualizar menu por rol
               this.menuservice
-                .GetByAplicationAsync(parseInt(this.authservice.idAplicacion()))
+                .GetByAplicationWithIdRol(dto.idRol)//GetByAplicationAsync(parseInt(this.authservice.idAplicacion()))
                 .subscribe({
                   next: (data: any[]) => {
+                    //console.log('menu', data);
                     navItems.length = 0;
                     data.forEach((nav) => {
                       if (!nav.idMenuPadre) {
@@ -163,6 +189,10 @@ export class DialogMenuComponent implements OnInit {
                     });
                   },
                 });
+                //fin de actualizar menu por rol
+
+             }
+
             },
             error: (err) => {
               console.log('error', err);

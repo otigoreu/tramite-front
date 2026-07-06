@@ -132,6 +132,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const entidad = localStorage.getItem('entidad');
     const rolesString = localStorage.getItem('roles');
     const idEntidad=localStorage.getItem('idEntidad');
+   // console.log('idRol :'+userIdRol+' userRole: '+userRole+' rolesString: '+rolesString);
 
 
     if (
@@ -168,13 +169,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
     //traer menu por aplicacion
     if (idAplicacion) {
-      //console.log('idAplicacion: '+idAplicacion);
+      //console.log('idRol: '+userIdRol+', Rol :'+userRole+', idAplicacion: '+idAplicacion);
+      navItems.length = 0; // Limpiar el array antes de llenarlo nuevamente
       this.menuService.GetByAplicationWithIdRol(userIdRol || '')
       .pipe(takeUntil(this.destroy$))
         .subscribe((data: any[]) => {
-          //console.log('menu', data);
+         // console.log('menu', data);
           data.forEach((nav) => {
-            //  console.log('nav', nav);
+             //console.log('nav', nav);
             if (!nav.idMenuPadre) {
               const navItem: NavItem = {
                 id: nav.id,
