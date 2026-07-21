@@ -21,7 +21,7 @@ export class UnidadorganicaService {
     search?: string,
     pageSize?: number,
     pageIndex?: number,
-    idEntidad?: number // 👈 Parámetro opcional
+    idEntidad?: number, // 👈 Parámetro opcional
   ) {
     let params = new HttpParams();
 
@@ -39,31 +39,33 @@ export class UnidadorganicaService {
       params = params.set('idEntidad', idEntidad.toString());
     }
 
+    params = params.set('idTipo', 1);
+
     return this.http
       .get<BaseResponseGeneric<UnidadOrganicaResponseDto[]>>(
         `${this.baseUrl}/descripcion`,
         {
           params,
           observe: 'response',
-        }
+        },
       )
       .pipe(
         map((response) => {
           const data = response.body?.data ?? [];
           const total = parseInt(
             response.headers.get('totalrecordsquantity') ?? '0',
-            10
+            10,
           );
           return {
             data,
             meta: { total, pageIndex, pageSize },
           };
-        })
+        }),
       );
   }
 
   agregarUnidadorganica(
-    dto: UnidadorganicaRequestDto
+    dto: UnidadorganicaRequestDto,
   ): Observable<ApiResponse<number>> {
     console.log('dto', dto);
     return this.http.post<ApiResponse<number>>(`${this.baseUrl}`, dto);
@@ -71,7 +73,7 @@ export class UnidadorganicaService {
 
   actualizarUnidadorganica(
     id: number,
-    dto: UnidadorganicaRequestDto
+    dto: UnidadorganicaRequestDto,
   ): Observable<ApiResponse<null>> {
     return this.http.put<ApiResponse<null>>(`${this.baseUrl}/${id}`, dto);
   }
@@ -83,14 +85,14 @@ export class UnidadorganicaService {
   deshabilitarUnidadorganica(id: number): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
       `${this.baseUrl}/${id}/finalize`,
-      null
+      null,
     );
   }
 
   habilitarUnidadorganica(id: number): Observable<ApiResponse<null>> {
     return this.http.patch<ApiResponse<null>>(
       `${this.baseUrl}/${id}/initialize`,
-      null
+      null,
     );
   }
 }
