@@ -47,6 +47,23 @@ export class UserComponent implements OnInit {
   confirmationService = inject(ConfirmationService);
   notificationsService = inject(NotificationsService);
 
+  rols: RolSingleResponse[] = [];
+
+  idEntidad: number;
+  idAplicacion: number;
+  rolId: string | null = null;
+
+  // DataSource de la tabla y total de registros
+  dataSource: UsuarioRol_UsuarioResponseDto[] = [];
+  search: string = '';
+
+  pageIndex: number = 0; // MatPaginator usa base 0
+  pageSize: number = 10;
+  totalRecords: number = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
   displayedColumns: string[] = [
     'item',
     'Usuario',
@@ -57,30 +74,30 @@ export class UserComponent implements OnInit {
     'actions',
   ];
 
-  rols: RolSingleResponse[] = [];
-
-  idEntidad: number;
-  idAplicacion: number;
-  rolId: string | null = null;
-
-  // DataSource de la tabla y total de registros
-  dataSource: MatTableDataSource<UsuarioRol_UsuarioResponseDto> =
-    new MatTableDataSource<UsuarioRol_UsuarioResponseDto>();
-  totalRecords: number = 0;
-
-  // @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator =
-    Object.create(null);
-  @ViewChild(MatSort) sort!: MatSort;
-
   totalElements: number;
   dialog = inject(MatDialog);
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
+
+  ngAfterViewInit() {
+    // 📌 Paginación
+    this.paginator.page.subscribe(() => {
+      this.pageIndex = this.paginator.pageIndex;
+      this.pageSize = this.paginator.pageSize;
+      this.cargar_Usuarios();
+    });
+
+    // 📌 Ordenamiento
+    this.sort.sortChange.subscribe(() => {
+      // cuando cambie el orden reiniciamos a la primera página
+      this.pageIndex = 0;
+      this.cargar_Usuarios();
+    });
+  }
 
   ngOnInit(): void {
     const rolId = localStorage.getItem('userIdRol')!;
@@ -88,12 +105,12 @@ export class UserComponent implements OnInit {
     this.idEntidad = Number(localStorage.getItem('idEntidad'));
     this.idAplicacion = Number(localStorage.getItem('idAplicacion'));
 
-    this.cargarRols();
+    this.cargar_Rols();
 
-    this.load_Usuarios();
+    this.cargar_Usuarios();
   }
 
-  cargarRols() {
+  cargar_Rols() {
     this.rolService.getPaginado(this.idEntidad, this.idAplicacion!).subscribe({
       next: (res) => {
         this.rols = res.data.map((dto) => ({
@@ -105,28 +122,26 @@ export class UserComponent implements OnInit {
     });
   }
 
-  load_Usuarios(
-    search: string = '',
-    page: number = 0,
-    pageSize: number = 10
-  ): void {
+  cargar_Usuarios(): void {
     this.userRolService
       .getUsuariosPaginado(
         this.idEntidad,
         this.idAplicacion,
         this.rolId,
-        search,
-        page,
-        pageSize
+        this.search,
+        this.pageIndex,
+        this.pageSize,
       )
       .subscribe({
         next: (res) => {
-          this.dataSource.data = res.data;
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          //console.log('data', res);
+          this.dataSource = res.data;
+          this.totalRecords = res.meta.total;
 
-          // this.totalRecords = res.meta.total;
+          if (this.paginator) {
+            // 🔹 Asegura que los valores del paginator se sincronicen
+            this.paginator.length = this.totalRecords;
+            this.paginator.pageIndex = this.pageIndex;
+          }
         },
         error: (err) => {
           console.error('Error al obtener los usuarios', err);
@@ -134,15 +149,23 @@ export class UserComponent implements OnInit {
       });
   }
 
-  applyFilter(filterValue: any) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter(value: string) {
+    this.search = value.trim().toLowerCase();
+    this.pageIndex = 0;
+
+    // 🔹 Reiniciar visualmente el paginator
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
+
+    this.cargar_Usuarios();
   }
 
   onRolSelected(event: any): void {
     this.rolId = event.value;
 
     // 👇 aquí puedes llamar directamente a tu método de carga de usuarios
-    this.load_Usuarios();
+    this.cargar_Usuarios();
   }
 
   openDialog(userDialog?: Usuario) {
@@ -154,13 +177,13 @@ export class UserComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(() => {
-        this.load_Usuarios();
+        this.cargar_Usuarios();
       });
   }
 
   /** (Método comentado) Abrir diálogo de aplicación a Unidad Orgánica */
   openDialog_UsuarioAsociadoUnidadorganica(
-    userRolDialog?: UsuarioRol_UsuarioResponseDto
+    userRolDialog?: UsuarioRol_UsuarioResponseDto,
   ) {
     // navegación absoluta
     this.router.navigate(
@@ -170,7 +193,7 @@ export class UserComponent implements OnInit {
           userName: userRolDialog?.userName,
           descripcionPersona: userRolDialog?.nombreCompleto,
         },
-      }
+      },
     );
   }
 
@@ -183,7 +206,7 @@ export class UserComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(() => {
-        this.load_Usuarios();
+        this.cargar_Usuarios();
       });
   }
 
@@ -195,13 +218,13 @@ export class UserComponent implements OnInit {
       (response) => {
         if (response.success) {
           this.notificationsService.success(
-            ...NotificationMessages.success('Usuario Deshabilitado')
+            ...NotificationMessages.success('Usuario Deshabilitado'),
           );
-          this.load_Usuarios();
+          this.cargar_Usuarios();
         }
       },
       'El usuario fue deshabilitado correctamente.',
-      'Confirmar deshabilitación de usuario'
+      'Confirmar deshabilitación de usuario',
     );
   }
 
@@ -213,13 +236,13 @@ export class UserComponent implements OnInit {
       (response) => {
         if (response.success) {
           this.notificationsService.success(
-            ...NotificationMessages.success('Usuario Habilitado')
+            ...NotificationMessages.success('Usuario Habilitado'),
           );
-          this.load_Usuarios();
+          this.cargar_Usuarios();
         }
       },
       'El usuario fue habilitado correctamente.',
-      'Confirmar habilitación de usuario'
+      'Confirmar habilitación de usuario',
     );
   }
 
@@ -229,12 +252,12 @@ export class UserComponent implements OnInit {
       this.userService.forcePasswordChange(id),
       (res) => {
         if (res.success) {
-          this.load_Usuarios();
+          this.cargar_Usuarios();
         } else {
         }
       },
       'La contraseña fue reiniciada correctamente.',
-      'Confirmar reinicio de contraseña'
+      'Confirmar reinicio de contraseña',
     );
   }
 }

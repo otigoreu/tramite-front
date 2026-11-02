@@ -28,7 +28,7 @@ export class UserrolService {
     rolId?: string | null,
     search: string = '',
     page: number = 0,
-    pageSize: number = 10
+    pageSize: number = 10,
   ) {
     let params = new HttpParams()
       .set('idEntidad', idEntidad.toString())
@@ -41,10 +41,12 @@ export class UserrolService {
       params = params.set('rolId', rolId);
     }
 
+    console.log('params', params);
+
     return this.http
       .get<BaseResponseGeneric<UsuarioRol_UsuarioResponseDto[]>>(
         this.baseUrl, // 🔹 usa la ruta correcta del endpoint
-        { params, observe: 'response' }
+        { params, observe: 'response' },
       )
       .pipe(
         map((response) => {
@@ -60,7 +62,7 @@ export class UserrolService {
               pageSize,
             },
           };
-        })
+        }),
       );
   }
 
@@ -70,7 +72,7 @@ export class UserrolService {
     userId: string,
     search: string = '',
     page: number = 0,
-    pageSize: number = 10
+    pageSize: number = 10,
   ) {
     let params = new HttpParams()
       .set('idEntidad', idEntidad.toString())
@@ -83,7 +85,7 @@ export class UserrolService {
     return this.http
       .get<BaseResponseGeneric<UsuarioRol_RolConAsignacionDto[]>>(
         this.baseUrl + '/asignacion', // 🔹 usa la ruta correcta del endpoint
-        { params, observe: 'response' }
+        { params, observe: 'response' },
       )
       .pipe(
         map((response) => {
@@ -99,28 +101,28 @@ export class UserrolService {
               pageSize,
             },
           };
-        })
+        }),
       );
   }
 
   asignarRol(request: UsuarioRol_RolConAsignacionRequestDto) {
     return this.http.patch<BaseResponse>(
       `${this.baseUrl}/asignar-rol`,
-      request
+      request,
     );
   }
 
   deshabilitarUsuario(id: string): Observable<BaseResponse> {
     return this.http.patch<BaseResponse>(
       `${this.baseUrl}/${id}/finalize`,
-      null
+      null,
     );
   }
 
   habilitarUsuario(id: string): Observable<BaseResponse> {
     return this.http.patch<BaseResponse>(
       `${this.baseUrl}/${id}/initialize`,
-      null
+      null,
     );
   }
 }
