@@ -32,7 +32,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { NotificationsService } from 'angular2-notifications';
-import { firstValueFrom, identity, Observable } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  identity,
+  map,
+  Observable,
+  of,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { CustomDateAdapter } from 'src/app/material/custom-adapter';
 import { UnidadOrganicaUsuario } from 'src/app/model/UnidadOrganicaUsuario';
@@ -52,6 +63,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Notificacion } from 'src/app/model/Notificacion';
 import { MessageService } from 'src/app/service/Message.service';
+import { UnidadOrganicaResponseDto } from 'src/app/model/unidadOrganica';
 
 export interface UnidadOrganica {
   id: number;
@@ -94,114 +106,168 @@ interface UsuarioUoForm {
 export class DialogUnidadorganicaUserComponent implements OnInit {
   notificationsService = inject(NotificationsService);
   dialogRef = inject(MatDialogRef);
+  unidadorganicaService = inject(UnidadorganicaService);
+  uo_usuarioService = inject(UnidadorganicausuarioService);
 
-  uo_usuarioForm = this.fb.group<UsuarioUoForm>(
+  // 1. El control ahora acepta el objeto UnidadOrganicaResponseDto (o string mientras escribe)
+  uo_usuarioForm = this.fb.group(
     {
-      idUnidadOrganica: this.fb.control<number | null>(
-        null,
-        Validators.required
-      ),
+      idUnidadOrganica: this.fb.control<
+        UnidadOrganicaResponseDto | string | null
+      >(null, [Validators.required, this.validarObjetoSeleccionado()]),
       desde: this.fb.control<Date>(new Date(), Validators.required),
       hasta: this.fb.control<Date | null>(null),
     },
     {
-      validators: [this.validarRangoFechas()], // ⬅️ agregamos validación a nivel formulario
-    }
+      validators: [this.validarRangoFechas()],
+    },
   );
 
-  unidadorganicas: UnidadOrganica[] = [];
-
-  unidadorganicaService = inject(UnidadorganicaService);
-  uo_usuarioService = inject(UnidadorganicausuarioService);
-
-  //showNotificacion = signal(false);
+  unidadesFiltradas$!: Observable<UnidadOrganicaResponseDto[]>;
   notificacion = signal<Notificacion | null>(null);
-
   titulo = '';
-
   private userId!: string;
-
-  private validarRangoFechas(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const desde = control.get('desde')?.value as Date | null;
-      const hasta = control.get('hasta')?.value as Date | null;
-
-      if (desde && hasta && hasta < desde) {
-        return { rangoInvalido: true }; // ❌ hasta menor que desde
-      }
-      return null; // ✅ válido
-    };
-  }
+  private idEntidad!: number;
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    private data: { data: UnidadOrganicaUsuario; userId: string }, // UnidadOrganicaUsuario,
+    private data: { data: UnidadOrganicaUsuario; userId: string },
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private msg: MessageService
+    private msg: MessageService,
   ) {}
 
   async ngOnInit(): Promise<void> {
-    // Leer parámetro de la URL
     this.userId = this.data.userId;
-
+    this.idEntidad = Number(localStorage.getItem('idEntidad'));
     const esEdicion = !!this.data?.data;
 
     this.titulo = esEdicion
       ? 'Actualizar USUARIO - UNIDAD ORGANICA'
       : 'Agregar nuevo USUARIO - UNIDAD ORGANICA';
 
-    const idEntidad = Number(localStorage.getItem('idEntidad'));
+    // Búsqueda reactiva en la API
+    this.unidadesFiltradas$ = this.uo_usuarioForm
+      .get('idUnidadOrganica')!
+      .valueChanges.pipe(
+        startWith(''),
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((value) => {
+          if (value && typeof value === 'object') {
+            return of([value]);
+          }
 
-    // 🔹 ahora sí await
-    await this.cargarUnidadOrganicas(idEntidad);
+          const textoBusqueda = typeof value === 'string' ? value.trim() : '';
 
-    // 🔹 Solo después de cargar combos hacemos el patch
-    if (esEdicion && this.data) {
-      this.prepararEdicion(this.data!.data);
-    }
-  }
-
-  private prepararEdicion(data: UnidadOrganicaUsuario): void {
-    console.log('data', data);
-    this.uo_usuarioForm.patchValue({
-      idUnidadOrganica: data.idUnidadOrganica,
-      desde: data.desde,
-      hasta: data.hasta,
-    });
-  }
-
-  private async cargarUnidadOrganicas(idEntidad: number): Promise<void> {
-    try {
-      const res = await firstValueFrom(
-        this.unidadorganicaService.getPaginado('', 100, 0, idEntidad)
+          return this.unidadorganicaService
+            .getPaginado(textoBusqueda, 50, 0, this.idEntidad)
+            .pipe(
+              map((res) => this._aplanarUnidades(res.data || [])),
+              catchError((err) => {
+                console.error('Error buscando unidades orgánicas:', err);
+                return of([]);
+              }),
+            );
+        }),
       );
 
-      this.unidadorganicas = res.data.map((z) => ({
-        id: z.id,
-        descripcion: z.descripcion,
-      }));
-    } catch (err) {
-      console.error('Error cargando unidades orgánicas', err);
+    if (esEdicion && this.data.data) {
+      await this.prepararEdicion(this.data.data);
     }
+  }
+
+  // 2. Busca el objeto completo por ID para que [displayWith] pinte la descripción
+  private async prepararEdicion(data: UnidadOrganicaUsuario): Promise<void> {
+    this.uo_usuarioForm.patchValue({
+      // Convertimos los strings del backend a objetos Date reales para el datepicker y el validador
+      desde: data.desde ? new Date(data.desde) : null,
+      hasta: data.hasta ? new Date(data.hasta) : null,
+    });
+
+    if (data.idUnidadOrganica) {
+      try {
+        const res = await firstValueFrom(
+          this.unidadorganicaService.getById(data.idUnidadOrganica),
+        );
+
+        if (res.success && res.data) {
+          this.uo_usuarioForm.patchValue({
+            idUnidadOrganica: res.data,
+          });
+        }
+      } catch (err) {
+        console.error('Error al obtener la unidad orgánica por ID:', err);
+      }
+    }
+  }
+
+  private _aplanarUnidades(unidades: any[]): UnidadOrganicaResponseDto[] {
+    let resultado: UnidadOrganicaResponseDto[] = [];
+    for (const u of unidades) {
+      resultado.push(u);
+      if (u.hijos && u.hijos.length > 0) {
+        resultado = resultado.concat(this._aplanarUnidades(u.hijos));
+      }
+    }
+    return resultado;
+  }
+
+  mostrarDescripcion(unidad: UnidadOrganicaResponseDto | null): string {
+    return unidad && unidad.descripcion ? unidad.descripcion : '';
+  }
+
+  // Validador para evitar que el usuario envíe texto escrito sin haber elegido una opción
+  private validarObjetoSeleccionado(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const valor = control.value;
+      if (valor && typeof valor === 'string') {
+        return { opcionNoSeleccionada: true };
+      }
+      return null;
+    };
+  }
+
+  private validarRangoFechas(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const desdeVal = control.get('desde')?.value;
+      const hastaVal = control.get('hasta')?.value;
+
+      if (desdeVal && hastaVal) {
+        const desdeTime = new Date(desdeVal).getTime();
+        const hastaTime = new Date(hastaVal).getTime();
+
+        if (hastaTime < desdeTime) {
+          return { rangoInvalido: true };
+        }
+      }
+      return null;
+    };
   }
 
   onSubmit(): void {
-    if (this.uo_usuarioForm.invalid) return;
+    if (this.uo_usuarioForm.invalid) {
+      this.uo_usuarioForm.markAllAsTouched();
+      return;
+    }
 
     const raw = this.uo_usuarioForm.getRawValue();
     const esEdicion = !!this.data?.data;
 
-    const data: UsuarioUnidadOrganicaRequestDto = {
+    // 3. Extraemos el ID numérico del objeto seleccionado
+    const unidadSeleccionada =
+      raw.idUnidadOrganica as UnidadOrganicaResponseDto;
+
+    const payload: UsuarioUnidadOrganicaRequestDto = {
       idUsuario: this.userId,
-      idUnidadOrganica: raw.idUnidadOrganica!,
-      desde: raw.desde!,
-      hasta: raw.hasta,
+      idUnidadOrganica: unidadSeleccionada.id,
+      desde: new Date(raw.desde!),
+      hasta: raw.hasta ? new Date(raw.hasta) : null,
     };
 
     const request$ = esEdicion
-      ? this.uo_usuarioService.actualizar(this.data.data.id, data)
-      : this.uo_usuarioService.agregar(data);
+      ? this.uo_usuarioService.actualizar(this.data.data.id, payload)
+      : this.uo_usuarioService.agregar(payload);
 
     request$.subscribe({
       next: (res) => {
@@ -210,7 +276,7 @@ export class DialogUnidadorganicaUserComponent implements OnInit {
           this.dialogRef.close(esEdicion ? true : res.data);
         } else {
           this.msg.warning(
-            res.errorMessage || 'Ocurrió un error al procesar la acción.'
+            res.errorMessage || 'Ocurrió un error al procesar la acción.',
           );
         }
       },
@@ -218,64 +284,6 @@ export class DialogUnidadorganicaUserComponent implements OnInit {
         const msg = err?.error?.errorMessage || 'Error al registrar usuario.';
         this.msg.error(msg);
       },
-      complete: () => console.log('Petición completada'),
     });
   }
-
-  // onSubmit() {
-  //   if (this.uo_usuarioForm.valid) {
-  //     const raw = this.uo_usuarioForm.getRawValue();
-
-  //     const esEdicion = !!this.data?.data;
-
-  //     const data: UsuarioUnidadOrganicaRequestDto = {
-  //       idUsuario: this.userId,
-  //       idUnidadOrganica: raw.idUnidadOrganica!,
-  //       desde: raw.desde!,
-  //       hasta: raw.hasta,
-  //     };
-
-  //     if (!esEdicion) {
-  //       this.uo_usuarioService.agregar(data).subscribe({
-  //         next: (res) => {
-  //           if (res.success) {
-  //             this.msg.success('Se asignó una unidad orgánica al usuario.');
-  //             this.dialogRef.close(esEdicion ? true : res.data); // true si fue update, ID si fue create
-  //           } else {
-  //             this.msg.warning(res.errorMessage!);
-  //           }
-  //         },
-  //         error: (err) => {
-  //           const msg =
-  //             err?.error?.errorMessage || 'Error al registrar usuario.';
-
-  //           this.msg.error(msg);
-  //         },
-  //         complete: () => {
-  //           console.log('Petición completada');
-  //         },
-  //       });
-  //     } else {
-  //       this.uo_usuarioService.actualizar(this.data.data.id, data).subscribe({
-  //         next: (res) => {
-  //           if (res.success) {
-  //             this.msg.success('Se asignó una unidad orgánica al usuario.');
-  //             this.dialogRef.close(esEdicion ? true : res.data); // true si fue update, ID si fue create
-  //           } else {
-  //             this.msg.warning(res.errorMessage!);
-  //           }
-  //         },
-  //         error: (err) => {
-  //           const msg =
-  //             err?.error?.errorMessage || 'Error al registrar usuario.';
-
-  //           this.msg.error(msg);
-  //         },
-  //         complete: () => {
-  //           console.log('Petición completada');
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
 }

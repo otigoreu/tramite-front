@@ -17,6 +17,14 @@ export class UnidadorganicaService {
 
   constructor() {}
 
+  getById(
+    id: number,
+  ): Observable<BaseResponseGeneric<UnidadOrganicaResponseDto>> {
+    return this.http.get<BaseResponseGeneric<UnidadOrganicaResponseDto>>(
+      `${this.baseUrl}/${id}`,
+    );
+  }
+
   getPaginado(
     search?: string,
     pageSize?: number,

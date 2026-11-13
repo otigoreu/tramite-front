@@ -13,15 +13,21 @@
   <form [formGroup]="uo_usuarioForm" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>Unidad Orgánica</mat-label>
-      <mat-select formControlName="idUnidadOrganica">
-        <mat-option *ngFor="let u of unidadorganicas" [value]="u.id">
+      <input
+        type="text"
+        placeholder="Escriba para buscar..."
+        matInput
+        formControlName="idUnidadOrganica"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        [displayWith]="mostrarDescripcion"
+      >
+        <mat-option *ngFor="let u of unidadesFiltradas$ | async" [value]="u">
           {{ u.descripcion }}
         </mat-option>
-      </mat-select>
-      <mat-error
-        *ngIf="uo_usuarioForm.get('idUnidadOrganica')?.hasError('required')"
-        >Campo requerido</mat-error
-      >
+      </mat-autocomplete>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-100">
