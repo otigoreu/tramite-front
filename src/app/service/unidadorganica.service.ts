@@ -52,6 +52,7 @@ export class UnidadorganicaService {
       .pipe(
         map((response) => {
           const data = response.body?.data ?? [];
+
           const total = parseInt(
             response.headers.get('totalrecordsquantity') ?? '0',
             10,
